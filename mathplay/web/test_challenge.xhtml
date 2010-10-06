@@ -8,9 +8,7 @@
     </h:head>
 
     <h:body>
-        Test of challenge: ADDITION
-
-        <h:form id="Kek">
+        <h:form id="chose_challenge">
 		<br />
 
 		<p>Hei, din progresjon er:</p >
@@ -31,8 +29,8 @@
 		<h:commandButton value="Progresser" action="#{gameHandler.progressDivision}"/>
 		Score: <h:outputText id="div_progression" value="#{gameHandler.divisionScore}" />
 
-		<p> Forrige var rett/galt (bare for testing): </p>
-		Last answer correct? <h:outputText id="correct" value="#{gameHandler.lastCorrect}" />
+		<p> Forrige var rett/galt (bare for testing):
+		<h:outputText id="correct" value="#{gameHandler.lastCorrect}" /></p>
 		<br/>
 
 

@@ -1,5 +1,5 @@
 /*
-* This class will handle everything that involves Challenges and will work as a bean.
+* This class will handle everything that involves challenges.
 */
 package mathplay;
 
@@ -34,7 +34,6 @@ public class GameHandler {
 	public GameHandler() {
 		System.out.println("------START-------");
 		//**INSERT** Load scores from the database
-		//currentChallenge = getRandomAddChal();
 	}
 
 
@@ -84,7 +83,7 @@ public class GameHandler {
 
 
 	// ************** METHODS RELEVANT TO ADDITION, SUBTRACTION;  **************
-	// ************** MULTIPLICATION and DIVISION;  **************
+	// ************** MULTIPLICATION and DIVISION;                **************
 
 	/*
 	* Loads a random ADDITION challenge from the database,
@@ -156,7 +155,7 @@ public class GameHandler {
 
 
 	/*
-	* Convert and submits the users answer
+	* Method used by the view to submit his answer
 	*/
 	public String submitAnswer() {
 		String type = currentChallenge.getType();
@@ -260,7 +259,7 @@ public class GameHandler {
 	}
 
 	/*
-	* Reset all values relevant to the addition challenges.
+	* Reset all challenge values, starting on a cleen sheet for the next one.
 	*/
 	public void resetValues() {
 		answer="";

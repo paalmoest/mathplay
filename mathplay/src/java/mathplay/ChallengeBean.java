@@ -1,7 +1,9 @@
 /*
-* This class represent one challenge in the mathematical operation "Addition".
+* This class represent one challenge. What type of operation the challenge is in
+* is represented by the important "TYPE" string variable.
 */
 package mathplay;
+
 
 public class ChallengeBean {
 
