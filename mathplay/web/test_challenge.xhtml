@@ -15,13 +15,26 @@
 
 		<p>Hei, din progresjon er:</p >
 
-		Addisjon: Level <h:outputText id="level" value="#{gameHandler.additionLevel}" /> -
-		<h:commandButton value="Progresser" action="#{gameHandler.progressAddition}"/>
+		Addisjon: Level <h:outputText id="add_level" value="#{gameHandler.additionLevel}" /> -
+		<h:commandButton value="Progresser" action="#{gameHandler.progressAddition}"/> -
+		Score: <h:outputText id="add_progression" value="#{gameHandler.additionScore}" />
+		<br />
+		Subtraksjon: Level <h:outputText id="sub_level" value="#{gameHandler.subtractionLevel}" /> -
+		<h:commandButton value="Progresser" action="#{gameHandler.progressSubtraction}"/>
+		Score: <h:outputText id="sub_progression" value="#{gameHandler.subtractionScore}" />
+		<br />
+		Multiplikasjon: Level <h:outputText id="mul_level" value="#{gameHandler.multiplicationLevel}" /> -
+		<h:commandButton value="Progresser" action="#{gameHandler.progressMultiplication}"/>
+		Score: <h:outputText id="mul_progression" value="#{gameHandler.multiplicationScore}" />
+		<br />
+		Divisjon: Level <h:outputText id="div_level" value="#{gameHandler.divisionLevel}" /> -
+		<h:commandButton value="Progresser" action="#{gameHandler.progressDivision}"/>
+		Score: <h:outputText id="div_progression" value="#{gameHandler.divisionScore}" />
 
-		<p> Forrige: </p>
+		<p> Forrige var rett/galt (bare for testing): </p>
 		Last answer correct? <h:outputText id="correct" value="#{gameHandler.lastCorrect}" />
 		<br/>
-		Your Addition progression: <h:outputText id="progression" value="#{gameHandler.additionScore}" />
+
 
         </h:form>
     </h:body>
