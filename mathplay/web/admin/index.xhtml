@@ -3,10 +3,11 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://java.sun.com/jsf/html">
     <h:head>
-        <title>Facelet Title</title>
+        <title>Admin interface</title>
     </h:head>
     <h:body>
-        Dette er admin 
+       Hei bruker, <h:outputText value="#{userBean.user}" />
+                    <h:outputText value="#{userBean.rolle}" />
     </h:body>
 </html>
 
