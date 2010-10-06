@@ -19,6 +19,7 @@ public class GameHandler {
 	private int divisionScore = 0;
 	private static int levelTwoThreshold = 10;
 	private static int levelThreeThreshold = 100;
+	private int valutaSpent = 0;
 
 	// VIEW Variables
 	private ChallengeBean currentChallenge;
@@ -33,7 +34,11 @@ public class GameHandler {
 	*/
 	public GameHandler() {
 		System.out.println("------START-------");
-		//**INSERT** Load scores from the database
+		/**INSERT** Load following user related variables from the database::
+		**INSERT** additionScore, subtractionScore, multiplicationScore, divisionScore
+		**INSERT** valutaSpent
+		* Alternatively it loads a userbean, or takes a userbean in the constructor.
+		*/
 	}
 
 
@@ -79,6 +84,17 @@ public class GameHandler {
 	// PROPERTY: DivisionLevel
 	public int getDivisionLevel() {
 		return getLevelForScore(divisionScore);
+	}
+
+	// PROPERTY: Valuta
+	public int getValuta() {
+		int newValuta = 0;
+		newValuta += additionScore*2;
+		newValuta += subtractionScore*3;
+		newValuta += multiplicationScore*4;
+		newValuta += divisionScore*5;
+		newValuta -= valutaSpent;
+		return newValuta;
 	}
 
 
@@ -159,30 +175,19 @@ public class GameHandler {
 	*/
 	public String submitAnswer() {
 		String type = currentChallenge.getType();
-		if (type.equals("addition")) {
-			submitAddition();
-			return "test_challenge";
-		}
-		else if (type.equals("subtraction")) {
-			submitSubtraction();
-			return "test_challenge";
-		}
-		else if (type.equals("multiplication")) {
-			submitMultiplication();
-			return "test_challenge";
-		}
-		else if (type.equals("division")) {
-			submitDivision();
-			return "test_challenge";
-		}
+		if (type.equals("addition")) submitAddition();
+		else if (type.equals("subtraction")) submitSubtraction();
+		else if (type.equals("multiplication")) submitMultiplication();
+		else if (type.equals("division")) submitDivision();
 		else return "challenge_error";
+		return "test_challenge";
 	}
 
 	/*
 	* Undermethod of the submitAnswer method, for when user
 	* submits a ADDITION answer
 	*/
-	public void submitAddition() {
+	private void submitAddition() {
 		double double_answer = Double.parseDouble(answer);
 		int dif = currentChallenge.getDifficulty();
 		if (currentChallenge.isCorrect(double_answer)) {
@@ -202,7 +207,7 @@ public class GameHandler {
 	* Undermethod of the submitAnswer method, for when user
 	* submits a SUBTRACTION answer
 	*/
-	public void submitSubtraction() {
+	private void submitSubtraction() {
 		double double_answer = Double.parseDouble(answer);
 		int dif = currentChallenge.getDifficulty();
 		if (currentChallenge.isCorrect(double_answer)) {
@@ -222,7 +227,7 @@ public class GameHandler {
 	* Undermethod of the submitAnswer method, for when user
 	* submits a MULTIPLICATION answer
 	*/
-	public void submitMultiplication() {
+	private void submitMultiplication() {
 		double double_answer = Double.parseDouble(answer);
 		int dif = currentChallenge.getDifficulty();
 		if (currentChallenge.isCorrect(double_answer)) {
@@ -242,7 +247,7 @@ public class GameHandler {
 	* Undermethod of the submitAnswer method, for when user
 	* submits a DIVISION answer
 	*/
-	public void submitDivision() {
+	private void submitDivision() {
 		double double_answer = Double.parseDouble(answer);
 		int dif = currentChallenge.getDifficulty();
 		if (currentChallenge.isCorrect(double_answer)) {
@@ -265,13 +270,16 @@ public class GameHandler {
 		answer="";
 	}
 
-	// ************** OTHER METHODS **************
+	// ************** INTERNAL METHODS **************
 
-	public int getLevelForScore(int score) {
+	/*
+	* Internal method to calculate the level
+	* used by the property get<operation>Level methods.
+	*/
+	private int getLevelForScore(int score) {
 		if (score>levelThreeThreshold) return 3;
 		else if (score>levelTwoThreshold) return 2;
 		else if (score>0) return 1;
 		else return 0;
 	}
-
 }

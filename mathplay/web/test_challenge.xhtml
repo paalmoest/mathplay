@@ -10,7 +10,7 @@
     <h:body>
         <h:form id="chose_challenge">
 		<br />
-
+		<p> Din valuta er: <h:outputText id="valuta" value="#{gameHandler.valuta}" /></p>
 		<p>Hei, din progresjon er:</p >
 
 		Addisjon: Level <h:outputText id="add_level" value="#{gameHandler.additionLevel}" /> -
@@ -18,15 +18,15 @@
 		Score: <h:outputText id="add_progression" value="#{gameHandler.additionScore}" />
 		<br />
 		Subtraksjon: Level <h:outputText id="sub_level" value="#{gameHandler.subtractionLevel}" /> -
-		<h:commandButton value="Progresser" action="#{gameHandler.progressSubtraction}"/>
+		<h:commandButton value="Progresser" action="#{gameHandler.progressSubtraction}"/> -
 		Score: <h:outputText id="sub_progression" value="#{gameHandler.subtractionScore}" />
 		<br />
 		Multiplikasjon: Level <h:outputText id="mul_level" value="#{gameHandler.multiplicationLevel}" /> -
-		<h:commandButton value="Progresser" action="#{gameHandler.progressMultiplication}"/>
+		<h:commandButton value="Progresser" action="#{gameHandler.progressMultiplication}"/> -
 		Score: <h:outputText id="mul_progression" value="#{gameHandler.multiplicationScore}" />
 		<br />
 		Divisjon: Level <h:outputText id="div_level" value="#{gameHandler.divisionLevel}" /> -
-		<h:commandButton value="Progresser" action="#{gameHandler.progressDivision}"/>
+		<h:commandButton value="Progresser" action="#{gameHandler.progressDivision}"/> -
 		Score: <h:outputText id="div_progression" value="#{gameHandler.divisionScore}" />
 
 		<p> Forrige var rett/galt (bare for testing):
