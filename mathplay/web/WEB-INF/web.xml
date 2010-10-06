@@ -31,6 +31,11 @@
             <web-resource-name>Protected Pages</web-resource-name>
             <url-pattern>/admin/*</url-pattern>
         </web-resource-collection>
+        <web-resource-collection>
+            <web-resource-name>test</web-resource-name>
+            <description>test</description>
+            <url-pattern>/faces/admin/*</url-pattern>
+        </web-resource-collection>
         <auth-constraint>
             <role-name>admin</role-name>
         </auth-constraint>
