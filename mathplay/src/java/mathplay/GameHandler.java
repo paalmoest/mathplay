@@ -266,7 +266,7 @@ public class GameHandler {
 	/*
 	* Reset all challenge values, starting on a cleen sheet for the next one.
 	*/
-	public void resetValues() {
+	private void resetValues() {
 		answer="";
 	}
 
@@ -277,8 +277,8 @@ public class GameHandler {
 	* used by the property get<operation>Level methods.
 	*/
 	private int getLevelForScore(int score) {
-		if (score>levelThreeThreshold) return 3;
-		else if (score>levelTwoThreshold) return 2;
+		if (score>=levelThreeThreshold) return 3;
+		else if (score>=levelTwoThreshold) return 2;
 		else if (score>0) return 1;
 		else return 0;
 	}
