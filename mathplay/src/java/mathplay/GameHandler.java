@@ -18,7 +18,8 @@ public class GameHandler {
 	private int multiplicationScore = 0;
 	private int divisionScore = 0;
 	private static int levelTwoThreshold = 10;
-	private static int levelThreeThreshold = 100;
+	private static int levelThreeThreshold = 30;
+	private static int progressLevelThreshold = 1;
 	private int valutaSpent = 0;
 
 	// VIEW Variables
@@ -95,6 +96,30 @@ public class GameHandler {
 		newValuta += divisionScore*5;
 		newValuta -= valutaSpent;
 		return newValuta;
+	}
+
+	// PROPERTY: subtractionAccess
+	public boolean getSubtractionAccess() {
+		if (getAdditionLevel()>=progressLevelThreshold) return true;
+		else return false;
+	}
+
+	// PROPERTY: multiplicationAccess
+	public boolean getMultiplicationAccess() {
+		if (getSubtractionLevel()>=progressLevelThreshold) return true;
+		else return false;
+	}
+
+	// PROPERTY: divisionAccess
+	public boolean getDivisionAccess() {
+		if (getMultiplicationLevel()>=progressLevelThreshold) return true;
+		else return false;
+	}
+
+	// PROPERTY: superAccess
+	public boolean getSuperAccess() {
+		if (getDivisionLevel()>=progressLevelThreshold) return true;
+		else return false;
 	}
 
 

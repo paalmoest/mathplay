@@ -13,10 +13,12 @@ public class ChallengeBean {
 	private int difficulty;
 	private String type;
 
-	/*
-	* Constructor, text represent the mathematical challenge with its numbers
-	* and can be represented in text and numbers or only numbers
-	*/
+	/** CID: Challenge ID, used by the database. */
+	public ChallengeBean(int CID) {
+		this.CID = CID;
+	}
+
+	/** Constructor */
 	public ChallengeBean(int CID, String text, double correct, int difficulty, String type) {
 		this.CID = CID;
 		this.text = text;
