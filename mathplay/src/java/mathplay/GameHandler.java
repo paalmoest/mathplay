@@ -27,6 +27,8 @@ public class GameHandler {
 	private String answer = "";
 	public boolean lastCorrect = false;
 
+        private Overview overview = new Overview();
+
 
 	/*
 	*  Constructor, loads from databae:
@@ -136,12 +138,15 @@ public class GameHandler {
 		ArrayList<ChallengeBean> list = new ArrayList<ChallengeBean>();
 		list.add(new ChallengeBean(0,"1+2",3,1,"addition")); // JUST A TEST Addition
 		list.add(new ChallengeBean(0,"how many animals are 2cats and 11dogs???",13,1,"addition"));
-		//**INSERT** Load challenge lists from the database	with the correct difficulty
+		//**INSERT** Load challenge lists from the database	with the correct difficulty4
+                ChallengeBean challenge = overview.getChallenge("addition", difficulty, overview.getCurrentUser().getUserId());
 		Random generator = new Random();
 		int r = generator.nextInt(list.size());
 		currentChallenge = list.get(r);
 		return "test_challenge_solve";
 	}
+
+
 
 	/*
 	* Loads a random SUBTRACTION challenge from the database,

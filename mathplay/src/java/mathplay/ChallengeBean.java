@@ -12,19 +12,29 @@ public class ChallengeBean {
 	private double correct;
 	private int difficulty;
 	private String type;
+        private int teacherId;
 
 	/** CID: Challenge ID, used by the database. */
 	public ChallengeBean(int CID) {
 		this.CID = CID;
 	}
-
-	/** Constructor */
-	public ChallengeBean(int CID, String text, double correct, int difficulty, String type) {
+        public ChallengeBean(int CID, String text, double correct, int difficulty, String type) {
 		this.CID = CID;
 		this.text = text;
 		this.correct = correct;
 		this.difficulty = difficulty;
 		this.type = type;
+                this.teacherId = teacherId;
+	}
+
+	/** Constructor */
+	public ChallengeBean(int CID, String text, double correct, int difficulty, String type, int teacherId) {
+		this.CID = CID;
+		this.text = text;
+		this.correct = correct;
+		this.difficulty = difficulty;
+		this.type = type;
+                this.teacherId = teacherId;
 	}
 
 	// PROPERTY: CID
@@ -45,6 +55,11 @@ public class ChallengeBean {
 	// PROPERTY: type
 	public String getType() {return type;}
 	public void setType(String type) {this.type = type;}
+
+        // PROPERTY: techerId
+        public int getTeacherId() {return teacherId;}
+        public void setTeacherId(int teacherId) {this.teacherId = teacherId;}
+
 
 	/*
 	* Compares if the correct answer and the users answer is equal.

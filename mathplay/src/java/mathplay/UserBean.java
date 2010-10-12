@@ -13,16 +13,27 @@ import javax.servlet.http.*;
 @ManagedBean
 @SessionScoped
 public class UserBean {
-     private String name, userName, role, grade;
+    private int userId;
+    private String  name, userName, role, grade;
   
-     public UserBean(String name, String userName, String role, String grade) {
-		 this.name = name;
+     public UserBean(int userId,String name, String userName, String role, String grade) {
+		 this.userId = userId;
+                 this.name = name;
                  this.userName = userName;
 		 this.role = role;
                  this.grade = grade;
      }
 
      public UserBean() {
+     }
+
+     /** Property: user id */
+     public int getUserId() {
+         return userId;
+     }
+     
+     public void setUserId(int userId) {
+         this.userId = userId;
      }
 
      /** Property: name */
@@ -59,6 +70,11 @@ public class UserBean {
 
      public void setGrade(String grade) {
          this.grade = grade;
+     }
+
+     //Need to add Conextstuff here.
+     public int getCurrentUser() {
+         return 1;
      }
      
      public synchronized String logout() throws Exception {

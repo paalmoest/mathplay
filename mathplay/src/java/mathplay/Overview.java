@@ -12,6 +12,7 @@ import javax.naming.InitialContext;
 public class Overview {
     private ArrayList<UserBean> allUsers = new ArrayList<UserBean>();
     //private ArrayList<UserBean> allChallenges = new ArrayList<ChallengeBean>();
+    private ChallengeBean tempChallenge;
 
     //Database stuff
     private String databaseDriver = "org.apache.derby.jdbc.ClientDriver";
@@ -26,6 +27,13 @@ public class Overview {
     public ArrayList<UserBean> getAllUsers() {
         return allUsers;
     }
+
+    public UserBean getCurrentUser() {
+        for(int i=0;i<allUsers.size();i++) {
+            if(allUsers.get(i).getUserId() == new UserBean().getCurrentUser()) return allUsers.get(i);
+        }
+        return null;
+    }
     /** Adds a user to the database */
     public void addUser(UserBean user, String password) {
         openConnection();
@@ -35,7 +43,7 @@ public class Overview {
         try {
             System.out.println(connection.getAutoCommit());
             connection.setAutoCommit(true);
-            sql = connection.prepareStatement("INSERT INTO usertable(name, username, grade, password) VALUES (?, ?, ?, ?)");
+            sql = connection.prepareStatement("INSERT INTO usertable(userid, name, username, grade, password) VALUES (?, ?, ?, ?)");
             sql.setString(1,user.getName());
             sql.setString(2,user.getUserName());
             //sql.setString(3,user.getRole());
@@ -115,12 +123,13 @@ public class Overview {
             statement = connection.createStatement();
             result = statement.executeQuery("SELECT * FROM usertable, roles WHERE roles.role = 'pupil'");
             while(result.next()) {
+                int tempUserId = result.getInt("userid");
                 String tempName = result.getString("name");
                 String tempUserName = result.getString("username");
                 String tempRole = result.getString("role");
                 String tempGrade = result.getString("grade");
 
-                allUsers.add(new UserBean(tempName,tempUserName, tempRole, tempGrade));
+                allUsers.add(new UserBean(tempUserId, tempName,tempUserName, tempRole, tempGrade));
             }
             for(int i = 0;i<allUsers.size();i++) {
                 System.out.println("User: " + allUsers.get(i).getUserName());
@@ -129,6 +138,32 @@ public class Overview {
             Cleanup.printMessage(e, "readUsers()");
         }
 
+    }
+
+    public ChallengeBean getChallenge(String cType, int cDifficulty, int teacher_id) {
+        openConnection();
+        Statement statement = null;
+        ResultSet result = null;
+        try {
+            connection.setAutoCommit(false);
+            statement = connection.createStatement();
+            result = statement.executeQuery("SELECT * AS RANDOM FROM usertable WHERE challengetype ='"+cType+"' AND difficulty = '"+cDifficulty+"' AND '"+teacher_id+"'");//legges til:(Og challengeId IKKE er koblet til currentUser)
+
+            int tempCID = result.getInt("CID");
+            String tempText = result.getString("text") ;
+            double tempCorrect = result.getDouble("correct");
+            int tempDifficulty = result.getInt("difficulty");
+            String tempType = result.getString("type");
+
+            tempChallenge = new ChallengeBean(tempCID, tempText, tempCorrect, tempDifficulty, tempType);
+        }catch(SQLException e) {
+            Cleanup.printMessage(e, "checkUser()");
+        }
+
+        finally {
+            Cleanup.closeConnection(connection);
+        }
+        return tempChallenge;
     }
 
     /** Opens a connection to the database */
