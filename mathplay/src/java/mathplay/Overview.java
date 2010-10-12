@@ -105,8 +105,8 @@ public class Overview {
             while(result.next()) {
                 if(username.equals(result.getString("username"))) return true;
                 connection.commit(); //I doubt this one is really needed(autoCommit)
-            }   
-            
+            }
+
         }catch(SQLException e) {
             Cleanup.printMessage(e, "checkUser()");
         }finally {
@@ -164,6 +164,30 @@ public class Overview {
             Cleanup.closeConnection(connection);
         }
         return tempChallenge;
+    }
+
+   public void addChallenge(String tid, ChallengeBean chall) {
+        openConnection();
+        PreparedStatement sql = null;
+
+        System.out.println("PLS 1");
+        try {
+            System.out.println(connection.getAutoCommit());
+            connection.setAutoCommit(true);
+            sql = connection.prepareStatement("INSERT INTO challenge(Teacher_Id, Challenge_Id, Challenge_dis, Svar, Grad, Oppgavetype) VALUES (?, DEFAULT, ?, ?, ?, ?)");
+            sql.setString(1,tid);
+            sql.setString(2,chall.getText());
+            sql.setDouble(3,chall.getCorrect());
+            sql.setInt(4,chall.getDifficulty());
+            sql.setString(5,chall.getType());
+            System.out.println("PLS 2");
+            sql.executeUpdate();
+            connection.commit();
+        }catch(SQLException e) {
+            Cleanup.printMessage(e, "addChallenge()");
+        }finally {
+
+        }
     }
 
     /** Opens a connection to the database */
