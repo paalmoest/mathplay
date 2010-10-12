@@ -5,11 +5,11 @@ DROP TABLE user_roles;
 DROP TABLE student;
 DROP TABLE teacher;
 DROP TABLE student_teacher;
-DROP TABLE tasks;
-DROP TABLE task_name;
-DROP TABLE task_type;
-DROP TABLE task_teacher;
-DROP TABLE task_student;
+DROP TABLE challenges;
+DROP TABLE challenge_name;
+DROP TABLE challenge_type;
+DROP TABLE challenge_teacher;
+DROP TABLE challenge_student;
 DROP TABLE playerinfo;
 
 
@@ -42,39 +42,39 @@ CREATE TABLE student_teacher(
 );
 
 --Oppgavetabell: oppgaveinfo--
-CREATE TABLE tasks(
-    task_id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY(START WITH 1, INCREMENT BY 1),
-    task_text VARCHAR(20),
+CREATE TABLE challenges(
+    challenge_id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY(START WITH 1, INCREMENT BY 1),
+    challenge_text VARCHAR(20),
     answer DOUBLE,
     difficulty INT,
-    task_type VARCHAR(20)
+    challenge_type VARCHAR(20)
 );
 
 --Oppgavetype: forskjellige type oppgaver--
-CREATE TABLE task_name(
-    task_type VARCHAR(20) PRIMARY KEY
+CREATE TABLE challenge_name(
+    challenge_type VARCHAR(20) PRIMARY KEY
 );
 
 --Oppgave/Type: koblingstabell--
-CREATE TABLE task_type(
-    task_id INT,
-    task_type VARCHAR(20),
-    CONSTRAINT task_type_pk PRIMARY KEY(task_id, task_type)
+CREATE TABLE challenge_type(
+    challenge_id INT,
+    challenge_type VARCHAR(20),
+    CONSTRAINT challenge_type_pk PRIMARY KEY(challenge_id, challenge_type)
 );
 
 --Oppgave/L�rer: koblingstabell--
-CREATE TABLE task_teacher(
-    task_id INT,
+CREATE TABLE challenge_teacher(
+    challenge_id INT,
     user_id INT,
-    CONSTRAINT task_teacher_pk PRIMARY KEY(task_id, user_id)
+    CONSTRAINT challenge_teacher_pk PRIMARY KEY(challenge_id, user_id)
 );
 
 --Oppgave/Student: koblingstabell--
-CREATE TABLE task_student(
-    task_id INT,
+CREATE TABLE challenge_student(
+    challenge_id INT,
     user_id INT,
     solved VARCHAR(10),
-    CONSTRAINT task_student_pk PRIMARY KEY(task_id, user_id)
+    CONSTRAINT challenge_student_pk PRIMARY KEY(challenge_id, user_id)
 );
 
 --Spillerinto: Valutta osv--
@@ -90,14 +90,14 @@ CREATE TABLE playerinfo(
 --Koblingstabeller--
 --ALTER TABLE user_roles ADD CONSTRAINT user_roles_fk1 FOREIGN KEY(username) REFERENCES users;--
 ALTER TABLE user_roles ADD CONSTRAINT user_roles_fk2 FOREIGN KEY(rolename) REFERENCES roles;
-ALTER TABLE task_type ADD CONSTRAINT task_type_fk1 FOREIGN KEY(task_id) REFERENCES tasks;
-ALTER TABLE task_type ADD CONSTRAINT task_type_fk2 FOREIGN KEY(task_type) REFERENCES task_name;
-ALTER TABLE task_teacher ADD CONSTRAINT task_teacher_fk1 FOREIGN KEY(task_id) REFERENCES tasks;
-ALTER TABLE task_teacher ADD CONSTRAINT task_teacher_fk2 FOREIGN KEY(user_id) REFERENCES tasks;
-ALTER TABLE student_teacher ADD CONSTRAINT student_teacher_fk1 FOREIGN KEY(user_id) REFERENCES tasks;
---ALTER TABLE student_teacher ADD CONSTRAINT student_teacher_fk2 FOREIGN KEY(username) REFERENCES tasks;--
-ALTER TABLE task_student ADD CONSTRAINT task_student_fk1 FOREIGN KEY(task_id) REFERENCES tasks;
-ALTER TABLE task_student ADD CONSTRAINT task_student_fk2 FOREIGN KEY(user_id) REFERENCES tasks;
+ALTER TABLE challenge_type ADD CONSTRAINT challenge_type_fk1 FOREIGN KEY(challenge_id) REFERENCES challenges;
+ALTER TABLE challenge_type ADD CONSTRAINT challenge_type_fk2 FOREIGN KEY(challenge_type) REFERENCES challenge_name;
+ALTER TABLE challenge_teacher ADD CONSTRAINT challenge_teacher_fk1 FOREIGN KEY(challenge_id) REFERENCES challenges;
+ALTER TABLE challenge_teacher ADD CONSTRAINT challenge_teacher_fk2 FOREIGN KEY(user_id) REFERENCES challenges;
+ALTER TABLE student_teacher ADD CONSTRAINT student_teacher_fk1 FOREIGN KEY(user_id) REFERENCES challenges;
+--ALTER TABLE student_teacher ADD CONSTRAINT student_teacher_fk2 FOREIGN KEY(username) REFERENCES challenges;--
+ALTER TABLE challenge_student ADD CONSTRAINT challenge_student_fk1 FOREIGN KEY(challenge_id) REFERENCES challenges;
+ALTER TABLE challenge_student ADD CONSTRAINT challenge_student_fk2 FOREIGN KEY(user_id) REFERENCES challenges;
 --STANDALONES!--
 ALTER TABLE playerinfo ADD CONSTRAINT playerinfo_fk1 FOREIGN KEY(user_id) REFERENCES users;
 
@@ -115,15 +115,15 @@ INSERT INTO USER_ROLES (USERNAME, ROLENAME)VALUES ('stian', 'admin');
 INSERT INTO USER_ROLES (USERNAME, ROLENAME)VALUES ('andriod', 'user');
 INSERT INTO USER_ROLES (USERNAME, ROLENAME)VALUES ('tomcat', 'manager');
 --Lager oppgavetyper--
-INSERT INTO TASK_NAME (TASK_TYPE)VALUES ('Multiplikasjon');
+INSERT INTO challenge_NAME (challenge_TYPE)VALUES ('Multiplikasjon');
 --Lager oppgaver--
-INSERT INTO TASKS (TASK_TEXT, ANSWER, DIFFICULTY, TASK_TYPE)VALUES ('Hva er 2+2?', 4.0, 1, 'Multiplikasjon');
+INSERT INTO challengeS (challenge_TEXT, ANSWER, DIFFICULTY, challenge_TYPE)VALUES ('Hva er 2+2?', 4.0, 1, 'Multiplikasjon');
 --Binder oppgave til oppgavetype--
-INSERT INTO TASK_TYPE (TASK_ID, TASK_TYPE)VALUES (1, 'Multiplikasjon');
+INSERT INTO challenge_TYPE (challenge_ID, challenge_TYPE)VALUES (1, 'Multiplikasjon');
 --Binder oppgave til l�rer--
-INSERT INTO TASK_TEACHER (TASK_ID, USER_ID)VALUES (1, 1);
+INSERT INTO challenge_TEACHER (challenge_ID, USER_ID)VALUES (1, 1);
 --Binder oppgave til student og setter gjort--
-INSERT INTO TASK_STUDENT (TASK_ID, USER_ID, SOLVED) VALUES (1, 2, 'JA!');
+INSERT INTO challenge_STUDENT (challenge_ID, USER_ID, SOLVED) VALUES (1, 2, 'JA!');
 --Binder L�rer til student--
 INSERT INTO STUDENT_TEACHER (USER_ID, USERNAME)VALUES (1, 'andriod');
 --Setter player score---
