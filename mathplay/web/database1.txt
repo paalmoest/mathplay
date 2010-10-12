@@ -31,14 +31,14 @@ CREATE TABLE roles(
 CREATE TABLE user_roles(
     username VARCHAR(20),
     rolename VARCHAR(20),
-    CONSTRAINT user_roles_pk PRIMARY KEY(username, rolename)
+    CONSTRAINT user_roles_pk PRIMARY KEY(rolename)
 );
 
---Student/Lærer: koblingstabell--
+--Student/Lï¿½rer: koblingstabell--
 CREATE TABLE student_teacher(
     user_id INT,
     username VARCHAR(20),
-    CONSTRAINT student_teacher_pk PRIMARY KEY(user_id,username)
+    CONSTRAINT student_teacher_pk PRIMARY KEY(user_id)
 );
 
 --Oppgavetabell: oppgaveinfo--
@@ -62,7 +62,7 @@ CREATE TABLE task_type(
     CONSTRAINT task_type_pk PRIMARY KEY(task_id, task_type)
 );
 
---Oppgave/Lærer: koblingstabell--
+--Oppgave/Lï¿½rer: koblingstabell--
 CREATE TABLE task_teacher(
     task_id INT,
     user_id INT,
@@ -86,16 +86,16 @@ CREATE TABLE playerinfo(
     division_score INT
 );
 
---Fremmednøkler--
+--Fremmednï¿½kler--
 --Koblingstabeller--
-ALTER TABLE user_roles ADD CONSTRAINT user_roles_fk1 FOREIGN KEY(username) REFERENCES users;
+--ALTER TABLE user_roles ADD CONSTRAINT user_roles_fk1 FOREIGN KEY(username) REFERENCES users;--
 ALTER TABLE user_roles ADD CONSTRAINT user_roles_fk2 FOREIGN KEY(rolename) REFERENCES roles;
 ALTER TABLE task_type ADD CONSTRAINT task_type_fk1 FOREIGN KEY(task_id) REFERENCES tasks;
 ALTER TABLE task_type ADD CONSTRAINT task_type_fk2 FOREIGN KEY(task_type) REFERENCES task_name;
 ALTER TABLE task_teacher ADD CONSTRAINT task_teacher_fk1 FOREIGN KEY(task_id) REFERENCES tasks;
 ALTER TABLE task_teacher ADD CONSTRAINT task_teacher_fk2 FOREIGN KEY(user_id) REFERENCES tasks;
 ALTER TABLE student_teacher ADD CONSTRAINT student_teacher_fk1 FOREIGN KEY(user_id) REFERENCES tasks;
-ALTER TABLE student_teacher ADD CONSTRAINT student_teacher_fk2 FOREIGN KEY(username) REFERENCES tasks;
+--ALTER TABLE student_teacher ADD CONSTRAINT student_teacher_fk2 FOREIGN KEY(username) REFERENCES tasks;--
 ALTER TABLE task_student ADD CONSTRAINT task_student_fk1 FOREIGN KEY(task_id) REFERENCES tasks;
 ALTER TABLE task_student ADD CONSTRAINT task_student_fk2 FOREIGN KEY(user_id) REFERENCES tasks;
 --STANDALONES!--
@@ -103,29 +103,29 @@ ALTER TABLE playerinfo ADD CONSTRAINT playerinfo_fk1 FOREIGN KEY(user_id) REFERE
 
 --INSERTS--
 --Legger til brukere--
-INSERT INTO USERS (USERNAME, PASSWORD, FIRSTNAME, LASTNAME) VALUES ('stian', 'hei', 'Stian', 'Sørebø')
-INSERT INTO USERS (USERNAME, PASSWORD, FIRSTNAME, LASTNAME) VALUES ('andriod', 'noob', 'Andrej', 'Skogsland')
-INSERT INTO USERS (USERNAME, PASSWORD, FIRSTNAME, LASTNAME) VALUES ('tomcat', 'tomcat', 'ME+Netbeans=FAIL', '.com')
+INSERT INTO USERS (USERNAME, PASSWORD, FIRSTNAME, LASTNAME) VALUES ('stian', 'hei', 'Stian', 'Sï¿½rebï¿½');
+INSERT INTO USERS (USERNAME, PASSWORD, FIRSTNAME, LASTNAME) VALUES ('andriod', 'noob', 'Andrej', 'Skogsland');
+INSERT INTO USERS (USERNAME, PASSWORD, FIRSTNAME, LASTNAME) VALUES ('tomcat', 'tomcat', 'ME+Netbeans=FAIL', '.com');
 --Lager roller--
-INSERT INTO ROLES (ROLENAME) VALUES ('admin')
-INSERT INTO ROLES (ROLENAME) VALUES ('user')
-INSERT INTO ROLES (ROLENAME) VALUES ('manager')
+INSERT INTO ROLES (ROLENAME) VALUES ('admin');
+INSERT INTO ROLES (ROLENAME) VALUES ('user');
+INSERT INTO ROLES (ROLENAME) VALUES ('manager');
 --Binder brukere til roller--
-INSERT INTO USER_ROLES (USERNAME, ROLENAME)VALUES ('stian', 'admin')
-INSERT INTO USER_ROLES (USERNAME, ROLENAME)VALUES ('andriod', 'user')
-INSERT INTO USER_ROLES (USERNAME, ROLENAME)VALUES ('tomcat', 'manager')
+INSERT INTO USER_ROLES (USERNAME, ROLENAME)VALUES ('stian', 'admin');
+INSERT INTO USER_ROLES (USERNAME, ROLENAME)VALUES ('andriod', 'user');
+INSERT INTO USER_ROLES (USERNAME, ROLENAME)VALUES ('tomcat', 'manager');
 --Lager oppgavetyper--
-INSERT INTO TASK_NAME (TASK_TYPE)VALUES ('Multiplikasjon')
+INSERT INTO TASK_NAME (TASK_TYPE)VALUES ('Multiplikasjon');
 --Lager oppgaver--
-INSERT INTO TASKS (TASK_TEXT, ANSWER, DIFFICULTY, TASK_TYPE)VALUES ('Hva er 2+2?', 4.0, 1, 'Multiplikasjon')
+INSERT INTO TASKS (TASK_TEXT, ANSWER, DIFFICULTY, TASK_TYPE)VALUES ('Hva er 2+2?', 4.0, 1, 'Multiplikasjon');
 --Binder oppgave til oppgavetype--
-INSERT INTO TASK_TYPE (TASK_ID, TASK_TYPE)VALUES (1, 'Multiplikasjon')
---Binder oppgave til lærer--
-INSERT INTO TASK_TEACHER (TASK_ID, USER_ID)VALUES (1, 1)
+INSERT INTO TASK_TYPE (TASK_ID, TASK_TYPE)VALUES (1, 'Multiplikasjon');
+--Binder oppgave til lï¿½rer--
+INSERT INTO TASK_TEACHER (TASK_ID, USER_ID)VALUES (1, 1);
 --Binder oppgave til student og setter gjort--
-INSERT INTO TASK_STUDENT (TASK_ID, USER_ID, SOLVED) VALUES (1, 2, 'JA!')
---Binder Lærer til student--
-INSERT INTO STUDENT_TEACHER (USER_ID, USERNAME)VALUES (1, 'andriod')
+INSERT INTO TASK_STUDENT (TASK_ID, USER_ID, SOLVED) VALUES (1, 2, 'JA!');
+--Binder Lï¿½rer til student--
+INSERT INTO STUDENT_TEACHER (USER_ID, USERNAME)VALUES (1, 'andriod');
 --Setter player score---
-INSERT INTO PLAYERINFO (USER_ID, ADDITION_SCORE, SUBTRACTION_SCORE, MULTIPLICATION_SCORE, DIVISION_SCORE)VALUES (1, 2, 3, 4, 5)
+INSERT INTO PLAYERINFO (USER_ID, ADDITION_SCORE, SUBTRACTION_SCORE, MULTIPLICATION_SCORE, DIVISION_SCORE)VALUES (1, 2, 3, 4, 5);
 
