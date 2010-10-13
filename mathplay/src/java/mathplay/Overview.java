@@ -17,7 +17,7 @@ public class Overview {
     //Database stuff
     private String databaseDriver = "org.apache.derby.jdbc.ClientDriver";
     private Connection connection = null;
-    private String databaseName = "jdbc:derby://localhost:1527/mathplay;user=admin;password=admin";
+    private String databaseName = "jdbc:derby://localhost:1527/mathplay;user=mathplay;password=mathplay";
 
     /** Constructor */
     public Overview() {
@@ -90,8 +90,6 @@ public class Overview {
             Cleanup.closeConnection(connection);
             //TODO: add a call to readUsers
         }
-
-
     }
     /** Checks if a user already exists */
     public boolean checkUser(String username) {
@@ -140,22 +138,26 @@ public class Overview {
 
     }
 
-    public ChallengeBean getChallenge(String cType, int cDifficulty, int teacher_id) {
+    public ChallengeBean getChallenge(String cType, int cDifficulty, String userName) {
         openConnection();
         Statement statement = null;
-        ResultSet result = null;
+        PreparedStatement sql = null;
+        ResultSet result;
         try {
             connection.setAutoCommit(false);
             statement = connection.createStatement();
-            result = statement.executeQuery("SELECT * AS RANDOM FROM usertable WHERE challengetype ='"+cType+"' AND difficulty = '"+cDifficulty+"' AND '"+teacher_id+"'");//legges til:(Og challengeId IKKE er koblet til currentUser)
-
-            int tempCID = result.getInt("CID");
-            String tempText = result.getString("text") ;
-            double tempCorrect = result.getDouble("correct");
-            int tempDifficulty = result.getInt("difficulty");
-            String tempType = result.getString("type");
-
-            tempChallenge = new ChallengeBean(tempCID, tempText, tempCorrect, tempDifficulty, tempType);
+            sql = connection.prepareStatement("select challenge.CHALLENGE_ID, challenge.CHALLENGE_TEXT, challenge.ANSWER from challenge left join challenge_teacher on challenge.challenge_id = challenge_teacher.CHALLENGE_ID left join challenge_type on (challenge.CHALLENGE_ID = challenge_type.CHALLENGE_ID) left join challenge_student on (challenge.CHALLENGE_ID = challenge_student.CHALLENGE_ID) where challenge.DIFFICULTY = ? AND challenge_teacher.USER_ID = (SELECT USER_ID FROM STUDENT_TEACHER WHERE username = ?) AND challenge_type.CHALLENGE_TYPE = ? AND CHALLENGE_STUDENT.CHALLENGE_ID IS NULL ORDER BY random()");
+            sql.setInt(1, cDifficulty);
+            sql.setString(2, userName);
+            sql.setString(3, cType);
+            result = sql.executeQuery();
+            connection.commit();
+            result.next();
+            int tempCID = result.getInt("challenge_id");
+            String tempText = result.getString("challenge_text") ;
+            double tempCorrect = result.getDouble("answer");
+            
+            tempChallenge = new ChallengeBean(tempCID, tempText, tempCorrect, cDifficulty, cType);
         }catch(SQLException e) {
             Cleanup.printMessage(e, "checkUser()");
         }
@@ -202,6 +204,13 @@ public class Overview {
        }catch (Exception e) {
            Cleanup.printMessage(e, "openConnection()");
        }
+    }
+
+    public static void main(String[] args) {
+        Overview lol = new Overview();
+        ChallengeBean chall = lol.getChallenge("Addisjon", 1, "andriod");
+        System.out.println("Oppgave: "+chall.getText()+" , riktig svar: "+chall.getCorrect());
+        
     }
 
 
