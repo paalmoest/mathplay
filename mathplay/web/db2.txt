@@ -1,0 +1,130 @@
+--DROPS--
+DROP TABLE playerinfo;
+DROP TABLE user_roles;
+DROP TABLE roles;
+DROP TABLE student_teacher;
+DROP TABLE challenge_type;
+DROP TABLE challenge_teacher;
+DROP TABLE challenge_student;
+DROP TABLE challenge_name;
+DROP TABLE challenge;
+DROP TABLE users;
+
+
+
+--Brukertabell: brukernavn, passord--
+CREATE TABLE users(
+    user_id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY(START WITH 1, INCREMENT BY 1),
+    username VARCHAR(20),
+    password VARCHAR(20),
+    firstname VARCHAR(20),
+    lastname VARCHAR(20)
+);
+
+--Rolletabell: forskjellige roller--
+CREATE TABLE roles(
+    rolename VARCHAR(20) PRIMARY KEY
+);
+
+--Bruker/Roller: koblingstabell--
+CREATE TABLE user_roles(
+    username VARCHAR(20),
+    rolename VARCHAR(20),
+    CONSTRAINT user_roles_pk PRIMARY KEY(rolename)
+);
+
+--Student/L?rer: koblingstabell--
+CREATE TABLE student_teacher(
+    user_id INT,
+    username VARCHAR(20),
+    CONSTRAINT student_teacher_pk PRIMARY KEY(user_id)
+);
+
+--Oppgavetabell: oppgaveinfo--
+CREATE TABLE challenge(
+    challenge_id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY(START WITH 1, INCREMENT BY 1),
+    challenge_text VARCHAR(20),
+    answer DOUBLE,
+    difficulty INT,
+    challenge_type VARCHAR(20)
+);
+
+--Oppgavetype: forskjellige type oppgaver--
+CREATE TABLE challenge_name(
+    challenge_type VARCHAR(20) PRIMARY KEY
+);
+
+--Oppgave/Type: koblingstabell--
+CREATE TABLE challenge_type(
+    challenge_id INT,
+    challenge_type VARCHAR(20),
+    CONSTRAINT challenge_type_pk PRIMARY KEY(challenge_id, challenge_type)
+);
+
+--Oppgave/L?rer: koblingstabell--
+CREATE TABLE challenge_teacher(
+    challenge_id INT,
+    user_id INT,
+    CONSTRAINT challenge_teacher_pk PRIMARY KEY(challenge_id, user_id)
+);
+
+--Oppgave/Student: koblingstabell--
+CREATE TABLE challenge_student(
+    challenge_id INT,
+    user_id INT,
+    solved VARCHAR(10),
+    CONSTRAINT challenge_student_pk PRIMARY KEY(challenge_id, user_id)
+);
+
+--Spillerinto: Valutta osv--
+CREATE TABLE playerinfo(
+    user_id INT,
+    addition_score INT,
+    subtraction_score INT,
+    multiplication_score INT,
+    division_score INT
+);
+
+--Fremmedn?kler--
+--Koblingstabeller--
+--ALTER TABLE user_roles ADD CONSTRAINT user_roles_fk1 FOREIGN KEY(username) REFERENCES users;--
+ALTER TABLE user_roles ADD CONSTRAINT user_roles_fk2 FOREIGN KEY(rolename) REFERENCES roles;
+ALTER TABLE challenge_type ADD CONSTRAINT challenge_type_fk1 FOREIGN KEY(challenge_id) REFERENCES challenge;
+ALTER TABLE challenge_type ADD CONSTRAINT challenge_type_fk2 FOREIGN KEY(challenge_type) REFERENCES challenge_name;
+ALTER TABLE challenge_teacher ADD CONSTRAINT challenge_teacher_fk1 FOREIGN KEY(challenge_id) REFERENCES challenge;
+ALTER TABLE challenge_teacher ADD CONSTRAINT challenge_teacher_fk2 FOREIGN KEY(user_id) REFERENCES users;
+ALTER TABLE student_teacher ADD CONSTRAINT student_teacher_fk1 FOREIGN KEY(user_id) REFERENCES users;
+--ALTER TABLE student_teacher ADD CONSTRAINT student_teacher_fk2 FOREIGN KEY(username) REFERENCES challenges;--
+ALTER TABLE challenge_student ADD CONSTRAINT challenge_student_fk1 FOREIGN KEY(challenge_id) REFERENCES challenge;
+ALTER TABLE challenge_student ADD CONSTRAINT challenge_student_fk2 FOREIGN KEY(user_id) REFERENCES users;
+--STANDALONES!--
+ALTER TABLE playerinfo ADD CONSTRAINT playerinfo_fk1 FOREIGN KEY(user_id) REFERENCES users;
+
+--INSERTS--
+--Legger til brukere--
+INSERT INTO USERS (USERNAME, PASSWORD, FIRSTNAME, LASTNAME) VALUES ('stian', 'hei', 'Stian', 'Sorebo');
+INSERT INTO USERS (USERNAME, PASSWORD, FIRSTNAME, LASTNAME) VALUES ('andriod', 'noob', 'Andrej', 'Skogsland');
+INSERT INTO USERS (USERNAME, PASSWORD, FIRSTNAME, LASTNAME) VALUES ('tomcat', 'tomcat', 'ME+Netbeans=FAIL', '.com');
+--Lager roller--
+INSERT INTO ROLES (ROLENAME) VALUES ('admin');
+INSERT INTO ROLES (ROLENAME) VALUES ('user');
+INSERT INTO ROLES (ROLENAME) VALUES ('manager');
+--Binder brukere til roller--
+INSERT INTO USER_ROLES (USERNAME, ROLENAME)VALUES ('stian', 'admin');
+INSERT INTO USER_ROLES (USERNAME, ROLENAME)VALUES ('andriod', 'user');
+INSERT INTO USER_ROLES (USERNAME, ROLENAME)VALUES ('tomcat', 'manager');
+--Lager oppgavetyper--
+INSERT INTO challenge_NAME (challenge_TYPE)VALUES ('Multiplikasjon');
+--Lager oppgaver--
+INSERT INTO challenge (challenge_TEXT, ANSWER, DIFFICULTY, challenge_TYPE)VALUES ('Hva er 2+2?', 4.0, 1, 'Multiplikasjon');
+--Binder oppgave til oppgavetype--
+INSERT INTO challenge_TYPE (challenge_ID, challenge_TYPE)VALUES (1, 'Multiplikasjon');
+--Binder oppgave til l?rer--
+INSERT INTO challenge_TEACHER (challenge_ID, USER_ID)VALUES (1, 1);
+--Binder oppgave til student og setter gjort--
+INSERT INTO challenge_STUDENT (challenge_ID, USER_ID, SOLVED) VALUES (1, 2, 'JA!');
+--Binder L?rer til student--
+INSERT INTO STUDENT_TEACHER (USER_ID, USERNAME)VALUES (1, 'andriod');
+--Setter player score---
+INSERT INTO PLAYERINFO (USER_ID, ADDITION_SCORE, SUBTRACTION_SCORE, MULTIPLICATION_SCORE, DIVISION_SCORE)VALUES (1, 2, 3, 4, 5);
+
