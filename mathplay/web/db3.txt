@@ -119,17 +119,21 @@ INSERT INTO challenge_NAME (challenge_TYPE)VALUES ('Subtraksjon');
 INSERT INTO challenge_NAME (challenge_TYPE)VALUES ('Divisjon');
 --Lager oppgaver--
 --Binder oppgave til oppgavetype--
+--Binder oppgave til l?rer--
 INSERT INTO challenge (challenge_TEXT, ANSWER, DIFFICULTY)VALUES ('Hva er 2+2?', 4.0, 1);
 INSERT INTO challenge_TYPE (challenge_TYPE)VALUES ('Addisjon');
+INSERT INTO challenge_TEACHER (USER_ID)VALUES (1);
 INSERT INTO challenge (challenge_TEXT, ANSWER, DIFFICULTY)VALUES ('Hva er 2+4?', 6.0, 1);
 INSERT INTO challenge_TYPE (challenge_TYPE)VALUES ('Addisjon');
+INSERT INTO challenge_TEACHER (USER_ID)VALUES (1);
 INSERT INTO challenge (challenge_TEXT, ANSWER, DIFFICULTY)VALUES ('Hva er 3-2?', 1.0, 1);
 INSERT INTO challenge_TYPE (challenge_TYPE)VALUES ('Subtraksjon');
+INSERT INTO challenge_TEACHER (USER_ID)VALUES (1);
 INSERT INTO challenge (challenge_TEXT, ANSWER, DIFFICULTY)VALUES ('Hva er 4/2?', 2.0, 2);
 INSERT INTO challenge_TYPE (challenge_TYPE)VALUES ('Divisjon');
+INSERT INTO challenge_TEACHER (USER_ID)VALUES (1);
 INSERT INTO challenge (challenge_TEXT, ANSWER, DIFFICULTY)VALUES ('Hva er 2*2?', 4.0, 2);
 INSERT INTO challenge_TYPE (challenge_TYPE)VALUES ('Multiplikasjon');
---Binder oppgave til l?rer--
 INSERT INTO challenge_TEACHER (USER_ID)VALUES (1);
 --Binder oppgave til student og setter gjort--
 INSERT INTO challenge_STUDENT (USER_ID, SOLVED) VALUES (2, 'JA!');
