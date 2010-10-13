@@ -1,16 +1,15 @@
 --DROPS--
-DROP TABLE users;
-DROP TABLE roles;
+DROP TABLE playerinfo;
 DROP TABLE user_roles;
-DROP TABLE student;
-DROP TABLE teacher;
+DROP TABLE roles;
 DROP TABLE student_teacher;
-DROP TABLE challenges;
-DROP TABLE challenge_name;
 DROP TABLE challenge_type;
 DROP TABLE challenge_teacher;
 DROP TABLE challenge_student;
-DROP TABLE playerinfo;
+DROP TABLE challenge_name;
+DROP TABLE challenge;
+DROP TABLE users;
+
 
 
 --Brukertabell: brukernavn, passord--
@@ -90,14 +89,14 @@ CREATE TABLE playerinfo(
 --Koblingstabeller--
 --ALTER TABLE user_roles ADD CONSTRAINT user_roles_fk1 FOREIGN KEY(username) REFERENCES users;--
 ALTER TABLE user_roles ADD CONSTRAINT user_roles_fk2 FOREIGN KEY(rolename) REFERENCES roles;
-ALTER TABLE challenge_type ADD CONSTRAINT challenge_type_fk1 FOREIGN KEY(challenge_id) REFERENCES challenges;
+ALTER TABLE challenge_type ADD CONSTRAINT challenge_type_fk1 FOREIGN KEY(challenge_id) REFERENCES challenge;
 ALTER TABLE challenge_type ADD CONSTRAINT challenge_type_fk2 FOREIGN KEY(challenge_type) REFERENCES challenge_name;
-ALTER TABLE challenge_teacher ADD CONSTRAINT challenge_teacher_fk1 FOREIGN KEY(challenge_id) REFERENCES challenges;
-ALTER TABLE challenge_teacher ADD CONSTRAINT challenge_teacher_fk2 FOREIGN KEY(user_id) REFERENCES challenges;
-ALTER TABLE student_teacher ADD CONSTRAINT student_teacher_fk1 FOREIGN KEY(user_id) REFERENCES challenges;
+ALTER TABLE challenge_teacher ADD CONSTRAINT challenge_teacher_fk1 FOREIGN KEY(challenge_id) REFERENCES challenge;
+ALTER TABLE challenge_teacher ADD CONSTRAINT challenge_teacher_fk2 FOREIGN KEY(user_id) REFERENCES users;
+ALTER TABLE student_teacher ADD CONSTRAINT student_teacher_fk1 FOREIGN KEY(user_id) REFERENCES users;
 --ALTER TABLE student_teacher ADD CONSTRAINT student_teacher_fk2 FOREIGN KEY(username) REFERENCES challenges;--
-ALTER TABLE challenge_student ADD CONSTRAINT challenge_student_fk1 FOREIGN KEY(challenge_id) REFERENCES challenges;
-ALTER TABLE challenge_student ADD CONSTRAINT challenge_student_fk2 FOREIGN KEY(user_id) REFERENCES challenges;
+ALTER TABLE challenge_student ADD CONSTRAINT challenge_student_fk1 FOREIGN KEY(challenge_id) REFERENCES challenge;
+ALTER TABLE challenge_student ADD CONSTRAINT challenge_student_fk2 FOREIGN KEY(user_id) REFERENCES users;
 --STANDALONES!--
 ALTER TABLE playerinfo ADD CONSTRAINT playerinfo_fk1 FOREIGN KEY(user_id) REFERENCES users;
 
