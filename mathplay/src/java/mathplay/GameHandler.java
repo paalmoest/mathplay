@@ -135,18 +135,9 @@ public class GameHandler {
 	*/
 	public String progressAddition() {
 		int difficulty = getAdditionLevel();
-		ArrayList<ChallengeBean> list = new ArrayList<ChallengeBean>();
-		list.add(new ChallengeBean(0,"1+2",3,1,"addition")); // JUST A TEST Addition
-		list.add(new ChallengeBean(0,"how many animals are 2cats and 11dogs???",13,1,"addition"));
-		//**INSERT** Load challenge lists from the database	with the correct difficulty4
-                ChallengeBean challenge = overview.getChallenge("addition", difficulty, overview.getCurrentUser().getUserId());
-		Random generator = new Random();
-		int r = generator.nextInt(list.size());
-		currentChallenge = list.get(r);
+		currentChallenge = overview.getChallenge("Addition", difficulty, overview.getCurrentUser().getUserName());;
 		return "test_challenge_solve";
 	}
-
-
 
 	/*
 	* Loads a random SUBTRACTION challenge from the database,
@@ -154,14 +145,8 @@ public class GameHandler {
 	* one that has not been answered correctly before.
 	*/
 	public String progressSubtraction() {
-		int difficulty = getSubtractionLevel();
-		ArrayList<ChallengeBean> list = new ArrayList<ChallengeBean>();
-		list.add(new ChallengeBean(0,"6-2",4,1,"subtraction")); // JUST A TEST Addition
-		list.add(new ChallengeBean(0,"you got 2 dogs and 7 cats, the dogs ate one cat each, how many cats do you got left?",5,1,"subtraction"));
-		//**INSERT** Load a random challenge from the database	with the correct difficulty
-		Random generator = new Random();
-		int r = generator.nextInt(list.size());
-		currentChallenge = list.get(r);
+		int difficulty = getSubtractionLevel();	
+		currentChallenge = overview.getChallenge("Subtraction", difficulty, overview.getCurrentUser().getUserName());
 		return "test_challenge_solve";
 	}
 
@@ -171,14 +156,8 @@ public class GameHandler {
 	* one that has not been answered correctly before.
 	*/
 	public String progressMultiplication() {
-		int difficulty = getMultiplicationLevel();
-		ArrayList<ChallengeBean> list = new ArrayList<ChallengeBean>();
-		list.add(new ChallengeBean(0,"3x5",15,1,"multiplication")); // JUST A TEST Addition
-		list.add(new ChallengeBean(0,"You got 2 male dogs and 3 female cats, the dogs got all of the cats pregnant, how many cats do you got after 1year?",6,1,"multiplication"));
-		//**INSERT** Load a random challenge from the database	with the correct difficulty
-		Random generator = new Random();
-		int r = generator.nextInt(list.size());
-		currentChallenge = list.get(r);
+		int difficulty = getMultiplicationLevel();	
+		currentChallenge = overview.getChallenge("Multiplication", difficulty, overview.getCurrentUser().getUserName());
 		return "test_challenge_solve";
 	}
 
@@ -188,14 +167,8 @@ public class GameHandler {
 	* one that has not been answered correctly before.
 	*/
 	public String progressDivision() {
-		int difficulty = getDivisionLevel();
-		ArrayList<ChallengeBean> list = new ArrayList<ChallengeBean>();
-		list.add(new ChallengeBean(0,"10/5",2,1,"division")); // JUST A TEST Addition
-		list.add(new ChallengeBean(0,"You got 6cats; half of them died, how many do you got left?",3,1,"division"));
-		//**INSERT** Load a random challenge from the database	with the correct difficulty
-		Random generator = new Random();
-		int r = generator.nextInt(list.size());
-		currentChallenge = list.get(r);
+		int difficulty = getDivisionLevel();	
+		currentChallenge = overview.getChallenge("Division", difficulty, overview.getCurrentUser().getUserName());
 		return "test_challenge_solve";
 	}
 
