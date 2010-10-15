@@ -23,7 +23,7 @@ public class RegHandler {
     private double correct;
     private int difficulty;
     private String type;
-    private String[] types = {"addisjon", "subtraction", "multiplication","devision"};
+    private String[] types = {"Addisjon", "Subtraksjon", "Multiplikasjon","Divisjon"};
     private Overview overview = new Overview();
 
     public RegHandler() {

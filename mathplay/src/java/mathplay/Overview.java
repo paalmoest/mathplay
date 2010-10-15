@@ -21,7 +21,7 @@ import javax.naming.InitialContext;
  */
 public class Overview {
     private ArrayList<UserBean> allUsers = new ArrayList<UserBean>();
-    //private ArrayList<UserBean> allChallenges = new ArrayList<ChallengeBean>();
+    private ArrayList<ChallengeBean> allChall = new ArrayList<ChallengeBean>();
     private ChallengeBean tempChallenge;
 
     //Database stuff
@@ -281,6 +281,96 @@ public class Overview {
         }
 
    }
+
+   public void addChallenge(ChallengeBean chall) {
+        openConnection();
+        PreparedStatement sql = null;
+        PreparedStatement sql2 = null;
+        PreparedStatement sql3 = null;
+        System.out.println("PLS 1");
+        try {
+            System.out.println(connection.getAutoCommit());
+            connection.setAutoCommit(true);
+            // Insert må oppdateres
+            sql = connection.prepareStatement("INSERT INTO challenge(challenge_TEXT, ANSWER, DIFFICULTY) VALUES (?, ?, ?)");
+            sql2 = connection.prepareStatement("INSERT INTO challenge_TYPE(challenge_TYPE) VALUES (?)");
+            sql3 = connection.prepareStatement("INSERT INTO challenge_TEACHER(USER-ID) VALUES (?)");
+            sql.setString(1,chall.getText());
+            sql.setDouble(2,chall.getCorrect());
+            sql.setInt(3,chall.getDifficulty());
+            sql2.setString(1,chall.getType());
+            sql3.setInt(1,getCurrentUser().getUserId());
+            System.out.println("PLS 2");
+            sql.executeUpdate();
+            sql2.executeUpdate();
+            sql3.executeUpdate();
+            connection.commit();
+        }catch(SQLException e) {
+            Cleanup.printMessage(e, "addChallenge()");
+        }finally {
+
+        }
+    }
+
+    public void updateChallenge(ChallengeBean chall) {
+      openConnection();
+      PreparedStatement sqlupdateCha = null;
+
+      String text = chall.getText();
+      double correct = chall.getCorrect();
+      int difficulty = chall.getDifficulty();
+      int chall_id = chall.getCID();
+
+
+      try {
+          connection.setAutoCommit(false);
+          sqlupdateCha = connection.prepareStatement("UPDATE challenge set challenge_TEXT=?, ANSWER=?, DIFFICULTY=? WHERE challenge_id = ?");
+          sqlupdateCha.setString(1, text);
+          sqlupdateCha.setDouble(2, correct);
+          sqlupdateCha.setInt(3, difficulty);
+          sqlupdateCha.setInt(4, chall_id);
+          sqlupdateCha.executeUpdate();
+          connection.commit();
+        } catch (SQLException e) {
+	 Cleanup.printMessage(e, "addChallenge()");
+        } finally {
+   }
+ }
+
+    public ArrayList<ChallengeBean> getAllChallenges() {
+    PreparedStatement statement1 = null;
+
+    ResultSet res1 = null;
+
+    openConnection();
+	try {
+	connection.setAutoCommit(false);
+        statement1 = connection.prepareStatement("SELECT challenge_teacher.USER_ID, challenge.CHALLENGE_ID, challenge.CHALLENGE_TEXT, challenge.ANSWER, challenge.DIFFICULTY, CHALLENGE_TYPE.CHALLENGE_TYPE FROM MATHPLAY.CHALLENGE LEFT JOIN challenge_teacher ON (challenge.CHALLENGE_ID = challenge_teacher.CHALLENGE_ID) LEFT JOIN challenge_type ON (challenge.CHALLENGE_ID = challenge_type.CHALLENGE_ID) WHERE challenge_teacher.USER_ID = ? ORDER BY challenge.CHALLENGE_ID");
+   	statement1.setInt(1,getCurrentUser().getUserId());
+	res1 = statement1.executeQuery();
+	while (res1.next()) {
+                int subTid = res1.getInt("USER_ID");
+		int subCid = res1.getInt("CHALLENGE_ID");
+		String subChall_text = res1.getString("CHALLENGE_TEXT");
+		double subAnswer = res1.getDouble("ANSWER");
+		int subWor = res1.getInt("DIFFICULTY");
+                String subType = res1.getString("CHALLENGE_TYPE");
+
+                ChallengeBean chall = new ChallengeBean(subCid , subChall_text, subAnswer, subWor, subType, subTid);
+
+                allChall.add(chall);
+
+
+        }
+	} catch (SQLException e) {
+	  System.out.println(e.toString());
+
+	} finally {
+
+	}
+
+  return allChall;
+  }
 
     /** Opens a connection to the database */
     public void openConnection() {

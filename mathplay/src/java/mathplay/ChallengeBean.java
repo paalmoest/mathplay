@@ -37,8 +37,11 @@ public class ChallengeBean {
                 this.teacherId = teacherId;
 	}
 
+        public ChallengeBean() {};
+
 	// PROPERTY: CID
 	public int getCID() {return CID;}
+        public void setCID(int CID){this.CID = CID;}
 
 	// PROPERTY: text
 	public String getText() {return text;}
