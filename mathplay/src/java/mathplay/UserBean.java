@@ -73,9 +73,14 @@ public class UserBean {
      }
 
      //Need to add Conextstuff here.
-     public int getCurrentUser() {
-         return 1;
-     }
+     public String getCurrentUser() {
+            ExternalContext context
+            = FacesContext.getCurrentInstance().getExternalContext();
+            Object requestObject =  context.getRequest();
+            HttpServletRequest request = (HttpServletRequest) requestObject;
+            name = request.getRemoteUser();
+            return name;
+    }
      
      public synchronized String logout() throws Exception {
 	  ExternalContext ectx = FacesContext.getCurrentInstance().getExternalContext();

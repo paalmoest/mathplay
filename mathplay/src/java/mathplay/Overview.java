@@ -1,3 +1,13 @@
+/************************************************************************
+*      ___   __  __     __   _ __   __  __ /\_\     __   __  __  __     *
+*     / __`\/\ \/\ \  /'__`\/\`'__\/\ \/\ \\/\ \  /'__`\/\ \/\ \/\ \    *
+*    /\ \L\ \ \ \_/ |/\  __/\ \ \/ \ \ \_/ |\ \ \/\  __/\ \ \_/ \_/ \   *
+*    \ \____/\ \___/ \ \____\\ \_\  \ \___/  \ \_\ \____\\ \___x___/'   *
+*     \/___/  \/__/   \/____/ \/_/   \/__/    \/_/\/____/ \/__//__/     *
+*                                                                       *
+*************************************************************************
+**/
+
 package mathplay;
 
 import java.sql.*;
@@ -30,7 +40,7 @@ public class Overview {
 
     public UserBean getCurrentUser() {
         for(int i=0;i<allUsers.size();i++) {
-            if(allUsers.get(i).getUserId() == new UserBean().getCurrentUser()) return allUsers.get(i);
+            if(allUsers.get(i).getUserName().equals(new UserBean().getCurrentUser())) return allUsers.get(i);
         }
         return null;
     }
@@ -73,7 +83,7 @@ public class Overview {
         boolean ok = false;
         try {
             connection.setAutoCommit(false);
-            sqlChangeRole = connection.prepareStatement("UPDATE roletable SET role=? WHERE username = ?");
+            sqlChangeRole = connection.prepareStatement("UPDATE user_roles SET rolename=? WHERE username = ?");
             sqlChangeRole.setString(1, u.getRole());
             sqlChangeRole.setString(2, u.getName());
             sqlChangeRole.executeUpdate();
@@ -138,7 +148,7 @@ public class Overview {
 
     }
 
-    public ChallengeBean getChallenge(String cType, int cDifficulty, String userName) {
+    public ChallengeBean readChallenge(String cType, int cDifficulty, String userName) {
         openConnection();
         Statement statement = null;
         PreparedStatement sql = null;
@@ -167,6 +177,32 @@ public class Overview {
         }
         return tempChallenge;
     }
+    /** Flag a challenge as completed for a given userId */
+    public void challengeCompleted(int cid) {
+       PreparedStatement sqlChangeRole = null;
+        openConnection();
+        boolean ok = false;
+        try {
+            connection.setAutoCommit(false);
+            sqlChangeRole = connection.prepareStatement("INSERT INTO challenge_student (challenge_id, user_id) VALUES (?,?)");
+            sqlChangeRole.setInt(1, cid);
+            sqlChangeRole.setInt(2, new UserBean().getUserId());
+            sqlChangeRole.executeUpdate();
+            connection.commit();
+            ok = true;
+        }catch(SQLException e) {
+            Cleanup.rollBack(connection);
+            String sqlStatus = e.getSQLState().trim();
+            String statusClass = sqlStatus.substring(0, 2);
+            if(statusClass.equals("23")) {
+                ok = false;
+            }else Cleanup.printMessage(e, "challengeCompleted");
+        }finally {
+            Cleanup.closeConnection(connection);
+            //TODO: add a call to readUsers
+        }
+
+    }
 
    public void addChallenge(String tid, ChallengeBean chall) {
         openConnection();
@@ -192,6 +228,60 @@ public class Overview {
         }
     }
 
+   public int[] readScore() {
+       //select * from playerinfo where user_id = ?
+       int[] score = new int[5];
+       openConnection();
+        allUsers.clear();
+        Statement statement = null;
+        ResultSet result = null;
+        try {
+            statement = connection.createStatement();
+            result = statement.executeQuery("SELECT * FROM playerinfo WHERE user_id = "+getCurrentUser().getUserId());
+            while(result.next()) {
+                int tempUserId = result.getInt("userid");
+                score[0] = result.getInt("addition_score");
+                score[1] = result.getInt("subtraction_score");
+                score[2] = result.getInt("multiplication_score");
+                score[3] = result.getInt("division_score");
+                score[4] = result.getInt("currency_spent");
+            }
+        }catch(SQLException e) {
+            Cleanup.printMessage(e, "readUsers()");
+        }
+        return score;
+   }
+
+   public void changeScore(int[] score) {
+        PreparedStatement sqlChangeScore = null;
+        openConnection();
+        boolean ok = false;
+        try {
+            connection.setAutoCommit(false);
+            sqlChangeScore = connection.prepareStatement("UPDATE playerinfo SET addition_score=?,subtraction_score=?,multiplication_score=?, division_score=?, currency_spent=? WHERE user_id = ?");
+            sqlChangeScore.setInt(1, score[0]);
+            sqlChangeScore.setInt(2, score[1]);
+            sqlChangeScore.setInt(3, score[2]);
+            sqlChangeScore.setInt(4, score[3]);
+            sqlChangeScore.setInt(5, score[4]);
+            sqlChangeScore.setInt(6, getCurrentUser().getUserId());
+            sqlChangeScore.executeUpdate();
+            connection.commit();
+            ok = true;
+        }catch(SQLException e) {
+            Cleanup.rollBack(connection);
+            String sqlStatus = e.getSQLState().trim();
+            String statusClass = sqlStatus.substring(0, 2);
+            if(statusClass.equals("23")) {
+                ok = false;
+            }else Cleanup.printMessage(e, "changeScore()");
+        }finally {
+            Cleanup.closeConnection(connection);
+            //TODO: add a call to readUsers
+        }
+
+   }
+
     /** Opens a connection to the database */
     public void openConnection() {
        try {
@@ -206,12 +296,12 @@ public class Overview {
        }
     }
 
-    public static void main(String[] args) {
+   /* public static void main(String[] args) {
         Overview lol = new Overview();
         ChallengeBean chall = lol.getChallenge("Addisjon", 1, "andriod");
         System.out.println("Oppgave: "+chall.getText()+" , riktig svar: "+chall.getCorrect());
         
-    }
+    }*/
 
 
 }//OverView
