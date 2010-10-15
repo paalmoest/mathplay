@@ -17,8 +17,7 @@ CREATE TABLE users(
     user_id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY(START WITH 1, INCREMENT BY 1),
     username VARCHAR(20),
     password VARCHAR(20),
-    firstname VARCHAR(20),
-    lastname VARCHAR(20)
+    name VARCHAR(50)
 );
 
 --Rolletabell: forskjellige roller--
@@ -102,9 +101,9 @@ ALTER TABLE playerinfo ADD CONSTRAINT playerinfo_fk1 FOREIGN KEY(user_id) REFERE
 
 --INSERTS--
 --Legger til brukere--
-INSERT INTO USERS (USERNAME, PASSWORD, FIRSTNAME, LASTNAME) VALUES ('stian', 'hei', 'Stian', 'Sorebo');
-INSERT INTO USERS (USERNAME, PASSWORD, FIRSTNAME, LASTNAME) VALUES ('andriod', 'noob', 'Andrej', 'SkogslandFAIL');
-INSERT INTO USERS (USERNAME, PASSWORD, FIRSTNAME, LASTNAME) VALUES ('tomcat', 'tomcat', 'ME+Netbeans=FAIL', '.com');
+INSERT INTO USERS (USERNAME, PASSWORD, NAME) VALUES ('stian', 'hei', 'Stian Sorebo');
+INSERT INTO USERS (USERNAME, PASSWORD, NAME) VALUES ('andriod', 'noob', 'Andrej Skog');
+INSERT INTO USERS (USERNAME, PASSWORD, NAME) VALUES ('tomcat', 'tomcat','TOMCATZ CATZ');
 --Lager roller--
 INSERT INTO ROLES (ROLENAME) VALUES ('admin');
 INSERT INTO ROLES (ROLENAME) VALUES ('user');
