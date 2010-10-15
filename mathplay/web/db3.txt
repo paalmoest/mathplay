@@ -103,7 +103,7 @@ ALTER TABLE playerinfo ADD CONSTRAINT playerinfo_fk1 FOREIGN KEY(user_id) REFERE
 --INSERTS--
 --Legger til brukere--
 INSERT INTO USERS (USERNAME, PASSWORD, FIRSTNAME, LASTNAME) VALUES ('stian', 'hei', 'Stian', 'Sorebo');
-INSERT INTO USERS (USERNAME, PASSWORD, FIRSTNAME, LASTNAME) VALUES ('andriod', 'noob', 'Andrej', 'Skogsland');
+INSERT INTO USERS (USERNAME, PASSWORD, FIRSTNAME, LASTNAME) VALUES ('andriod', 'noob', 'Andrej', 'SkogslandFAIL');
 INSERT INTO USERS (USERNAME, PASSWORD, FIRSTNAME, LASTNAME) VALUES ('tomcat', 'tomcat', 'ME+Netbeans=FAIL', '.com');
 --Lager roller--
 INSERT INTO ROLES (ROLENAME) VALUES ('admin');
