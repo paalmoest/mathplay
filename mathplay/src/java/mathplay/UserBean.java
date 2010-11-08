@@ -77,8 +77,18 @@ public class UserBean {
  		ExternalContext ectx = FacesContext.getCurrentInstance().getExternalContext();
  		HttpSession session = (HttpSession) ectx.getSession(false);
  		session.invalidate();
- 		//loadPage("../index.faces");
- 		return "lolpage";
+ 		loadPage("/mathplay");
+ 		return "index?faces-redirect=true";
 	}
 
+	public synchronized void loadPage(String pagename) {
+		FacesContext context = FacesContext.getCurrentInstance();
+		HttpServletResponse response = (HttpServletResponse)context.getExternalContext().getResponse();
+		try {
+			response.sendRedirect(pagename);
+		} catch (Exception e) {
+			System.out.println(e.toString());
+		}
+		FacesContext.getCurrentInstance().responseComplete();
+	}
  }
