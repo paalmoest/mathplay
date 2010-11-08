@@ -37,6 +37,7 @@ public class UserHandler {
     public String getRole() {return role;}
     public void setRole(String role) {this.role = role; tempUser.setRole(role);}
 
+    public String getPassword(){return password;}
     public void setPassword(String password) {this.password = password;}
 
     /** Add a pupil, used by admins/tutors */
@@ -49,5 +50,9 @@ public class UserHandler {
         tempUser.setRole("admin");
         overview.addUser(tempUser, "lolmann");
     }
+    public void updateUser(){
+        overview.updateUserprofile(tempUser, password);
+    }
+
 
 }

@@ -350,6 +350,31 @@ public class Overview {
 	  return allChall;
   }
 
+     public void updateUserprofile(UserBean user, String password){
+	        openConnection();
+	        PreparedStatement sql = null;
+
+	        try{
+	            System.out.println(connection.getAutoCommit());
+	            connection.setAutoCommit(true);
+	            sql = connection.prepareStatement("UPDATE users set password=?, name=? WHERE  user_id = "+getCurrentUser().getUserId());
+	            
+	            sql.setString(1, password);
+	            sql.setString(2,user.getName());
+	            System.out.println("updateProfile");
+
+	            sql.executeUpdate();
+	            connection.commit();
+
+	        }catch(SQLException e){
+	            Cleanup.printMessage(e, "updateProfile");
+	        }finally{
+
+	        }
+
+    }
+
+
     /** Opens a connection to the database */
     public void openConnection() {
        try {
