@@ -24,7 +24,7 @@ public class RegHandler {
     private double correct;
     private int difficulty;
     private String type;
-    private String[] types = {"Addition", "Subtraction", "Multiplication","Divsion"};
+    private String[] types = {"Addition", "Subtraction", "Multiplication","Division"};
     private Overview overview = new Overview();
     private ArrayList<ChallengeBean> allChall = new ArrayList<ChallengeBean>();
 
