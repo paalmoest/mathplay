@@ -5,6 +5,7 @@
 
 package mathplay;
 
+import java.util.ArrayList;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 
@@ -23,8 +24,9 @@ public class RegHandler {
     private double correct;
     private int difficulty;
     private String type;
-    private String[] types = {"Addisjon", "Subtraksjon", "Multiplikasjon","Divisjon"};
+    private String[] types = {"Addition", "Subtraction", "Multiplication","Divsion"};
     private Overview overview = new Overview();
+    private ArrayList<ChallengeBean> allChall = new ArrayList<ChallengeBean>();
 
     public RegHandler() {
     }
@@ -68,7 +70,7 @@ public class RegHandler {
     }
 
      public void addChallenge(){
-            overview.addChallenge("Lærer id 1", tempChall);
-        }
+            overview.addChallenge(tempChall);
+     }
 
 }

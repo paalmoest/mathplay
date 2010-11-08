@@ -14,14 +14,13 @@ import javax.servlet.http.*;
 @SessionScoped
 public class UserBean {
     private int userId;
-    private String  name, userName, role, grade;
-  
-     public UserBean(int userId,String name, String userName, String role, String grade) {
-		 this.userId = userId;
-                 this.name = name;
-                 this.userName = userName;
-		 this.role = role;
-                 this.grade = grade;
+    private String  name, userName, role;
+
+     public UserBean(int userId,String name, String userName, String role) {
+		this.userId = userId;
+		this.name = name;
+		this.userName = userName;
+		this.role = role;
      }
 
      public UserBean() {
@@ -31,7 +30,7 @@ public class UserBean {
      public int getUserId() {
          return userId;
      }
-     
+
      public void setUserId(int userId) {
          this.userId = userId;
      }
@@ -63,15 +62,6 @@ public class UserBean {
          this.role = role;
      }
 
-     /** Property: grade */
-     public String getGrade() {
-         return grade;
-     }
-
-     public void setGrade(String grade) {
-         this.grade = grade;
-     }
-
      //Need to add Conextstuff here.
      public String getCurrentUser() {
             ExternalContext context
@@ -81,11 +71,14 @@ public class UserBean {
             name = request.getRemoteUser();
             return name;
     }
-     
-     public synchronized String logout() throws Exception {
-	  ExternalContext ectx = FacesContext.getCurrentInstance().getExternalContext();
-	  HttpSession session = (HttpSession) ectx.getSession(false);
-	  session.invalidate();
-	  return "logout";
-    }
+
+ 	public synchronized String logout() throws Exception {
+		System.out.println("ATTEMPTING LOGOUT");
+ 		ExternalContext ectx = FacesContext.getCurrentInstance().getExternalContext();
+ 		HttpSession session = (HttpSession) ectx.getSession(false);
+ 		session.invalidate();
+ 		//loadPage("../index.faces");
+ 		return "lolpage";
+	}
+
  }

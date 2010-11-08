@@ -31,16 +31,17 @@ public class Overview {
 
     /** Constructor */
     public Overview() {
-    //readUsers();
+    	readUsers();
     }
 
     public ArrayList<UserBean> getAllUsers() {
         return allUsers;
     }
 
-    public UserBean getCurrentUser() {
+     public UserBean getCurrentUser() {
+	String userName = new UserBean().getCurrentUser();
         for(int i=0;i<allUsers.size();i++) {
-            if(allUsers.get(i).getUserName().equals(new UserBean().getCurrentUser())) return allUsers.get(i);
+            if(allUsers.get(i).getUserName().equals(userName)) return allUsers.get(i);
         }
         return null;
     }
@@ -49,25 +50,32 @@ public class Overview {
         openConnection();
         PreparedStatement sql = null;
         PreparedStatement sql2 = null;
+        PreparedStatement sql3 = null;
         System.out.println("PLS 1");
         try {
             System.out.println(connection.getAutoCommit());
             connection.setAutoCommit(true);
-            sql = connection.prepareStatement("INSERT INTO usertable(userid, name, username, grade, password) VALUES (?, ?, ?, ?)");
-            sql.setString(1,user.getName());
-            sql.setString(2,user.getUserName());
+            sql = connection.prepareStatement("INSERT INTO users(username, password, name) VALUES (?, ?, ?)");
+            sql.setString(1,user.getUserName());
+            sql.setString(2,password);
             //sql.setString(3,user.getRole());
-            sql.setString(3,user.getGrade());
-            sql.setString(4,password);
+            sql.setString(3,user.getName());
             System.out.println("PLS 2");
 
             //Sets user role(Need to upgrade to become admin)
-            sql2 = connection.prepareStatement("INSERT INTO roles(username, role) VALUES(?,?)");
+            sql2 = connection.prepareStatement("INSERT INTO user_roles(username, rolename) VALUES(?, ?)");
             sql2.setString(1,user.getUserName());
             System.out.println(user.getRole());
             sql2.setString(2,user.getRole());
+
+
+            sql3 = connection.prepareStatement("INSERT INTO student_teacher(user_id, username) VALUES(?,?)");
+            sql3.setInt(1,getCurrentUser().getUserId());
+            sql3.setString(2, user.getUserName());
+
             sql.executeUpdate();
             sql2.executeUpdate();
+            sql3.executeUpdate();
             connection.commit();
         }catch(SQLException e) {
             Cleanup.printMessage(e, "addUser()");
@@ -101,7 +109,7 @@ public class Overview {
             //TODO: add a call to readUsers
         }
     }
-    /** Checks if a user already exists */
+    // Checks if a user already exists *//*
     public boolean checkUser(String username) {
         openConnection();
         Statement statement = null;
@@ -129,23 +137,21 @@ public class Overview {
         ResultSet result = null;
         try {
             statement = connection.createStatement();
-            result = statement.executeQuery("SELECT * FROM usertable, roles WHERE roles.role = 'pupil'");
+            result = statement.executeQuery("SELECT * FROM users,user_roles WHERE users.username=user_roles.USERNAME");
             while(result.next()) {
-                int tempUserId = result.getInt("userid");
+                int tempUserId = result.getInt("user_id");
                 String tempName = result.getString("name");
                 String tempUserName = result.getString("username");
-                String tempRole = result.getString("role");
-                String tempGrade = result.getString("grade");
+                String tempRole = result.getString("rolename");
 
-                allUsers.add(new UserBean(tempUserId, tempName,tempUserName, tempRole, tempGrade));
+                allUsers.add(new UserBean(tempUserId, tempName,tempUserName, tempRole));
             }
             for(int i = 0;i<allUsers.size();i++) {
-                System.out.println("User: " + allUsers.get(i).getUserName());
+                System.out.println("readUsers(): " + allUsers.get(i).getUserName());
             }
         }catch(SQLException e) {
             Cleanup.printMessage(e, "readUsers()");
         }
-
     }
 
     public ChallengeBean readChallenge(String cType, int cDifficulty, String userName) {
@@ -163,13 +169,14 @@ public class Overview {
             result = sql.executeQuery();
             connection.commit();
             result.next();
-            int tempCID = result.getInt("challenge_id");
+            int tempCID = result.getInt("CHALLENGE_ID");
+            //int tempCID = 2;
             String tempText = result.getString("challenge_text") ;
             double tempCorrect = result.getDouble("answer");
-            
+
             tempChallenge = new ChallengeBean(tempCID, tempText, tempCorrect, cDifficulty, cType);
         }catch(SQLException e) {
-            Cleanup.printMessage(e, "checkUser()");
+            Cleanup.printMessage(e, "readChallenge()");
         }
 
         finally {
@@ -177,8 +184,7 @@ public class Overview {
         }
         return tempChallenge;
     }
-    /** Flag a challenge as completed for a given userId */
-    public void challengeCompleted(int cid) {
+     public void challengeCompleted(int cid) {
        PreparedStatement sqlChangeRole = null;
         openConnection();
         boolean ok = false;
@@ -186,7 +192,7 @@ public class Overview {
             connection.setAutoCommit(false);
             sqlChangeRole = connection.prepareStatement("INSERT INTO challenge_student (challenge_id, user_id) VALUES (?,?)");
             sqlChangeRole.setInt(1, cid);
-            sqlChangeRole.setInt(2, new UserBean().getUserId());
+            sqlChangeRole.setInt(2, getCurrentUser().getUserId());
             sqlChangeRole.executeUpdate();
             connection.commit();
             ok = true;
@@ -201,45 +207,18 @@ public class Overview {
             Cleanup.closeConnection(connection);
             //TODO: add a call to readUsers
         }
-
-    }
-
-   public void addChallenge(String tid, ChallengeBean chall) {
-        openConnection();
-        PreparedStatement sql = null;
-
-        System.out.println("PLS 1");
-        try {
-            System.out.println(connection.getAutoCommit());
-            connection.setAutoCommit(true);
-            sql = connection.prepareStatement("INSERT INTO challenge(Teacher_Id, Challenge_Id, Challenge_dis, Svar, Grad, Oppgavetype) VALUES (?, DEFAULT, ?, ?, ?, ?)");
-            sql.setString(1,tid);
-            sql.setString(2,chall.getText());
-            sql.setDouble(3,chall.getCorrect());
-            sql.setInt(4,chall.getDifficulty());
-            sql.setString(5,chall.getType());
-            System.out.println("PLS 2");
-            sql.executeUpdate();
-            connection.commit();
-        }catch(SQLException e) {
-            Cleanup.printMessage(e, "addChallenge()");
-        }finally {
-
-        }
     }
 
    public int[] readScore() {
        //select * from playerinfo where user_id = ?
        int[] score = new int[5];
        openConnection();
-        allUsers.clear();
         Statement statement = null;
         ResultSet result = null;
         try {
             statement = connection.createStatement();
             result = statement.executeQuery("SELECT * FROM playerinfo WHERE user_id = "+getCurrentUser().getUserId());
             while(result.next()) {
-                int tempUserId = result.getInt("userid");
                 score[0] = result.getInt("addition_score");
                 score[1] = result.getInt("subtraction_score");
                 score[2] = result.getInt("multiplication_score");
@@ -247,7 +226,7 @@ public class Overview {
                 score[4] = result.getInt("currency_spent");
             }
         }catch(SQLException e) {
-            Cleanup.printMessage(e, "readUsers()");
+            Cleanup.printMessage(e, "readScore()");
         }
         return score;
    }
@@ -290,19 +269,22 @@ public class Overview {
         System.out.println("PLS 1");
         try {
             System.out.println(connection.getAutoCommit());
-            connection.setAutoCommit(true);
+            connection.setAutoCommit(false);
             // Insert må oppdateres
             sql = connection.prepareStatement("INSERT INTO challenge(challenge_TEXT, ANSWER, DIFFICULTY) VALUES (?, ?, ?)");
             sql2 = connection.prepareStatement("INSERT INTO challenge_TYPE(challenge_TYPE) VALUES (?)");
-            sql3 = connection.prepareStatement("INSERT INTO challenge_TEACHER(USER-ID) VALUES (?)");
+            sql3 = connection.prepareStatement("INSERT INTO challenge_TEACHER(USER_ID) VALUES (?)");
             sql.setString(1,chall.getText());
             sql.setDouble(2,chall.getCorrect());
             sql.setInt(3,chall.getDifficulty());
             sql2.setString(1,chall.getType());
-            sql3.setInt(1,getCurrentUser().getUserId());
-            System.out.println("PLS 2");
+        // System.out.println("ID: " + getCurrentUser().getUserId());
+             sql3.setInt(1,getCurrentUser().getUserId());
+        //    System.out.println("PLS 2");
             sql.executeUpdate();
+            connection.commit();
             sql2.executeUpdate();
+            connection.commit();
             sql3.executeUpdate();
             connection.commit();
         }catch(SQLException e) {
@@ -338,38 +320,34 @@ public class Overview {
  }
 
     public ArrayList<ChallengeBean> getAllChallenges() {
-    PreparedStatement statement1 = null;
+		PreparedStatement statement1 = null;
+		ResultSet res1 = null;
+		openConnection();
+		try {
+		connection.setAutoCommit(false);
+		statement1 = connection.prepareStatement("SELECT challenge_teacher.USER_ID, challenge.CHALLENGE_ID, challenge.CHALLENGE_TEXT, challenge.ANSWER, challenge.DIFFICULTY, CHALLENGE_TYPE.CHALLENGE_TYPE FROM MATHPLAY.CHALLENGE LEFT JOIN challenge_teacher ON (challenge.CHALLENGE_ID = challenge_teacher.CHALLENGE_ID) LEFT JOIN challenge_type ON (challenge.CHALLENGE_ID = challenge_type.CHALLENGE_ID) WHERE challenge_teacher.USER_ID = ? ORDER BY challenge.CHALLENGE_ID");
+		statement1.setInt(1,getCurrentUser().getUserId());
+		res1 = statement1.executeQuery();
+		while (res1.next()) {
+			int subTid = res1.getInt("USER_ID");
+			int subCid = res1.getInt("CHALLENGE_ID");
+			String subChall_text = res1.getString("CHALLENGE_TEXT");
+			double subAnswer = res1.getDouble("ANSWER");
+			int subWor = res1.getInt("DIFFICULTY");
+			String subType = res1.getString("CHALLENGE_TYPE");
 
-    ResultSet res1 = null;
+			ChallengeBean chall = new ChallengeBean(subCid , subChall_text, subAnswer, subWor, subType, subTid);
 
-    openConnection();
-	try {
-	connection.setAutoCommit(false);
-        statement1 = connection.prepareStatement("SELECT challenge_teacher.USER_ID, challenge.CHALLENGE_ID, challenge.CHALLENGE_TEXT, challenge.ANSWER, challenge.DIFFICULTY, CHALLENGE_TYPE.CHALLENGE_TYPE FROM MATHPLAY.CHALLENGE LEFT JOIN challenge_teacher ON (challenge.CHALLENGE_ID = challenge_teacher.CHALLENGE_ID) LEFT JOIN challenge_type ON (challenge.CHALLENGE_ID = challenge_type.CHALLENGE_ID) WHERE challenge_teacher.USER_ID = ? ORDER BY challenge.CHALLENGE_ID");
-   	statement1.setInt(1,getCurrentUser().getUserId());
-	res1 = statement1.executeQuery();
-	while (res1.next()) {
-                int subTid = res1.getInt("USER_ID");
-		int subCid = res1.getInt("CHALLENGE_ID");
-		String subChall_text = res1.getString("CHALLENGE_TEXT");
-		double subAnswer = res1.getDouble("ANSWER");
-		int subWor = res1.getInt("DIFFICULTY");
-                String subType = res1.getString("CHALLENGE_TYPE");
+			allChall.add(chall);
+			}
+		} catch (SQLException e) {
+		  System.out.println(e.toString());
 
-                ChallengeBean chall = new ChallengeBean(subCid , subChall_text, subAnswer, subWor, subType, subTid);
+		} finally {
 
-                allChall.add(chall);
+		}
 
-
-        }
-	} catch (SQLException e) {
-	  System.out.println(e.toString());
-
-	} finally {
-
-	}
-
-  return allChall;
+	  return allChall;
   }
 
     /** Opens a connection to the database */
@@ -390,7 +368,7 @@ public class Overview {
         Overview lol = new Overview();
         ChallengeBean chall = lol.getChallenge("Addisjon", 1, "andriod");
         System.out.println("Oppgave: "+chall.getText()+" , riktig svar: "+chall.getCorrect());
-        
+
     }*/
 
 

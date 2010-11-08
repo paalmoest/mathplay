@@ -7,10 +7,16 @@
     </h:head>
     <h1>LærerRommet</h1>
     <h:body>
+    <h:form id="index">
         <ul>
-            <li><a href="/math/faces/admin/regChallenge.xhtml">Opprett oppgave</a></li>
-            <li><a href="/math/faces/admin/registerUser.xhtml">Register elev</a></li>
+            <li><a href="/mathplay/faces/admin/regChallenge.xhtml">Opprett oppgave</a></li>
+            <li><a href="/mathplay/faces/admin/regUser.xhtml">Register elev</a></li>
+            <li><a href="/mathplay/faces/admin/allChall.xhtml">Se alle oppgaver</a></li>
+
+			<h:outputLink value="Logout" action="#{userBean.logout}" />
+
         </ul>
+    </h:form>
     </h:body>
 </html>
 

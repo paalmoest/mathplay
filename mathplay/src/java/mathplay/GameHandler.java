@@ -35,17 +35,13 @@ public class GameHandler {
 	*/
 	public GameHandler() {
 		System.out.println("------START-------");
-		/**INSERT** Load following user related variables from the database::
-		**INSERT** additionScore, subtractionScore, multiplicationScore, divisionScore*/
-                score = overview.readScore();
-                additionScore += score[0];
-                subtractionScore += score[1];
-                multiplicationScore += score[2];
-                divisionScore += score[3];
-                valutaSpent += score[4];
-		/**INSERT** valutaSpent
-		* Alternatively it loads a userbean, or takes a userbean in the constructor.
-		*/
+		System.out.println("Userid: "+overview.getCurrentUser().getUserId());
+		score = overview.readScore();
+		additionScore = score[0];
+		subtractionScore = score[1];
+		multiplicationScore = score[2];
+		divisionScore = score[3];
+		valutaSpent = score[4];
 	}
 
 
@@ -59,7 +55,7 @@ public class GameHandler {
 	public ChallengeBean getCurrentChallenge() {return currentChallenge;}
 
 	// PROPERTY: additionScore
-	public int getAdditionScore() {return additionScore; }
+	public int getAdditionScore() { return additionScore; }
 
 	// PROPERTY: subtractionScore
 	public int getSubtractionScore() {return subtractionScore;}
@@ -128,13 +124,14 @@ public class GameHandler {
 		else return false;
 	}
 
-        public void updateScore() {
-            score[0] = additionScore;
-            score[1] = subtractionScore;
-            score[2] = multiplicationScore;
-            score[3] = divisionScore;
-            score[4] = valutaSpent;
-        }
+	public void updateScore() {
+		score[0] = additionScore;
+		score[1] = subtractionScore;
+		score[2] = multiplicationScore;
+		score[3] = divisionScore;
+		score[4] = valutaSpent;
+                overview.changeScore(score);
+	}
 
 
 	// ************** METHODS RELEVANT TO ADDITION, SUBTRACTION;  **************
@@ -147,6 +144,7 @@ public class GameHandler {
 	*/
 	public String progressAddition() {
 		int difficulty = getAdditionLevel();
+		if (difficulty==0) difficulty = 1;
 		currentChallenge = overview.readChallenge("Addition", difficulty, overview.getCurrentUser().getUserName());;
 		return "test_challenge_solve";
 	}
@@ -157,7 +155,8 @@ public class GameHandler {
 	* one that has not been answered correctly before.
 	*/
 	public String progressSubtraction() {
-		int difficulty = getSubtractionLevel();	
+		int difficulty = getSubtractionLevel();
+		if (difficulty==0) difficulty = 1;
 		currentChallenge = overview.readChallenge("Subtraction", difficulty, overview.getCurrentUser().getUserName());
 		return "test_challenge_solve";
 	}
@@ -168,7 +167,8 @@ public class GameHandler {
 	* one that has not been answered correctly before.
 	*/
 	public String progressMultiplication() {
-		int difficulty = getMultiplicationLevel();	
+		int difficulty = getMultiplicationLevel();
+		if (difficulty==0) difficulty = 1;
 		currentChallenge = overview.readChallenge("Multiplication", difficulty, overview.getCurrentUser().getUserName());
 		return "test_challenge_solve";
 	}
@@ -179,7 +179,8 @@ public class GameHandler {
 	* one that has not been answered correctly before.
 	*/
 	public String progressDivision() {
-		int difficulty = getDivisionLevel();	
+		int difficulty = getDivisionLevel();
+		if (difficulty==0) difficulty = 1;
 		currentChallenge = overview.readChallenge("Division", difficulty, overview.getCurrentUser().getUserName());
 		return "test_challenge_solve";
 	}
@@ -190,10 +191,10 @@ public class GameHandler {
 	*/
 	public String submitAnswer() {
 		String type = currentChallenge.getType();
-		if (type.equals("addition")) submitAddition();
-		else if (type.equals("subtraction")) submitSubtraction();
-		else if (type.equals("multiplication")) submitMultiplication();
-		else if (type.equals("division")) submitDivision();
+		if (type.equals("Addition")) submitAddition();
+		else if (type.equals("Subtraction")) submitSubtraction();
+		else if (type.equals("Multiplication")) submitMultiplication();
+		else if (type.equals("Division")) submitDivision();
 		else return "challenge_error";
 		return "test_challenge";
 	}
@@ -208,11 +209,8 @@ public class GameHandler {
 		if (currentChallenge.isCorrect(double_answer)) {
 			additionScore += (dif*dif); // Formula for adding score
 			lastCorrect = true;
-			// ***INSERT*** update that the currentChallenge.getCID() has been completed
-                         overview.challengeCompleted(currentChallenge.getCID());
-			// ***INSERT*** update the new score value to the database
-                         updateScore();
-                        overview.changeScore(score);
+			overview.challengeCompleted(currentChallenge.getCID());
+			updateScore();
 		}
 		else {
 			additionScore -= dif; // Formula for removing score
@@ -231,11 +229,8 @@ public class GameHandler {
 		if (currentChallenge.isCorrect(double_answer)) {
 			subtractionScore += (dif*dif); // Formula for adding score
 			lastCorrect = true;
-			// ***INSERT*** update that the currentChallenge.getCID() has been completed
-                        overview.challengeCompleted(currentChallenge.getCID());
-			// ***INSERT*** update the new score value to the database
-                        updateScore();
-                        overview.changeScore(score);
+			overview.challengeCompleted(currentChallenge.getCID());
+			updateScore();
 		}
 		else {
 			subtractionScore -= dif; // Formula for removing score
@@ -256,17 +251,13 @@ public class GameHandler {
 		if (currentChallenge.isCorrect(double_answer)) {
 			multiplicationScore += (dif*dif); // Formula for adding score
 			lastCorrect = true;
-			// ***INSERT*** update that the currentChallenge.getCID() has been completed
-                         overview.challengeCompleted(currentChallenge.getCID());
-			// ***INSERT*** update the new score value to the database
-                         updateScore();
-                         overview.changeScore(score);
+			overview.challengeCompleted(currentChallenge.getCID());
+			updateScore();
 		}
 		else {
 			multiplicationScore -= dif; // Formula for removing score
 			lastCorrect = false;
                         updateScore();
-                        overview.changeScore(score);
 		}
 		resetValues();
 	}
@@ -281,11 +272,9 @@ public class GameHandler {
 		if (currentChallenge.isCorrect(double_answer)) {
 			divisionScore += (dif*dif); // Formula for adding score
 			lastCorrect = true;
-			// ***INSERT*** update that the currentChallenge.getCID() has been completed
-                         overview.challengeCompleted(currentChallenge.getCID());
-			// ***INSERT*** update the new score value to the database
-                         updateScore();
-                        overview.changeScore(score);
+			overview.challengeCompleted(currentChallenge.getCID());
+			updateScore();
+			overview.changeScore(score);
 		}
 		else {
 			divisionScore -= dif; // Formula for removing score
