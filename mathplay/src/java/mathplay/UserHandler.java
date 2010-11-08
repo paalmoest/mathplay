@@ -13,7 +13,7 @@ import javax.faces.bean.SessionScoped;
  * @author Bertie
  */
 
-@ManagedBean
+@ManagedBean(name = "UserHandler")
 @SessionScoped
 public class UserHandler {
     private UserBean tempUser = new UserBean();
@@ -53,6 +53,4 @@ public class UserHandler {
     public void updateUser(){
         overview.updateUserprofile(tempUser, password);
     }
-
-
 }
