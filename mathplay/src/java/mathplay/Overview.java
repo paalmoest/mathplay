@@ -358,7 +358,7 @@ public class Overview {
 	            System.out.println(connection.getAutoCommit());
 	            connection.setAutoCommit(true);
 	            sql = connection.prepareStatement("UPDATE users set password=?, name=? WHERE  user_id = "+getCurrentUser().getUserId());
-	            
+
 	            sql.setString(1, password);
 	            sql.setString(2,user.getName());
 	            System.out.println("updateProfile");
@@ -373,6 +373,51 @@ public class Overview {
 	        }
 
     }
+
+	/** sortBy bestemmer hvilken sortering som skal gjøres, med følgende settings:
+	*	1=USERNAME, 2=ADDITION_SCORE, 3=SUBTRACTION_SCORE, 4=MULTIPLICATION_SCORE
+	*   5=DIVISION_SCORE, 6=CURRENCY_SPENT
+	*  asc bestemmer om den skal ASCEND eller DESCEND. True=ASCEND, FALSE=DESCEND.
+	*/
+	public ArrayList<UserScoresItem> userScoresItemTable(int sortBy, boolean asc) {
+		ArrayList<UserScoresItem> usi = new ArrayList<UserScoresItem>();
+		Statement statement = null;
+		ResultSet result = null;
+		openConnection();
+		try {
+			connection.setAutoCommit(false);
+			statement = connection.createStatement();
+			if (asc) {
+				if (sortBy==1) result = statement.executeQuery("select USERNAME,ADDITION_SCORE,SUBTRACTION_SCORE,MULTIPLICATION_SCORE,DIVISION_SCORE,CURRENCY_SPENT from USERS,PLAYERINFO where users.USER_ID=playerinfo.USER_ID order by USERNAME ASC");
+				else if (sortBy==2) result = statement.executeQuery("select USERNAME,ADDITION_SCORE,SUBTRACTION_SCORE,MULTIPLICATION_SCORE,DIVISION_SCORE,CURRENCY_SPENT from USERS,PLAYERINFO where users.USER_ID=playerinfo.USER_ID order by ADDITION_SCORE ASC");
+				else if (sortBy==3) result = statement.executeQuery("select USERNAME,ADDITION_SCORE,SUBTRACTION_SCORE,MULTIPLICATION_SCORE,DIVISION_SCORE,CURRENCY_SPENT from USERS,PLAYERINFO where users.USER_ID=playerinfo.USER_ID order by SUBTRACTION_SCORE ASC");
+				else if (sortBy==4) result = statement.executeQuery("select USERNAME,ADDITION_SCORE,SUBTRACTION_SCORE,MULTIPLICATION_SCORE,DIVISION_SCORE,CURRENCY_SPENT from USERS,PLAYERINFO where users.USER_ID=playerinfo.USER_ID order by MULTIPLICATION_SCORE ASC");
+				else if (sortBy==5) result = statement.executeQuery("select USERNAME,ADDITION_SCORE,SUBTRACTION_SCORE,MULTIPLICATION_SCORE,DIVISION_SCORE,CURRENCY_SPENT from USERS,PLAYERINFO where users.USER_ID=playerinfo.USER_ID order by DIVISION_SCORE ASC");
+				else result = statement.executeQuery("select USERNAME,ADDITION_SCORE,SUBTRACTION_SCORE,MULTIPLICATION_SCORE,DIVISION_SCORE,CURRENCY_SPENT from USERS,PLAYERINFO where users.USER_ID=playerinfo.USER_ID order by CURRENCY_SPENT ASC");
+			}
+			else {
+				if (sortBy==1) result = statement.executeQuery("select USERNAME,ADDITION_SCORE,SUBTRACTION_SCORE,MULTIPLICATION_SCORE,DIVISION_SCORE,CURRENCY_SPENT from USERS,PLAYERINFO where users.USER_ID=playerinfo.USER_ID order by USERNAME DESC");
+				else if (sortBy==2) result = statement.executeQuery("select USERNAME,ADDITION_SCORE,SUBTRACTION_SCORE,MULTIPLICATION_SCORE,DIVISION_SCORE,CURRENCY_SPENT from USERS,PLAYERINFO where users.USER_ID=playerinfo.USER_ID order by ADDITION_SCORE DESC");
+				else if (sortBy==3) result = statement.executeQuery("select USERNAME,ADDITION_SCORE,SUBTRACTION_SCORE,MULTIPLICATION_SCORE,DIVISION_SCORE,CURRENCY_SPENT from USERS,PLAYERINFO where users.USER_ID=playerinfo.USER_ID order by SUBTRACTION_SCORE DESC");
+				else if (sortBy==4) result = statement.executeQuery("select USERNAME,ADDITION_SCORE,SUBTRACTION_SCORE,MULTIPLICATION_SCORE,DIVISION_SCORE,CURRENCY_SPENT from USERS,PLAYERINFO where users.USER_ID=playerinfo.USER_ID order by MULTIPLICATION_SCORE DESC");
+				else if (sortBy==5) result = statement.executeQuery("select USERNAME,ADDITION_SCORE,SUBTRACTION_SCORE,MULTIPLICATION_SCORE,DIVISION_SCORE,CURRENCY_SPENT from USERS,PLAYERINFO where users.USER_ID=playerinfo.USER_ID order by DIVISION_SCORE DESC");
+				else result = statement.executeQuery("select USERNAME,ADDITION_SCORE,SUBTRACTION_SCORE,MULTIPLICATION_SCORE,DIVISION_SCORE,CURRENCY_SPENT from USERS,PLAYERINFO where users.USER_ID=playerinfo.USER_ID order by CURRENCY_SPENT DESC");
+			}
+			while (result.next()) {
+				String username = result.getString("USERNAME");
+				int addScore = result.getInt("ADDITION_SCORE");
+				int subScore = result.getInt("SUBTRACTION_SCORE");
+				int mulScore = result.getInt("MULTIPLICATION_SCORE");
+				int divScore = result.getInt("DIVISION_SCORE");
+				int curUsed = result.getInt("CURRENCY_SPENT");
+				usi.add(new UserScoresItem(username,addScore,subScore,mulScore,divScore,curUsed));
+			}
+		} catch (SQLException e) {
+		  System.out.println(e.toString());
+		} finally {
+		}
+		return usi;
+	}
 
 
     /** Opens a connection to the database */

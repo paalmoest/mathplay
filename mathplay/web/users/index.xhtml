@@ -10,7 +10,10 @@
         <h1> KlasseRommet</h1>
         <a href="/mathplay/faces/users/test_challenge.xhtml">Gjør en oppgave !</a>
 		<br/>
+		<h:commandLink value="Topliste" action="#{gameHandler.sortByUsername}"/>
+
 		<h:commandButton value="Logout" action="#{userBean.logout}"/>
+
 	</h:form>
     </h:body>
 </html>
