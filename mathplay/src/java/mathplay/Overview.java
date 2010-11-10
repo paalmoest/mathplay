@@ -162,10 +162,11 @@ public class Overview {
         try {
             connection.setAutoCommit(false);
             statement = connection.createStatement();
-            sql = connection.prepareStatement("select challenge.CHALLENGE_ID, challenge.CHALLENGE_TEXT, challenge.ANSWER from challenge left join challenge_teacher on challenge.challenge_id = challenge_teacher.CHALLENGE_ID left join challenge_type on (challenge.CHALLENGE_ID = challenge_type.CHALLENGE_ID) left join challenge_student on (challenge.CHALLENGE_ID = challenge_student.CHALLENGE_ID) where challenge.DIFFICULTY = ? AND challenge_teacher.USER_ID = (SELECT USER_ID FROM STUDENT_TEACHER WHERE username = ?) AND challenge_type.CHALLENGE_TYPE = ? AND CHALLENGE_STUDENT.CHALLENGE_ID IS NULL ORDER BY random()");
-            sql.setInt(1, cDifficulty);
+            sql = connection.prepareStatement("SELECT * FROM challenge RIGHT JOIN challenge_teacher ON (CHALLENGE_TEACHER.CHALLENGE_ID = challenge.CHALLENGE_ID) RIGHT JOIN student_teacher ON (student_teacher.USER_ID = challenge_teacher.USER_ID) RIGHT JOIN challenge_type ON (challenge_type.CHALLENGE_ID = challenge.CHALLENGE_ID) WHERE student_teacher.USERNAME = ? AND NOT EXISTS (SELECT * FROM challenge_student WHERE challenge_student.USER_ID = (SELECT USER_ID FROM users WHERE USERNAME = ?) AND challenge.CHALLENGE_ID = challenge_student.CHALLENGE_ID) AND challenge.DIFFICULTY = ? AND challenge_type.CHALLENGE_TYPE = ? ORDER BY random()");
+            sql.setString(1, userName);
             sql.setString(2, userName);
-            sql.setString(3, cType);
+            sql.setInt(3, cDifficulty);
+            sql.setString(4, cType);
             result = sql.executeQuery();
             connection.commit();
             result.next();
@@ -389,12 +390,12 @@ public class Overview {
        }
     }
 
-   /* public static void main(String[] args) {
+    public static void main(String[] args) {
         Overview lol = new Overview();
-        ChallengeBean chall = lol.getChallenge("Addisjon", 1, "andriod");
+        ChallengeBean chall = lol.readChallenge("Addition", 1, "andriod");
         System.out.println("Oppgave: "+chall.getText()+" , riktig svar: "+chall.getCorrect());
 
-    }*/
+    }
 
 
 }//OverView
