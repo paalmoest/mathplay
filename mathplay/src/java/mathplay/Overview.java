@@ -15,6 +15,9 @@ import java.sql.SQLException;
 import java.util.*;
 import javax.faces.model.SelectItem;
 import javax.naming.InitialContext;
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
+import javax.servlet.http.*;
 
 /**
  *
@@ -216,7 +219,7 @@ public class Overview {
         }catch(SQLException e) {
             Cleanup.printMessage(e, "readUsers()");
         }
-        readTeacherUsers();
+        if (loggedInn()) readTeacherUsers();
     }
 
     /* Reads the users belonging to the teacher who is logged in */
@@ -468,7 +471,7 @@ public class Overview {
 
       return allChall;
   }
-    
+
     public void updateUserprofile(UserBean user, String password){
         openConnection();
         PreparedStatement sql = null;
@@ -551,6 +554,17 @@ public class Overview {
            Cleanup.printMessage(e, "openConnection()");
        }
     }
+
+    public boolean loggedInn() {
+		ExternalContext context
+		= FacesContext.getCurrentInstance().getExternalContext();
+		Object requestObject =  context.getRequest();
+		HttpServletRequest request = (HttpServletRequest) requestObject;
+		String loggedInnName = request.getRemoteUser();
+		System.out.println("DEBUGG_OVERVIEW_NAME :"+loggedInnName);
+		if (loggedInnName==null) return false;
+		else return true;
+	}
 
    /* public static void main(String[] args) {
         Overview lol = new Overview();
