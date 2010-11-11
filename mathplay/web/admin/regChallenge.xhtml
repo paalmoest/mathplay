@@ -18,20 +18,24 @@ and open the template in the editor.
                 <h:outputText value="HEI"></h:outputText>
                 <h:panelGrid columns="2">
                     <h:outputText value="Oppgavetekst:"/>
-                    <h:inputText value="#{RegHandler.text}" required="true"/>
+                    <h:inputText value="#{RegHandler.text}" required="false"/>
                     <h:outputText value="Svar:"/>
-                    <h:inputText value="#{RegHandler.correct}" required="true"/>
+                    <h:inputText value="#{RegHandler.correct}" required="false"/>
                     <h:outputText value="Grad:"/>
-                    <h:inputText value="#{RegHandler.difficulty}" required="true"/>
+                    <h:inputText value="#{RegHandler.difficulty}" required="false"/>
                     <h:outputText value="Oppgavetype:"/>
 
-                     <h:selectOneMenu value="#{RegHandler.type}" required="true">
+                     <h:selectOneMenu value="#{RegHandler.type}" required="false">
                      <f:selectItems value="#{RegHandler.types}"/>
                      </h:selectOneMenu>
 
-
                 </h:panelGrid>
                 <p><h:commandButton value="Registrer" action="#{RegHandler.addChallenge}" /></p>
+            </h:form>
+
+            <h:form>
+                <p><h:commandButton value="Randomize" action="#{RegHandler.randomize}" /></p>
+               
             </h:form>
         </body>
     </f:view>

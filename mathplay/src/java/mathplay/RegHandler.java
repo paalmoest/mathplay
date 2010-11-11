@@ -5,7 +5,9 @@
 
 package mathplay;
 
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Random;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 
@@ -16,8 +18,9 @@ import javax.faces.bean.SessionScoped;
 
 @ManagedBean(name = "RegHandler")
 @SessionScoped
-public class RegHandler {
+public class RegHandler implements Serializable{
 
+    private randomChallenge random = new randomChallenge();
     private ChallengeBean tempChall = new ChallengeBean();
     private int CID =0;
     private String text;
@@ -71,6 +74,15 @@ public class RegHandler {
 
      public void addChallenge(){
             overview.addChallenge(tempChall);
+     }
+
+     public String randomize(){
+         ChallengeBean cb = random.makeChallenge();
+         text = cb.getText();
+         correct = cb.getCorrect();
+         difficulty = cb.getDifficulty();
+         type = cb.getType();
+         return "regChallenge";
      }
 
 }
