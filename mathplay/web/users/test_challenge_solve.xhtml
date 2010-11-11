@@ -14,7 +14,14 @@
 	    <h:inputText id="answer" value="#{gameHandler.answer}" />
 		<h:commandButton value="submit" action="#{gameHandler.submitAnswer}"/>
 
+
+		<h:commandButton value="Logout" action="#{userBean.logout}" />
+
         </h:form>
+             <h:form>
+                <h:outputText value="#{gameHandler.tip}"/>
+                <p><h:commandButton value="TIP!" action="#{gameHandler.viewTips}" /> </p>
+            </h:form>
     </h:body>
 </html>
 

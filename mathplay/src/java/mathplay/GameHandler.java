@@ -18,6 +18,7 @@ public class GameHandler {
 	private static int levelThreeThreshold = 30;
 	private static int progressLevelThreshold = 1;
 	private int valutaSpent = 0;
+	private String tip;
 
 	// VIEW Variables
 	private ChallengeBean currentChallenge;
@@ -50,6 +51,9 @@ public class GameHandler {
 	// PROPERTY: answer
 	public String getAnswer() {return answer;}
 	public void setAnswer(String answer) {this.answer=answer;}
+
+	// PROPERTY: tip
+    public String getTip(){return tip;}
 
 	// PROPERTY: currentChallenge
 	public ChallengeBean getCurrentChallenge() {return currentChallenge;}
@@ -145,6 +149,7 @@ public class GameHandler {
 	public String progressAddition() {
 		int difficulty = getAdditionLevel();
 		if (difficulty==0) difficulty = 1;
+		tip = "";
 		currentChallenge = overview.readChallenge("Addition", difficulty, overview.getCurrentUser().getUserName());;
 		return "test_challenge_solve";
 	}
@@ -157,6 +162,7 @@ public class GameHandler {
 	public String progressSubtraction() {
 		int difficulty = getSubtractionLevel();
 		if (difficulty==0) difficulty = 1;
+		tip = "";
 		currentChallenge = overview.readChallenge("Subtraction", difficulty, overview.getCurrentUser().getUserName());
 		return "test_challenge_solve";
 	}
@@ -169,6 +175,7 @@ public class GameHandler {
 	public String progressMultiplication() {
 		int difficulty = getMultiplicationLevel();
 		if (difficulty==0) difficulty = 1;
+		tip = "";
 		currentChallenge = overview.readChallenge("Multiplication", difficulty, overview.getCurrentUser().getUserName());
 		return "test_challenge_solve";
 	}
@@ -181,6 +188,7 @@ public class GameHandler {
 	public String progressDivision() {
 		int difficulty = getDivisionLevel();
 		if (difficulty==0) difficulty = 1;
+		tip = "";
 		currentChallenge = overview.readChallenge("Division", difficulty, overview.getCurrentUser().getUserName());
 		return "test_challenge_solve";
 	}
@@ -355,4 +363,8 @@ public class GameHandler {
 		else if (score>0) return 1;
 		else return 0;
 	}
+
+	public void viewTips(){
+	            tip = overview.readTips(currentChallenge.getCID());
+    }
 }

@@ -308,6 +308,31 @@ public class Overview {
         }
     }
 
+     public String readTips(int challenge_id){
+	        String tips = "";
+	        openConnection();
+	        PreparedStatement sql = null;
+	        ResultSet result = null;
+
+	        try{
+	            connection.setAutoCommit(false);
+	            sql = connection.prepareStatement("SELECT challenge_tips FROM challenge_tips WHERE challenge_id =?");
+	            sql.setInt(1, challenge_id);//tempChallenge.getCID());
+	            result = sql.executeQuery();
+	            connection.commit();
+	            while(result.next()){
+	                tips = result.getString("challenge_tips");
+	            }
+	        }catch(SQLException e){
+	            Cleanup.printMessage(e, "readTips()");
+	        }finally{
+	            Cleanup.closeConnection(connection);
+	        }
+	        System.out.println(tips);
+	        return tips;
+
+    }
+
    public int[] readScore() {
        //select * from playerinfo where user_id = ?
        int[] score = new int[5];
@@ -328,7 +353,7 @@ public class Overview {
             Cleanup.printMessage(e, "readScore()");
         }
         return score;
-   }
+    }
 
    public int[] readUserScore(String username) {
        //select * from playerinfo where user_id = ?
@@ -383,37 +408,42 @@ public class Overview {
 
    }
 
-   public void addChallenge(ChallengeBean chall) {
-        openConnection();
-        PreparedStatement sql = null;
-        PreparedStatement sql2 = null;
-        PreparedStatement sql3 = null;
-        System.out.println("PLS 1");
-        try {
-            System.out.println(connection.getAutoCommit());
-            connection.setAutoCommit(false);
-            // Insert må oppdateres
-            sql = connection.prepareStatement("INSERT INTO challenge(challenge_TEXT, ANSWER, DIFFICULTY) VALUES (?, ?, ?)");
-            sql2 = connection.prepareStatement("INSERT INTO challenge_TYPE(challenge_TYPE) VALUES (?)");
-            sql3 = connection.prepareStatement("INSERT INTO challenge_TEACHER(USER_ID) VALUES (?)");
-            sql.setString(1,chall.getText());
-            sql.setDouble(2,chall.getCorrect());
-            sql.setInt(3,chall.getDifficulty());
-            sql2.setString(1,chall.getType());
-        // System.out.println("ID: " + getCurrentUser().getUserId());
-             sql3.setInt(1,getCurrentUser().getUserId());
-        //    System.out.println("PLS 2");
-            sql.executeUpdate();
-            connection.commit();
-            sql2.executeUpdate();
-            connection.commit();
-            sql3.executeUpdate();
-            connection.commit();
-        }catch(SQLException e) {
-            Cleanup.printMessage(e, "addChallenge()");
-        }finally {
+  public void addChallenge(ChallengeBean chall) {
+          openConnection();
+          PreparedStatement sql = null;
+          PreparedStatement sql2 = null;
+          PreparedStatement sql3 = null;
+          PreparedStatement sql4 = null;
+          System.out.println("PLS 1");
+          try {
+              System.out.println(connection.getAutoCommit());
+              connection.setAutoCommit(false);
+              // Insert må oppdateres
+              sql = connection.prepareStatement("INSERT INTO challenge(challenge_TEXT, ANSWER, DIFFICULTY) VALUES (?, ?, ?)");
+              sql2 = connection.prepareStatement("INSERT INTO challenge_TYPE(challenge_TYPE) VALUES (?)");
+              sql3 = connection.prepareStatement("INSERT INTO challenge_TEACHER(USER_ID) VALUES (?)");
+              sql4 = connection.prepareStatement("INSERT INTO challenge_TIPS(challenge_tips) VALUES (?)");
+              sql.setString(1,chall.getText());
+              sql.setDouble(2,chall.getCorrect());
+              sql.setInt(3,chall.getDifficulty());
+              sql2.setString(1,chall.getType());
+              // System.out.println("ID: " + getCurrentUser().getUserId());
+               sql3.setInt(1,getCurrentUser().getUserId());
+               sql4.setString(1, chall.getTips());
+              // System.out.println("PLS 2");
+              sql.executeUpdate();
+              connection.commit();
+              sql2.executeUpdate();
+              connection.commit();
+              sql3.executeUpdate();
+              connection.commit();
+              sql4.executeUpdate();
+              connection.commit();
+          }catch(SQLException e) {
+              Cleanup.printMessage(e, "addChallenge()");
+          }finally {
 
-        }
+          }
     }
 
     public void updateChallenge(ChallengeBean chall) {

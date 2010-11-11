@@ -55,7 +55,14 @@ public class randomChallenge {
             System.out.println("Legger til - oppgave");
         }
         else if(challType.equals("Multiplication")){
-            chall.setType(challType);   
+            if(random1 > 15 || random2 > 15){
+                int rand3 = randomGenerator.nextInt(15);
+                int rand4 = randomGenerator.nextInt(15);
+                random1 = rand3;
+                random2 = rand4;
+            }
+
+            chall.setType(challType);
             String challText = "Hva er "+random1+" * "+random2+" ?";
             chall.setText(challText);
             double challCorrect = random1 * random2;

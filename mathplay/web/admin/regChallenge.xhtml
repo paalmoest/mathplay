@@ -15,7 +15,6 @@ and open the template in the editor.
         <body>
             <h1>Her kan du registrere dine oppgaver</h1>
             <h:form>
-                <h:outputText value="HEI"></h:outputText>
                 <h:panelGrid columns="2">
                     <h:outputText value="Oppgavetekst:"/>
                     <h:inputText value="#{RegHandler.text}" required="false"/>
@@ -28,12 +27,15 @@ and open the template in the editor.
                      <h:selectOneMenu value="#{RegHandler.type}" required="false">
                      <f:selectItems value="#{RegHandler.types}"/>
                      </h:selectOneMenu>
+                    <h:outputText value="Tips:"/>
+                    <h:inputText value="#{RegHandler.tips}" required="false"/>
 
                 </h:panelGrid>
                 <p><h:commandButton value="Registrer" action="#{RegHandler.addChallenge}" /></p>
             </h:form>
 
             <h:form>
+            	<h:outputText value="Lag en ny tilfeldig oppgave:"/>
                 <p><h:commandButton value="Randomize" action="#{RegHandler.randomize}" /></p>
                
             </h:form>

@@ -27,6 +27,7 @@ public class RegHandler implements Serializable{
     private double correct;
     private int difficulty;
     private String type;
+    private String tips;
     private String[] types = {"Addition", "Subtraction", "Multiplication","Division"};
     private Overview overview = new Overview();
     private ArrayList<ChallengeBean> allChall = new ArrayList<ChallengeBean>();
@@ -49,6 +50,8 @@ public class RegHandler implements Serializable{
     public int getDifficulty() {return difficulty;}
     public void setDifficulty(int difficulty) {tempChall.setDifficulty(difficulty);}
 
+   
+
     // PROPERTY: type
 
 
@@ -59,6 +62,10 @@ public class RegHandler implements Serializable{
 
     public String getType() {return type;}
     public void setType(String type) {tempChall.setType(type);}
+
+    // PROPERTY: tips
+    public String getTips(){ return tips;}
+    public void setTips(String tips) {tempChall.setTips(tips);}
 
     /*
     * Compares if the correct answer and the users answer is equal.
@@ -71,11 +78,21 @@ public class RegHandler implements Serializable{
     public String toString() {
 		return "ID:"+CID+" - text:"+text+" - correct:"+correct+" - dif:"+difficulty+" - type:"+type;
     }
-
+    /*
+     * Adds a challenge
+     */
      public void addChallenge(){
             overview.addChallenge(tempChall);
+            //Set fields blank
+            text = "";
+            correct=0;
+            difficulty=0;
+            type = "Addition";
+            tips="";
      }
-
+     /*
+      * Makes a random challenge
+      */
      public String randomize(){
          ChallengeBean cb = random.makeChallenge();
          text = cb.getText();
@@ -84,5 +101,7 @@ public class RegHandler implements Serializable{
          type = cb.getType();
          return "regChallenge";
      }
+
+   
 
 }
