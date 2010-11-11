@@ -10,19 +10,25 @@ and open the template in the editor.
     <f:view>
         <head>
             <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-            <title>Registrer elev</title>
+            <title>Administrer dine elever</title>
         </head>
         <body>
-            <h1>Her kan du registrere dine elever</h1>
+            <h1>Her kan du administrere dine elever</h1>
             <h:form>
                 <h:panelGrid columns="2">
                     <h:outputText value="Brukernavn:"/>
                     <h:inputText value="#{UserHandler.userName}" required="true"/>
                     <h:outputText value="Navn:"/>
-                    <h:inputText value="#{UserHandler.name}" required="true"/>
-                                       
+                    <h:inputText value="#{UserHandler.name}" required="true"/>                                       
                 </h:panelGrid>
                 <p><h:commandButton value="Registrer" action="#{UserHandler.addUser}" /></p>
+               
+            </h:form>
+            <h:form>
+             <h:selectOneMenu value="#{UserHandler.deleteMe}">
+                <f:selectItems value="#{UserHandler.names}"/>
+            </h:selectOneMenu>
+            <p><h:commandButton value="Slett bruker" action="#{UserHandler.deleteUser}" /></p>
             </h:form>
         </body>
     </f:view>

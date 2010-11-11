@@ -12,7 +12,8 @@ package mathplay;
 
 import java.sql.*;
 import java.sql.SQLException;
-import java.util.ArrayList;
+import java.util.*;
+import javax.faces.model.SelectItem;
 import javax.naming.InitialContext;
 
 /**
@@ -21,9 +22,10 @@ import javax.naming.InitialContext;
  */
 public class Overview {
     private ArrayList<UserBean> allUsers = new ArrayList<UserBean>();
+    private ArrayList<UserBean> teacherUsers = new ArrayList<UserBean>();
     private ArrayList<ChallengeBean> allChall = new ArrayList<ChallengeBean>();
     private ChallengeBean tempChallenge;
-
+    private List<SelectItem> names = new ArrayList<SelectItem>();
     //Database stuff
     private String databaseDriver = "org.apache.derby.jdbc.ClientDriver";
     private Connection connection = null;
@@ -36,6 +38,14 @@ public class Overview {
 
     public ArrayList<UserBean> getAllUsers() {
         return allUsers;
+    }
+
+    public ArrayList<UserBean> getTeacherUsers() {
+        return teacherUsers;
+    }
+
+    public List<SelectItem> getNames() {
+        return names;
     }
 
      public UserBean getCurrentUser() {
@@ -51,6 +61,10 @@ public class Overview {
         PreparedStatement sql = null;
         PreparedStatement sql2 = null;
         PreparedStatement sql3 = null;
+        PreparedStatement sql4 = null;
+        ResultSet result = null;
+        Statement statement = null;
+        int userId = 0;
         System.out.println("PLS 1");
         try {
             System.out.println(connection.getAutoCommit());
@@ -77,8 +91,59 @@ public class Overview {
             sql2.executeUpdate();
             sql3.executeUpdate();
             connection.commit();
+            statement = connection.createStatement();
+            result = statement.executeQuery("SELECT user_id FROM users WHERE username ='" + user.getUserName() + "'");
+            while(result.next()) {
+                userId = result.getInt("user_id");
+                connection.commit(); //I doubt this one is really needed(autoCommit)
+            }
+            if (user.getRole().equals("user")) {
+                sql4 = connection.prepareStatement("INSERT INTO playerinfo(user_id, addition_score, subtraction_score, multiplication_score, division_score, currency_spent) VALUES(?,?,?,?,?,?)");
+                sql4.setInt(1, userId);
+                sql4.setInt(2, 0);
+                sql4.setInt(3, 0);
+                sql4.setInt(4, 0);
+                sql4.setInt(5, 0);
+                sql4.setInt(6, 0);
+            }
+            sql4.executeUpdate();
+            connection.commit();
         }catch(SQLException e) {
             Cleanup.printMessage(e, "addUser()");
+        }finally {
+           readUsers();
+        }
+    }
+
+    /** Delete user from database **/
+    public void deleteUser(UserBean user) {
+        openConnection();
+        PreparedStatement sql = null;
+        PreparedStatement sql2 = null;
+        PreparedStatement sql3 = null;
+        PreparedStatement sql4 = null;
+        PreparedStatement sql5 = null;
+        try {
+            System.out.println(connection.getAutoCommit());
+            connection.setAutoCommit(true);
+            sql = connection.prepareStatement("DELETE FROM users WHERE user_id = ?");
+            sql.setInt(1,user.getUserId());
+            sql2 = connection.prepareStatement("DELETE FROM user_roles WHERE username = ?");
+            sql2.setString(1,user.getUserName());
+            sql3 = connection.prepareStatement("DELETE FROM student_teacher WHERE username = ?");
+            sql3.setString(1,user.getUserName());
+            sql4 = connection.prepareStatement("DELETE FROM challenge_student WHERE user_id = ?");
+            sql4.setInt(1,user.getUserId());
+            sql5 = connection.prepareStatement("DELETE FROM playerinfo WHERE user_id = ?");
+            sql5.setInt(1,user.getUserId());
+            sql.executeUpdate();
+            sql2.executeUpdate();
+            sql3.executeUpdate();
+            sql4.executeUpdate();
+            sql5.executeUpdate();
+            connection.commit();
+        }catch(SQLException e) {
+            Cleanup.printMessage(e, "deleteUser()");
         }finally {
            readUsers();
         }
@@ -117,7 +182,7 @@ public class Overview {
         try {
             connection.setAutoCommit(false);
             statement = connection.createStatement();
-            result = statement.executeQuery("SELECT * FROM usertable WHERE username ='"+username+"'");
+            result = statement.executeQuery("SELECT * FROM users WHERE username ='"+username+"'");
             while(result.next()) {
                 if(username.equals(result.getString("username"))) return true;
                 connection.commit(); //I doubt this one is really needed(autoCommit)
@@ -143,7 +208,6 @@ public class Overview {
                 String tempName = result.getString("name");
                 String tempUserName = result.getString("username");
                 String tempRole = result.getString("rolename");
-
                 allUsers.add(new UserBean(tempUserId, tempName,tempUserName, tempRole));
             }
             for(int i = 0;i<allUsers.size();i++) {
@@ -152,21 +216,52 @@ public class Overview {
         }catch(SQLException e) {
             Cleanup.printMessage(e, "readUsers()");
         }
+        readTeacherUsers();
+    }
+
+    /* Reads the users belonging to the teacher who is logged in */
+    public void readTeacherUsers() {
+        openConnection();
+        teacherUsers.clear();
+        names.clear();
+        Statement statement = null;
+        PreparedStatement sql = null;
+        ResultSet result = null;
+        try {
+            connection.setAutoCommit(false);
+            sql = connection.prepareStatement("SELECT student_teacher.username, users.name, users.user_id FROM student_teacher, users WHERE student_teacher.user_id =? AND student_teacher.username = users.username");
+            sql.setInt(1, getCurrentUser().getUserId());
+            result = sql.executeQuery();
+            connection.commit();
+            while(result.next()) {
+                int tempUserId = result.getInt("user_id");
+                String tempName = result.getString("name");
+                String tempUserName = result.getString("username");
+                String tempRole = "user";
+                teacherUsers.add(new UserBean(tempUserId, tempName,tempUserName, tempRole));
+                names.add(new SelectItem(tempUserId, tempName));
+            }
+            for(int i = 0;i<teacherUsers.size();i++) {
+                System.out.println("readTeacherUsers(): " + teacherUsers.get(i).getUserName());
+            }
+        }catch(SQLException e) {
+            Cleanup.printMessage(e, "readTeacherUsers()");
+        }finally {
+            Cleanup.closeConnection(connection);
+        }
     }
 
     public ChallengeBean readChallenge(String cType, int cDifficulty, String userName) {
         openConnection();
         Statement statement = null;
         PreparedStatement sql = null;
-        ResultSet result;
+        ResultSet result = null;
         try {
             connection.setAutoCommit(false);
-            statement = connection.createStatement();
-            sql = connection.prepareStatement("SELECT * FROM challenge RIGHT JOIN challenge_teacher ON (CHALLENGE_TEACHER.CHALLENGE_ID = challenge.CHALLENGE_ID) RIGHT JOIN student_teacher ON (student_teacher.USER_ID = challenge_teacher.USER_ID) RIGHT JOIN challenge_type ON (challenge_type.CHALLENGE_ID = challenge.CHALLENGE_ID) WHERE student_teacher.USERNAME = ? AND NOT EXISTS (SELECT * FROM challenge_student WHERE challenge_student.USER_ID = (SELECT USER_ID FROM users WHERE USERNAME = ?) AND challenge.CHALLENGE_ID = challenge_student.CHALLENGE_ID) AND challenge.DIFFICULTY = ? AND challenge_type.CHALLENGE_TYPE = ? ORDER BY random()");
-            sql.setString(1, userName);
+            sql = connection.prepareStatement("select challenge.CHALLENGE_ID, challenge.CHALLENGE_TEXT, challenge.ANSWER from challenge left join challenge_teacher on challenge.challenge_id = challenge_teacher.CHALLENGE_ID left join challenge_type on (challenge.CHALLENGE_ID = challenge_type.CHALLENGE_ID) left join challenge_student on (challenge.CHALLENGE_ID = challenge_student.CHALLENGE_ID) where challenge.DIFFICULTY = ? AND challenge_teacher.USER_ID = (SELECT USER_ID FROM STUDENT_TEACHER WHERE username = ?) AND challenge_type.CHALLENGE_TYPE = ? AND CHALLENGE_STUDENT.CHALLENGE_ID IS NULL ORDER BY random()");
+            sql.setInt(1, cDifficulty);
             sql.setString(2, userName);
-            sql.setInt(3, cDifficulty);
-            sql.setString(4, cType);
+            sql.setString(3, cType);
             result = sql.executeQuery();
             connection.commit();
             result.next();
@@ -228,6 +323,29 @@ public class Overview {
             }
         }catch(SQLException e) {
             Cleanup.printMessage(e, "readScore()");
+        }
+        return score;
+   }
+
+   public int[] readUserScore(String username) {
+       //select * from playerinfo where user_id = ?
+       int[] score = new int[5];
+       openConnection();
+        allUsers.clear();
+        Statement statement = null;
+        ResultSet result = null;
+        try {
+            statement = connection.createStatement();
+            result = statement.executeQuery("SELECT * FROM playerinfo WHERE username = " + username);
+            while(result.next()) {
+                score[0] = result.getInt("addition_score");
+                score[1] = result.getInt("subtraction_score");
+                score[2] = result.getInt("multiplication_score");
+                score[3] = result.getInt("division_score");
+                score[4] = result.getInt("currency_spent");
+            }
+        }catch(SQLException e) {
+            Cleanup.printMessage(e, "readUserScore()");
         }
         return score;
    }
@@ -321,105 +439,104 @@ public class Overview {
  }
 
     public ArrayList<ChallengeBean> getAllChallenges() {
-		PreparedStatement statement1 = null;
-		ResultSet res1 = null;
-		openConnection();
-		try {
-		connection.setAutoCommit(false);
-		statement1 = connection.prepareStatement("SELECT challenge_teacher.USER_ID, challenge.CHALLENGE_ID, challenge.CHALLENGE_TEXT, challenge.ANSWER, challenge.DIFFICULTY, CHALLENGE_TYPE.CHALLENGE_TYPE FROM MATHPLAY.CHALLENGE LEFT JOIN challenge_teacher ON (challenge.CHALLENGE_ID = challenge_teacher.CHALLENGE_ID) LEFT JOIN challenge_type ON (challenge.CHALLENGE_ID = challenge_type.CHALLENGE_ID) WHERE challenge_teacher.USER_ID = ? ORDER BY challenge.CHALLENGE_ID");
-		statement1.setInt(1,getCurrentUser().getUserId());
-		res1 = statement1.executeQuery();
-		while (res1.next()) {
-			int subTid = res1.getInt("USER_ID");
-			int subCid = res1.getInt("CHALLENGE_ID");
-			String subChall_text = res1.getString("CHALLENGE_TEXT");
-			double subAnswer = res1.getDouble("ANSWER");
-			int subWor = res1.getInt("DIFFICULTY");
-			String subType = res1.getString("CHALLENGE_TYPE");
+        PreparedStatement statement1 = null;
+        ResultSet res1 = null;
+        openConnection();
+        try {
+        connection.setAutoCommit(false);
+        statement1 = connection.prepareStatement("SELECT challenge_teacher.USER_ID, challenge.CHALLENGE_ID, challenge.CHALLENGE_TEXT, challenge.ANSWER, challenge.DIFFICULTY, CHALLENGE_TYPE.CHALLENGE_TYPE FROM MATHPLAY.CHALLENGE LEFT JOIN challenge_teacher ON (challenge.CHALLENGE_ID = challenge_teacher.CHALLENGE_ID) LEFT JOIN challenge_type ON (challenge.CHALLENGE_ID = challenge_type.CHALLENGE_ID) WHERE challenge_teacher.USER_ID = ? ORDER BY challenge.CHALLENGE_ID");
+        statement1.setInt(1,getCurrentUser().getUserId());
+        res1 = statement1.executeQuery();
+        while (res1.next()) {
+                int subTid = res1.getInt("USER_ID");
+                int subCid = res1.getInt("CHALLENGE_ID");
+                String subChall_text = res1.getString("CHALLENGE_TEXT");
+                double subAnswer = res1.getDouble("ANSWER");
+                int subWor = res1.getInt("DIFFICULTY");
+                String subType = res1.getString("CHALLENGE_TYPE");
 
-			ChallengeBean chall = new ChallengeBean(subCid , subChall_text, subAnswer, subWor, subType, subTid);
+                ChallengeBean chall = new ChallengeBean(subCid , subChall_text, subAnswer, subWor, subType, subTid);
 
-			allChall.add(chall);
-			}
-		} catch (SQLException e) {
-		  System.out.println(e.toString());
+                allChall.add(chall);
+                }
+        } catch (SQLException e) {
+          System.out.println(e.toString());
 
-		} finally {
+        } finally {
 
-		}
+        }
 
-	  return allChall;
+      return allChall;
   }
+    
+    public void updateUserprofile(UserBean user, String password){
+        openConnection();
+        PreparedStatement sql = null;
 
-     public void updateUserprofile(UserBean user, String password){
-	        openConnection();
-	        PreparedStatement sql = null;
+        try{
+            System.out.println(connection.getAutoCommit());
+            connection.setAutoCommit(true);
+            sql = connection.prepareStatement("UPDATE users set password=?, name=? WHERE  user_id = "+getCurrentUser().getUserId());
 
-	        try{
-	            System.out.println(connection.getAutoCommit());
-	            connection.setAutoCommit(true);
-	            sql = connection.prepareStatement("UPDATE users set password=?, name=? WHERE  user_id = "+getCurrentUser().getUserId());
+            sql.setString(1, password);
+            sql.setString(2,user.getName());
+            System.out.println("updateProfile");
 
-	            sql.setString(1, password);
-	            sql.setString(2,user.getName());
-	            System.out.println("updateProfile");
+            sql.executeUpdate();
+            connection.commit();
 
-	            sql.executeUpdate();
-	            connection.commit();
+        }catch(SQLException e){
+            Cleanup.printMessage(e, "updateProfile");
+        }finally{
 
-	        }catch(SQLException e){
-	            Cleanup.printMessage(e, "updateProfile");
-	        }finally{
-
-	        }
+        }
 
     }
 
-	/** sortBy bestemmer hvilken sortering som skal gjøres, med følgende settings:
+	/** sortBy bestemmer hvilken sortering som skal gjÃ¸res, med fÃ¸lgende settings:
 	*	1=USERNAME, 2=ADDITION_SCORE, 3=SUBTRACTION_SCORE, 4=MULTIPLICATION_SCORE
 	*   5=DIVISION_SCORE, 6=CURRENCY_SPENT
 	*  asc bestemmer om den skal ASCEND eller DESCEND. True=ASCEND, FALSE=DESCEND.
 	*/
 	public ArrayList<UserScoresItem> userScoresItemTable(int sortBy, boolean asc) {
-		ArrayList<UserScoresItem> usi = new ArrayList<UserScoresItem>();
-		Statement statement = null;
-		ResultSet result = null;
-		openConnection();
-		try {
-			connection.setAutoCommit(false);
-			statement = connection.createStatement();
-			if (asc) {
-				if (sortBy==1) result = statement.executeQuery("select USERNAME,ADDITION_SCORE,SUBTRACTION_SCORE,MULTIPLICATION_SCORE,DIVISION_SCORE,CURRENCY_SPENT from USERS,PLAYERINFO where users.USER_ID=playerinfo.USER_ID order by USERNAME ASC");
-				else if (sortBy==2) result = statement.executeQuery("select USERNAME,ADDITION_SCORE,SUBTRACTION_SCORE,MULTIPLICATION_SCORE,DIVISION_SCORE,CURRENCY_SPENT from USERS,PLAYERINFO where users.USER_ID=playerinfo.USER_ID order by ADDITION_SCORE ASC");
-				else if (sortBy==3) result = statement.executeQuery("select USERNAME,ADDITION_SCORE,SUBTRACTION_SCORE,MULTIPLICATION_SCORE,DIVISION_SCORE,CURRENCY_SPENT from USERS,PLAYERINFO where users.USER_ID=playerinfo.USER_ID order by SUBTRACTION_SCORE ASC");
-				else if (sortBy==4) result = statement.executeQuery("select USERNAME,ADDITION_SCORE,SUBTRACTION_SCORE,MULTIPLICATION_SCORE,DIVISION_SCORE,CURRENCY_SPENT from USERS,PLAYERINFO where users.USER_ID=playerinfo.USER_ID order by MULTIPLICATION_SCORE ASC");
-				else if (sortBy==5) result = statement.executeQuery("select USERNAME,ADDITION_SCORE,SUBTRACTION_SCORE,MULTIPLICATION_SCORE,DIVISION_SCORE,CURRENCY_SPENT from USERS,PLAYERINFO where users.USER_ID=playerinfo.USER_ID order by DIVISION_SCORE ASC");
-				else result = statement.executeQuery("select USERNAME,ADDITION_SCORE,SUBTRACTION_SCORE,MULTIPLICATION_SCORE,DIVISION_SCORE,CURRENCY_SPENT from USERS,PLAYERINFO where users.USER_ID=playerinfo.USER_ID order by CURRENCY_SPENT ASC");
-			}
-			else {
-				if (sortBy==1) result = statement.executeQuery("select USERNAME,ADDITION_SCORE,SUBTRACTION_SCORE,MULTIPLICATION_SCORE,DIVISION_SCORE,CURRENCY_SPENT from USERS,PLAYERINFO where users.USER_ID=playerinfo.USER_ID order by USERNAME DESC");
-				else if (sortBy==2) result = statement.executeQuery("select USERNAME,ADDITION_SCORE,SUBTRACTION_SCORE,MULTIPLICATION_SCORE,DIVISION_SCORE,CURRENCY_SPENT from USERS,PLAYERINFO where users.USER_ID=playerinfo.USER_ID order by ADDITION_SCORE DESC");
-				else if (sortBy==3) result = statement.executeQuery("select USERNAME,ADDITION_SCORE,SUBTRACTION_SCORE,MULTIPLICATION_SCORE,DIVISION_SCORE,CURRENCY_SPENT from USERS,PLAYERINFO where users.USER_ID=playerinfo.USER_ID order by SUBTRACTION_SCORE DESC");
-				else if (sortBy==4) result = statement.executeQuery("select USERNAME,ADDITION_SCORE,SUBTRACTION_SCORE,MULTIPLICATION_SCORE,DIVISION_SCORE,CURRENCY_SPENT from USERS,PLAYERINFO where users.USER_ID=playerinfo.USER_ID order by MULTIPLICATION_SCORE DESC");
-				else if (sortBy==5) result = statement.executeQuery("select USERNAME,ADDITION_SCORE,SUBTRACTION_SCORE,MULTIPLICATION_SCORE,DIVISION_SCORE,CURRENCY_SPENT from USERS,PLAYERINFO where users.USER_ID=playerinfo.USER_ID order by DIVISION_SCORE DESC");
-				else result = statement.executeQuery("select USERNAME,ADDITION_SCORE,SUBTRACTION_SCORE,MULTIPLICATION_SCORE,DIVISION_SCORE,CURRENCY_SPENT from USERS,PLAYERINFO where users.USER_ID=playerinfo.USER_ID order by CURRENCY_SPENT DESC");
-			}
-			while (result.next()) {
-				String username = result.getString("USERNAME");
-				int addScore = result.getInt("ADDITION_SCORE");
-				int subScore = result.getInt("SUBTRACTION_SCORE");
-				int mulScore = result.getInt("MULTIPLICATION_SCORE");
-				int divScore = result.getInt("DIVISION_SCORE");
-				int curUsed = result.getInt("CURRENCY_SPENT");
-				usi.add(new UserScoresItem(username,addScore,subScore,mulScore,divScore,curUsed));
-			}
-		} catch (SQLException e) {
-		  System.out.println(e.toString());
-		} finally {
-		}
-		return usi;
-	}
-
+            ArrayList<UserScoresItem> usi = new ArrayList<UserScoresItem>();
+            Statement statement = null;
+            ResultSet result = null;
+            openConnection();
+            try {
+                connection.setAutoCommit(false);
+                statement = connection.createStatement();
+                if (asc) {
+                    if (sortBy==1) result = statement.executeQuery("select USERNAME,ADDITION_SCORE,SUBTRACTION_SCORE,MULTIPLICATION_SCORE,DIVISION_SCORE,CURRENCY_SPENT from USERS,PLAYERINFO where users.USER_ID=playerinfo.USER_ID order by USERNAME ASC");
+                    else if (sortBy==2) result = statement.executeQuery("select USERNAME,ADDITION_SCORE,SUBTRACTION_SCORE,MULTIPLICATION_SCORE,DIVISION_SCORE,CURRENCY_SPENT from USERS,PLAYERINFO where users.USER_ID=playerinfo.USER_ID order by ADDITION_SCORE ASC");
+                    else if (sortBy==3) result = statement.executeQuery("select USERNAME,ADDITION_SCORE,SUBTRACTION_SCORE,MULTIPLICATION_SCORE,DIVISION_SCORE,CURRENCY_SPENT from USERS,PLAYERINFO where users.USER_ID=playerinfo.USER_ID order by SUBTRACTION_SCORE ASC");
+                    else if (sortBy==4) result = statement.executeQuery("select USERNAME,ADDITION_SCORE,SUBTRACTION_SCORE,MULTIPLICATION_SCORE,DIVISION_SCORE,CURRENCY_SPENT from USERS,PLAYERINFO where users.USER_ID=playerinfo.USER_ID order by MULTIPLICATION_SCORE ASC");
+                    else if (sortBy==5) result = statement.executeQuery("select USERNAME,ADDITION_SCORE,SUBTRACTION_SCORE,MULTIPLICATION_SCORE,DIVISION_SCORE,CURRENCY_SPENT from USERS,PLAYERINFO where users.USER_ID=playerinfo.USER_ID order by DIVISION_SCORE ASC");
+                    else result = statement.executeQuery("select USERNAME,ADDITION_SCORE,SUBTRACTION_SCORE,MULTIPLICATION_SCORE,DIVISION_SCORE,CURRENCY_SPENT from USERS,PLAYERINFO where users.USER_ID=playerinfo.USER_ID order by CURRENCY_SPENT ASC");
+                }
+                else {
+                    if (sortBy==1) result = statement.executeQuery("select USERNAME,ADDITION_SCORE,SUBTRACTION_SCORE,MULTIPLICATION_SCORE,DIVISION_SCORE,CURRENCY_SPENT from USERS,PLAYERINFO where users.USER_ID=playerinfo.USER_ID order by USERNAME DESC");
+                    else if (sortBy==2) result = statement.executeQuery("select USERNAME,ADDITION_SCORE,SUBTRACTION_SCORE,MULTIPLICATION_SCORE,DIVISION_SCORE,CURRENCY_SPENT from USERS,PLAYERINFO where users.USER_ID=playerinfo.USER_ID order by ADDITION_SCORE DESC");
+                    else if (sortBy==3) result = statement.executeQuery("select USERNAME,ADDITION_SCORE,SUBTRACTION_SCORE,MULTIPLICATION_SCORE,DIVISION_SCORE,CURRENCY_SPENT from USERS,PLAYERINFO where users.USER_ID=playerinfo.USER_ID order by SUBTRACTION_SCORE DESC");
+                    else if (sortBy==4) result = statement.executeQuery("select USERNAME,ADDITION_SCORE,SUBTRACTION_SCORE,MULTIPLICATION_SCORE,DIVISION_SCORE,CURRENCY_SPENT from USERS,PLAYERINFO where users.USER_ID=playerinfo.USER_ID order by MULTIPLICATION_SCORE DESC");
+                    else if (sortBy==5) result = statement.executeQuery("select USERNAME,ADDITION_SCORE,SUBTRACTION_SCORE,MULTIPLICATION_SCORE,DIVISION_SCORE,CURRENCY_SPENT from USERS,PLAYERINFO where users.USER_ID=playerinfo.USER_ID order by DIVISION_SCORE DESC");
+                    else result = statement.executeQuery("select USERNAME,ADDITION_SCORE,SUBTRACTION_SCORE,MULTIPLICATION_SCORE,DIVISION_SCORE,CURRENCY_SPENT from USERS,PLAYERINFO where users.USER_ID=playerinfo.USER_ID order by CURRENCY_SPENT DESC");
+                }
+                while (result.next()) {
+                    String username = result.getString("USERNAME");
+                    int addScore = result.getInt("ADDITION_SCORE");
+                    int subScore = result.getInt("SUBTRACTION_SCORE");
+                    int mulScore = result.getInt("MULTIPLICATION_SCORE");
+                    int divScore = result.getInt("DIVISION_SCORE");
+                    int curUsed = result.getInt("CURRENCY_SPENT");
+                    usi.add(new UserScoresItem(username,addScore,subScore,mulScore,divScore,curUsed));
+                }
+            } catch (SQLException e) {
+              System.out.println(e.toString());
+            } finally {
+        }
+        return usi;
+    }
 
     /** Opens a connection to the database */
     public void openConnection() {
@@ -435,12 +552,12 @@ public class Overview {
        }
     }
 
-    public static void main(String[] args) {
+   /* public static void main(String[] args) {
         Overview lol = new Overview();
-        ChallengeBean chall = lol.readChallenge("Addition", 1, "andriod");
+        ChallengeBean chall = lol.getChallenge("Addisjon", 1, "andriod");
         System.out.println("Oppgave: "+chall.getText()+" , riktig svar: "+chall.getCorrect());
 
-    }
+    }*/
 
 
 }//OverView
