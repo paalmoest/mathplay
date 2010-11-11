@@ -1,0 +1,72 @@
+ACHIEVEMENTS
+
+
+Addisjon
+[Addisjon Major]
+Du har løst 10 addisjonoppgaver		10 points
+[Addisjon Oberst]
+Du har løst 25 addisjonoppgaver		10 points
+[Addisjon Brigader]
+Du har løst 50 addisjonoppgaver		10 points
+[Addisjon General]
+Du har løst 100 addisjonoppgaver	10 points
+
+Subtraksjon
+[Subtraksjon Major]
+Du har løst 10 subtraksjonoppgaver	10 points
+[Subtraksjon Oberst]
+Du har løst 25 subtraksjonoppgaver	10 points
+[Subtraksjon Brigader]
+Du har løst 50 subtraksjonoppgaver	10 points
+[Subtraksjon General]
+Du har løst 100 subtraksjonoppgaver	10 points
+
+Multiplikasjon
+[Multiplikasjon Major]
+Du har løst 10 multiplikasjonoppgaver	10 points
+[Multiplikasjon Oberst]
+Du har løst 25 multiplikasjonoppgaver	10 points
+[Multiplikasjon Brigader]
+Du har løst 50 multiplikasjonoppgaver	10 points
+[Multiplikasjon General]
+Du har løst 100 multiplikasjonoppgaver	10 points
+
+Divisjon
+[Divisjon Major]
+Du har løst 10 divisjonoppgaver		10 points
+[Divisjon Oberst]
+Du har løst 25 divisjonoppgaver		10 points
+[Divisjon Brigader]
+Du har løst 50 divisjonoppgaver		10 points
+[Divisjon General]
+Du har løst 100 divisjonoppgaver	10 points
+
+Diverse
+[Under opplæring]
+Du har løst 1 oppgave			10 points
+[Kvalifisert for action]
+Du har åpnet et nytt rom		10 points
+[For lett]
+Du har løst 10, grad 1 oppgaver		10 points
+[Grad 2, hva er det?]
+Du har løst 10, grad 2 oppgaver		10 points
+[Hører jeg ungdomskolen?]
+Du har løst 10, grad 3 oppgaver		10 points
+[Zen Major]
+Du har løst 10 av hver regneart		20 points
+[Zen Oberst]
+Du har løst 25 av hver regneart		20 points
+[Zen Brigader]
+Du har løst 50 av hver regneart		20 points
+[Zen General]
+Du har løst 100 av hver regneart	20 points
+[10 på rad]
+Du har løst 10 oppgaver på rad		10 points
+[25 på rad]
+Du har løst 25 oppgaver på rad		25 points
+[50 på rad]
+Du har løst 50 oppgaver på rad		50 points
+[100 på rad]
+Du har løst 100 oppgaver på rad		100 points
+[Ferdig utlært]
+Gjort alle achievements	(355/355)		
