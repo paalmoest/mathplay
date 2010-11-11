@@ -104,6 +104,7 @@ ALTER TABLE playerinfo ADD CONSTRAINT playerinfo_fk1 FOREIGN KEY(user_id) REFERE
 --INSERTS--
 --Legger til brukere--
 INSERT INTO USERS (USERNAME, PASSWORD, NAME) VALUES ('stian', 'hei', 'Stian Sorebo');
+INSERT INTO USERS (USERNAME, PASSWORD, NAME) VALUES ('rivertz', 'hei', 'Hans Jakob Rivertz');
 INSERT INTO USERS (USERNAME, PASSWORD, NAME) VALUES ('andriod', 'noob', 'Andrej Skog');
 INSERT INTO USERS (USERNAME, PASSWORD, NAME) VALUES ('tomcat', 'tomcat','TOMCATZ CATZ');
 --Lager roller--
@@ -112,6 +113,7 @@ INSERT INTO ROLES (ROLENAME) VALUES ('user');
 INSERT INTO ROLES (ROLENAME) VALUES ('manager');
 --Binder brukere til roller--
 INSERT INTO USER_ROLES (USERNAME, ROLENAME)VALUES ('stian', 'admin');
+INSERT INTO USER_ROLES (USERNAME, ROLENAME)VALUES ('rivertz', 'admin');
 INSERT INTO USER_ROLES (USERNAME, ROLENAME)VALUES ('andriod', 'user');
 INSERT INTO USER_ROLES (USERNAME, ROLENAME)VALUES ('tomcat', 'manager');
 --Lager oppgavetyper--

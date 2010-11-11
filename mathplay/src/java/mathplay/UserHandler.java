@@ -72,13 +72,6 @@ public class UserHandler {
         System.out.println("Slett: " + tempUser.getName());
         overview.deleteUser(tempUser);
         deleteMe = 0;
-        tempUser = null;
     }
-
-    /*public void generateList() {
-        for (int i = 0; i < allUsers.size(); i++) {
-            names.add(new SelectItem(allUsers.get(i).getUserName() , allUsers.get(i).getName()));
-        }
-    }*/
 
 }

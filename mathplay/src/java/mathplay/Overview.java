@@ -136,11 +136,11 @@ public class Overview {
             sql4.setInt(1,user.getUserId());
             sql5 = connection.prepareStatement("DELETE FROM playerinfo WHERE user_id = ?");
             sql5.setInt(1,user.getUserId());
-            sql.executeUpdate();
+            sql5.executeUpdate();
             sql2.executeUpdate();
             sql3.executeUpdate();
             sql4.executeUpdate();
-            sql5.executeUpdate();
+            sql.executeUpdate();
             connection.commit();
         }catch(SQLException e) {
             Cleanup.printMessage(e, "deleteUser()");
