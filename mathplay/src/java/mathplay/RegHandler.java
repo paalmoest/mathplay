@@ -99,6 +99,7 @@ public class RegHandler implements Serializable{
          correct = cb.getCorrect();
          difficulty = cb.getDifficulty();
          type = cb.getType();
+         tips = cb.getTips();
          return "regChallenge";
      }
 
