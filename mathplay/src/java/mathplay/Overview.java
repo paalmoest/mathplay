@@ -530,46 +530,103 @@ public class Overview {
 	*	1=USERNAME, 2=ADDITION_SCORE, 3=SUBTRACTION_SCORE, 4=MULTIPLICATION_SCORE
 	*   5=DIVISION_SCORE, 6=CURRENCY_SPENT
 	*  asc bestemmer om den skal ASCEND eller DESCEND. True=ASCEND, FALSE=DESCEND.
+	*  teacherID bestemmer hvilken lærers spilllere som skal listes, 0=alle.
 	*/
-	public ArrayList<UserScoresItem> userScoresItemTable(int sortBy, boolean asc) {
+	public ArrayList<UserScoresItem> userScoresItemTable(boolean status, int sortBy, boolean asc) {
             ArrayList<UserScoresItem> usi = new ArrayList<UserScoresItem>();
-            Statement statement = null;
+            PreparedStatement statement = null;
             ResultSet result = null;
             openConnection();
             try {
                 connection.setAutoCommit(false);
-                statement = connection.createStatement();
-                if (asc) {
-                    if (sortBy==1) result = statement.executeQuery("select USERNAME,ADDITION_SCORE,SUBTRACTION_SCORE,MULTIPLICATION_SCORE,DIVISION_SCORE,CURRENCY_SPENT from USERS,PLAYERINFO where users.USER_ID=playerinfo.USER_ID order by USERNAME ASC");
-                    else if (sortBy==2) result = statement.executeQuery("select USERNAME,ADDITION_SCORE,SUBTRACTION_SCORE,MULTIPLICATION_SCORE,DIVISION_SCORE,CURRENCY_SPENT from USERS,PLAYERINFO where users.USER_ID=playerinfo.USER_ID order by ADDITION_SCORE ASC");
-                    else if (sortBy==3) result = statement.executeQuery("select USERNAME,ADDITION_SCORE,SUBTRACTION_SCORE,MULTIPLICATION_SCORE,DIVISION_SCORE,CURRENCY_SPENT from USERS,PLAYERINFO where users.USER_ID=playerinfo.USER_ID order by SUBTRACTION_SCORE ASC");
-                    else if (sortBy==4) result = statement.executeQuery("select USERNAME,ADDITION_SCORE,SUBTRACTION_SCORE,MULTIPLICATION_SCORE,DIVISION_SCORE,CURRENCY_SPENT from USERS,PLAYERINFO where users.USER_ID=playerinfo.USER_ID order by MULTIPLICATION_SCORE ASC");
-                    else if (sortBy==5) result = statement.executeQuery("select USERNAME,ADDITION_SCORE,SUBTRACTION_SCORE,MULTIPLICATION_SCORE,DIVISION_SCORE,CURRENCY_SPENT from USERS,PLAYERINFO where users.USER_ID=playerinfo.USER_ID order by DIVISION_SCORE ASC");
-                    else result = statement.executeQuery("select USERNAME,ADDITION_SCORE,SUBTRACTION_SCORE,MULTIPLICATION_SCORE,DIVISION_SCORE,CURRENCY_SPENT from USERS,PLAYERINFO where users.USER_ID=playerinfo.USER_ID order by CURRENCY_SPENT ASC");
-                }
-                else {
-                    if (sortBy==1) result = statement.executeQuery("select USERNAME,ADDITION_SCORE,SUBTRACTION_SCORE,MULTIPLICATION_SCORE,DIVISION_SCORE,CURRENCY_SPENT from USERS,PLAYERINFO where users.USER_ID=playerinfo.USER_ID order by USERNAME DESC");
-                    else if (sortBy==2) result = statement.executeQuery("select USERNAME,ADDITION_SCORE,SUBTRACTION_SCORE,MULTIPLICATION_SCORE,DIVISION_SCORE,CURRENCY_SPENT from USERS,PLAYERINFO where users.USER_ID=playerinfo.USER_ID order by ADDITION_SCORE DESC");
-                    else if (sortBy==3) result = statement.executeQuery("select USERNAME,ADDITION_SCORE,SUBTRACTION_SCORE,MULTIPLICATION_SCORE,DIVISION_SCORE,CURRENCY_SPENT from USERS,PLAYERINFO where users.USER_ID=playerinfo.USER_ID order by SUBTRACTION_SCORE DESC");
-                    else if (sortBy==4) result = statement.executeQuery("select USERNAME,ADDITION_SCORE,SUBTRACTION_SCORE,MULTIPLICATION_SCORE,DIVISION_SCORE,CURRENCY_SPENT from USERS,PLAYERINFO where users.USER_ID=playerinfo.USER_ID order by MULTIPLICATION_SCORE DESC");
-                    else if (sortBy==5) result = statement.executeQuery("select USERNAME,ADDITION_SCORE,SUBTRACTION_SCORE,MULTIPLICATION_SCORE,DIVISION_SCORE,CURRENCY_SPENT from USERS,PLAYERINFO where users.USER_ID=playerinfo.USER_ID order by DIVISION_SCORE DESC");
-                    else result = statement.executeQuery("select USERNAME,ADDITION_SCORE,SUBTRACTION_SCORE,MULTIPLICATION_SCORE,DIVISION_SCORE,CURRENCY_SPENT from USERS,PLAYERINFO where users.USER_ID=playerinfo.USER_ID order by CURRENCY_SPENT DESC");
-                }
+                if (status) {
+					int teacherID = getCurrentUser().getUserId();
+					result = getUsiResult(teacherID,sortBy,asc);
+				}
+				else result = getUsiResult(sortBy,asc);
                 while (result.next()) {
                     String username = result.getString("USERNAME");
+                    String item_name = result.getString("NAME");
                     int addScore = result.getInt("ADDITION_SCORE");
                     int subScore = result.getInt("SUBTRACTION_SCORE");
                     int mulScore = result.getInt("MULTIPLICATION_SCORE");
                     int divScore = result.getInt("DIVISION_SCORE");
                     int curUsed = result.getInt("CURRENCY_SPENT");
-                    usi.add(new UserScoresItem(username,addScore,subScore,mulScore,divScore,curUsed));
+                    usi.add(new UserScoresItem(username,item_name, addScore,subScore,mulScore,divScore,curUsed));
                 }
             } catch (SQLException e) {
-              System.out.println(e.toString());
+              Cleanup.printMessage(e, "userScoresItemTable()");
             } finally {
-        }
+        	}
         return usi;
     }
+
+	/** Undermetode til userScoresItemTable
+	* Returnerer bare en bestemt lærers spillere.
+	*/
+    private ResultSet getUsiResult(int teacherID, int sortBy, boolean asc) {
+		try {
+			PreparedStatement statement;
+			if (asc) {
+				if (sortBy==1) statement = connection.prepareStatement("select users.USERNAME,users.NAME,ADDITION_SCORE,SUBTRACTION_SCORE,MULTIPLICATION_SCORE,DIVISION_SCORE,CURRENCY_SPENT from USERS,PLAYERINFO,STUDENT_TEACHER where users.USER_ID=playerinfo.USER_ID AND users.USERNAME=student_teacher.USERNAME AND student_teacher.user_id=? order by USERNAME DESC");
+				else if (sortBy==2) statement = connection.prepareStatement("select users.USERNAME,users.NAME,ADDITION_SCORE,SUBTRACTION_SCORE,MULTIPLICATION_SCORE,DIVISION_SCORE,CURRENCY_SPENT from USERS,PLAYERINFO,STUDENT_TEACHER where users.USER_ID=playerinfo.USER_ID AND users.USERNAME=student_teacher.USERNAME AND student_teacher.user_id=? order by ADDITION_SCORE ASC");
+				else if (sortBy==3) statement = connection.prepareStatement("select users.USERNAME,users.NAME,ADDITION_SCORE,SUBTRACTION_SCORE,MULTIPLICATION_SCORE,DIVISION_SCORE,CURRENCY_SPENT from USERS,PLAYERINFO,STUDENT_TEACHER where users.USER_ID=playerinfo.USER_ID AND users.USERNAME=student_teacher.USERNAME AND student_teacher.user_id=? order by SUBTRACTION_SCORE ASC");
+				else if (sortBy==4) statement = connection.prepareStatement("select users.USERNAME,users.NAME,ADDITION_SCORE,SUBTRACTION_SCORE,MULTIPLICATION_SCORE,DIVISION_SCORE,CURRENCY_SPENT from USERS,PLAYERINFO,STUDENT_TEACHER where users.USER_ID=playerinfo.USER_ID AND users.USERNAME=student_teacher.USERNAME AND student_teacher.user_id=? order by MULTIPLICATION_SCORE ASC");
+				else if (sortBy==5) statement = connection.prepareStatement("select users.USERNAME,users.NAME,ADDITION_SCORE,SUBTRACTION_SCORE,MULTIPLICATION_SCORE,DIVISION_SCORE,CURRENCY_SPENT from USERS,PLAYERINFO,STUDENT_TEACHER where users.USER_ID=playerinfo.USER_ID AND users.USERNAME=student_teacher.USERNAME AND student_teacher.user_id=? order by DIVISION_SCORE ASC");
+				else if (sortBy==6) statement = connection.prepareStatement("select users.USERNAME,users.NAME,ADDITION_SCORE,SUBTRACTION_SCORE,MULTIPLICATION_SCORE,DIVISION_SCORE,CURRENCY_SPENT from USERS,PLAYERINFO,STUDENT_TEACHER where users.USER_ID=playerinfo.USER_ID AND users.USERNAME=student_teacher.USERNAME AND student_teacher.user_id=? order by CURRENCY_SPENT ASC");
+				else statement = connection.prepareStatement("select users.USERNAME,users.NAME,ADDITION_SCORE,SUBTRACTION_SCORE,MULTIPLICATION_SCORE,DIVISION_SCORE,CURRENCY_SPENT from USERS,PLAYERINFO,STUDENT_TEACHER where users.USER_ID=playerinfo.USER_ID AND users.USERNAME=student_teacher.USERNAME AND student_teacher.user_id=? order by NAME DESC");
+			}
+			else {
+				if (sortBy==1) statement = connection.prepareStatement("select users.USERNAME,users.NAME,ADDITION_SCORE,SUBTRACTION_SCORE,MULTIPLICATION_SCORE,DIVISION_SCORE,CURRENCY_SPENT from USERS,PLAYERINFO,STUDENT_TEACHER where users.USER_ID=playerinfo.USER_ID AND users.USERNAME=student_teacher.USERNAME AND student_teacher.user_id=? order by USERNAME ASC");
+				else if (sortBy==2) statement = connection.prepareStatement("select users.USERNAME,users.NAME,ADDITION_SCORE,SUBTRACTION_SCORE,MULTIPLICATION_SCORE,DIVISION_SCORE,CURRENCY_SPENT from USERS,PLAYERINFO,STUDENT_TEACHER where users.USER_ID=playerinfo.USER_ID AND users.USERNAME=student_teacher.USERNAME AND student_teacher.user_id=? order by ADDITION_SCORE DESC");
+				else if (sortBy==3) statement = connection.prepareStatement("select users.USERNAME,users.NAME,ADDITION_SCORE,SUBTRACTION_SCORE,MULTIPLICATION_SCORE,DIVISION_SCORE,CURRENCY_SPENT from USERS,PLAYERINFO,STUDENT_TEACHER where users.USER_ID=playerinfo.USER_ID AND users.USERNAME=student_teacher.USERNAME AND student_teacher.user_id=? order by SUBTRACTION_SCORE DESC");
+				else if (sortBy==4) statement = connection.prepareStatement("select users.USERNAME,users.NAME,ADDITION_SCORE,SUBTRACTION_SCORE,MULTIPLICATION_SCORE,DIVISION_SCORE,CURRENCY_SPENT from USERS,PLAYERINFO,STUDENT_TEACHER where users.USER_ID=playerinfo.USER_ID AND users.USERNAME=student_teacher.USERNAME AND student_teacher.user_id=? order by MULTIPLICATION_SCORE DESC");
+				else if (sortBy==5) statement = connection.prepareStatement("select users.USERNAME,users.NAME,ADDITION_SCORE,SUBTRACTION_SCORE,MULTIPLICATION_SCORE,DIVISION_SCORE,CURRENCY_SPENT from USERS,PLAYERINFO,STUDENT_TEACHER where users.USER_ID=playerinfo.USER_ID AND users.USERNAME=student_teacher.USERNAME AND student_teacher.user_id=? order by DIVISION_SCORE DESC");
+				else if (sortBy==6) statement = connection.prepareStatement("select users.USERNAME,users.NAME,ADDITION_SCORE,SUBTRACTION_SCORE,MULTIPLICATION_SCORE,DIVISION_SCORE,CURRENCY_SPENT from USERS,PLAYERINFO,STUDENT_TEACHER where users.USER_ID=playerinfo.USER_ID AND users.USERNAME=student_teacher.USERNAME AND student_teacher.user_id=? order by CURRENCY_SPENT DESC");
+				else statement = connection.prepareStatement("select users.USERNAME,users.NAME,ADDITION_SCORE,SUBTRACTION_SCORE,MULTIPLICATION_SCORE,DIVISION_SCORE,CURRENCY_SPENT from USERS,PLAYERINFO,STUDENT_TEACHER where users.USER_ID=playerinfo.USER_ID AND users.USERNAME=student_teacher.USERNAME AND student_teacher.user_id=? order by NAME ASC");
+			}
+			statement.setInt(1,teacherID);
+			ResultSet result = statement.executeQuery();
+			return result; // Will always be returned
+		} catch (SQLException e) {
+		  Cleanup.printMessage(e, "getUsiStatement1()");
+		} finally {
+		}
+		return null; // Will never be returned
+	}
+
+	/**
+	* Vill returner alle spillere
+	*/
+    private ResultSet getUsiResult(int sortBy, boolean asc) {
+		try {
+			Statement statement = connection.createStatement();
+			ResultSet result;
+			if (asc) {
+				if (sortBy==1) result = statement.executeQuery("select users.USERNAME,NAME,ADDITION_SCORE,SUBTRACTION_SCORE,MULTIPLICATION_SCORE,DIVISION_SCORE,CURRENCY_SPENT from USERS,PLAYERINFO,USER_ROLES where users.USER_ID=playerinfo.USER_ID AND rolename='user' AND users.USERNAME=user_roles.USERNAME order by USERNAME DESC");
+				else if (sortBy==2) result = statement.executeQuery("select users.USERNAME,NAME,ADDITION_SCORE,SUBTRACTION_SCORE,MULTIPLICATION_SCORE,DIVISION_SCORE,CURRENCY_SPENT from USERS,PLAYERINFO,USER_ROLES where users.USER_ID=playerinfo.USER_ID AND rolename='user' AND users.USERNAME=user_roles.USERNAME order by ADDITION_SCORE ASC");
+				else if (sortBy==3) result = statement.executeQuery("select users.USERNAME,NAME,ADDITION_SCORE,SUBTRACTION_SCORE,MULTIPLICATION_SCORE,DIVISION_SCORE,CURRENCY_SPENT from USERS,PLAYERINFO,USER_ROLES where users.USER_ID=playerinfo.USER_ID AND rolename='user' AND users.USERNAME=user_roles.USERNAME order by SUBTRACTION_SCORE ASC");
+				else if (sortBy==4) result = statement.executeQuery("select users.USERNAME,NAME,ADDITION_SCORE,SUBTRACTION_SCORE,MULTIPLICATION_SCORE,DIVISION_SCORE,CURRENCY_SPENT from USERS,PLAYERINFO,USER_ROLES where users.USER_ID=playerinfo.USER_ID AND rolename='user' AND users.USERNAME=user_roles.USERNAME order by MULTIPLICATION_SCORE ASC");
+				else if (sortBy==5) result = statement.executeQuery("select users.USERNAME,NAME,ADDITION_SCORE,SUBTRACTION_SCORE,MULTIPLICATION_SCORE,DIVISION_SCORE,CURRENCY_SPENT from USERS,PLAYERINFO,USER_ROLES where users.USER_ID=playerinfo.USER_ID AND rolename='user' AND users.USERNAME=user_roles.USERNAME order by DIVISION_SCORE ASC");
+				else if (sortBy==6) result = statement.executeQuery("select users.USERNAME,NAME,ADDITION_SCORE,SUBTRACTION_SCORE,MULTIPLICATION_SCORE,DIVISION_SCORE,CURRENCY_SPENT from USERS,PLAYERINFO,USER_ROLES where users.USER_ID=playerinfo.USER_ID AND rolename='user' AND users.USERNAME=user_roles.USERNAME order by CURRENCY_SPENT ASC");
+				else result = statement.executeQuery("select users.USERNAME,NAME,ADDITION_SCORE,SUBTRACTION_SCORE,MULTIPLICATION_SCORE,DIVISION_SCORE,CURRENCY_SPENT from USERS,PLAYERINFO,USER_ROLES where users.USER_ID=playerinfo.USER_ID AND rolename='user' AND users.USERNAME=user_roles.USERNAME order by NAME DESC");
+			}
+			else {
+				if (sortBy==1) result = statement.executeQuery("select users.USERNAME,NAME,ADDITION_SCORE,SUBTRACTION_SCORE,MULTIPLICATION_SCORE,DIVISION_SCORE,CURRENCY_SPENT from USERS,PLAYERINFO,USER_ROLES where users.USER_ID=playerinfo.USER_ID AND rolename='user' AND users.USERNAME=user_roles.USERNAME order by USERNAME ASC");
+				else if (sortBy==2) result = statement.executeQuery("select users.USERNAME,NAME,ADDITION_SCORE,SUBTRACTION_SCORE,MULTIPLICATION_SCORE,DIVISION_SCORE,CURRENCY_SPENT from USERS,PLAYERINFO,USER_ROLES where users.USER_ID=playerinfo.USER_ID AND rolename='user' AND users.USERNAME=user_roles.USERNAME order by ADDITION_SCORE DESC");
+				else if (sortBy==3) result = statement.executeQuery("select users.USERNAME,NAME,ADDITION_SCORE,SUBTRACTION_SCORE,MULTIPLICATION_SCORE,DIVISION_SCORE,CURRENCY_SPENT from USERS,PLAYERINFO,USER_ROLES where users.USER_ID=playerinfo.USER_ID AND rolename='user' AND users.USERNAME=user_roles.USERNAME order by SUBTRACTION_SCORE DESC");
+				else if (sortBy==4) result = statement.executeQuery("select users.USERNAME,NAME,ADDITION_SCORE,SUBTRACTION_SCORE,MULTIPLICATION_SCORE,DIVISION_SCORE,CURRENCY_SPENT from USERS,PLAYERINFO,USER_ROLES where users.USER_ID=playerinfo.USER_ID AND rolename='user' AND users.USERNAME=user_roles.USERNAME order by MULTIPLICATION_SCORE DESC");
+				else if (sortBy==5) result = statement.executeQuery("select users.USERNAME,NAME,ADDITION_SCORE,SUBTRACTION_SCORE,MULTIPLICATION_SCORE,DIVISION_SCORE,CURRENCY_SPENT from USERS,PLAYERINFO,USER_ROLES where users.USER_ID=playerinfo.USER_ID AND rolename='user' AND users.USERNAME=user_roles.USERNAME order by DIVISION_SCORE DESC");
+				else if (sortBy==6) result = statement.executeQuery("select users.USERNAME,NAME,ADDITION_SCORE,SUBTRACTION_SCORE,MULTIPLICATION_SCORE,DIVISION_SCORE,CURRENCY_SPENT from USERS,PLAYERINFO,USER_ROLES where users.USER_ID=playerinfo.USER_ID AND rolename='user' AND users.USERNAME=user_roles.USERNAME order by CURRENCY_SPENT DESC");
+				else result = statement.executeQuery("select users.USERNAME,NAME,ADDITION_SCORE,SUBTRACTION_SCORE,MULTIPLICATION_SCORE,DIVISION_SCORE,CURRENCY_SPENT from USERS,PLAYERINFO,USER_ROLES where users.USER_ID=playerinfo.USER_ID AND rolename='user' AND users.USERNAME=user_roles.USERNAME order by NAME ASC");
+			}
+			return result; // Will always be returned
+		} catch (SQLException e) {
+		  Cleanup.printMessage(e, "getUsiStatement2()");
+		} finally {
+		}
+		return null; // Will never be returned
+	}
 
     /** Opens a connection to the database */
     public void openConnection() {
