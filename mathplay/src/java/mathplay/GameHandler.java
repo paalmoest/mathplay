@@ -318,7 +318,9 @@ public class GameHandler {
 		else return 0;
 	}
 
-	public void viewTips(){
-	            tip = overview.readTips(currentChallenge.getCID());
+	private void viewTips(){
+		tip = overview.readTips(currentChallenge.getCID());
+		valutaSpent += tipPrize;
+		updateScore();
     }
 }
