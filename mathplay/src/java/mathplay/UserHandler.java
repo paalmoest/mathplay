@@ -29,13 +29,13 @@ public class UserHandler {
 
     public UserHandler() {
     }
-   
+
     public String getName() {return name;}
     public void setName(String name) {this.name = name; tempUser.setName(name);}
-    
+
     public String getUserName() {return userName;}
     public void setUserName(String userName) {this.userName = userName; tempUser.setUserName(userName);}
-      
+
     public String getRole() {return role;}
     public void setRole(String role) {this.role = role; tempUser.setRole(role);}
 
@@ -62,7 +62,7 @@ public class UserHandler {
         for (int i = 0; i < teacherUsers.size(); i++) {
             if (deleteMe == teacherUsers.get(i).getUserId()) {
                 tempUser = teacherUsers.get(i);
-            }            
+            }
         }
         for (int i = 0; i < names.size(); i++) {
             if (deleteMe == names.get(i).getValue()) {
@@ -72,6 +72,9 @@ public class UserHandler {
         System.out.println("Slett: " + tempUser.getName());
         overview.deleteUser(tempUser);
         deleteMe = 0;
+    }
+     public void updateUser(){
+	        overview.updateUserprofile(tempUser, password);
     }
 
 }
