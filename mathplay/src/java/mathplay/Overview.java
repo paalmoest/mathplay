@@ -267,13 +267,13 @@ public class Overview {
             sql.setString(3, cType);
             result = sql.executeQuery();
             connection.commit();
-            result.next();
-            int tempCID = result.getInt("CHALLENGE_ID");
-            //int tempCID = 2;
-            String tempText = result.getString("challenge_text") ;
-            double tempCorrect = result.getDouble("answer");
-
-            tempChallenge = new ChallengeBean(tempCID, tempText, tempCorrect, cDifficulty, cType);
+            if(result.next()) {
+				int tempCID = result.getInt("CHALLENGE_ID");
+			    String tempText = result.getString("challenge_text") ;
+			    double tempCorrect = result.getDouble("answer");
+			    tempChallenge = new ChallengeBean(tempCID, tempText, tempCorrect, cDifficulty, cType);
+			}
+            else tempChallenge = new ChallengeBean(-1, "ingen oppgave tilgjengelig", 1, 1, "Addition");
         }catch(SQLException e) {
             Cleanup.printMessage(e, "readChallenge()");
         }

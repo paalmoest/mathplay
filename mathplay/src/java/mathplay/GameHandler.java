@@ -150,7 +150,8 @@ public class GameHandler {
 		int difficulty = getAdditionLevel();
 		if (difficulty==0) difficulty = 1;
 		tip = "";
-		currentChallenge = overview.readChallenge("Addition", difficulty, overview.getCurrentUser().getUserName());;
+		currentChallenge = overview.readChallenge("Addition", difficulty, overview.getCurrentUser().getUserName());
+		if(currentChallenge.getCID()==-1)return "no_challenge";
 		return "test_challenge_solve";
 	}
 
@@ -164,6 +165,7 @@ public class GameHandler {
 		if (difficulty==0) difficulty = 1;
 		tip = "";
 		currentChallenge = overview.readChallenge("Subtraction", difficulty, overview.getCurrentUser().getUserName());
+		if(currentChallenge.getCID()==-1)return "no_challenge";
 		return "test_challenge_solve";
 	}
 
@@ -177,6 +179,7 @@ public class GameHandler {
 		if (difficulty==0) difficulty = 1;
 		tip = "";
 		currentChallenge = overview.readChallenge("Multiplication", difficulty, overview.getCurrentUser().getUserName());
+		if(currentChallenge.getCID()==-1)return "no_challenge";
 		return "test_challenge_solve";
 	}
 
@@ -190,6 +193,7 @@ public class GameHandler {
 		if (difficulty==0) difficulty = 1;
 		tip = "";
 		currentChallenge = overview.readChallenge("Division", difficulty, overview.getCurrentUser().getUserName());
+		if(currentChallenge.getCID()==-1)return "no_challenge";
 		return "test_challenge_solve";
 	}
 
