@@ -8,6 +8,8 @@ public class UserScoresItem {
 	private static int progressLevelThreshold = 1;
 
 	private String username;
+	private String name;
+	private String combinedName;
 	private int addScore;
 	private int subScore;
 	private int mulScore;
@@ -21,8 +23,10 @@ public class UserScoresItem {
 	private int totalScore;
 	private double avgLevel;
 
-	public UserScoresItem(String username, int addScore, int subScore, int mulScore, int divScore, int curUsed) {
+	public UserScoresItem(String username, String name, int addScore, int subScore, int mulScore, int divScore, int curUsed) {
 		this.username = username;
+		this.name = name;
+		combinedName = combineName();
 		this.addScore = addScore;
 		this.subScore = subScore;
 		this.mulScore = mulScore;
@@ -38,6 +42,8 @@ public class UserScoresItem {
 	}
 
 	public String getUsername() {return username;}
+	public String getName() {return name;}
+	public String getCombinedName() {return combinedName;}
 	public int getAddScore() {return addScore;}
 	public int getSubScore() {return subScore;}
 	public int getMulScore() {return mulScore;}
@@ -58,7 +64,7 @@ public class UserScoresItem {
 		else return 0;
 	}
 
-	public int getValuta() {
+	private int getValuta() {
 		int newValuta = 0;
 		newValuta += addScore*2;
 		newValuta += subScore*3;
@@ -66,6 +72,16 @@ public class UserScoresItem {
 		newValuta += divScore*5;
 		newValuta -= curUsed;
 		return newValuta;
+	}
+
+	private String combineName() {
+		String[] split = name.split(" ");
+
+		String cn = split[0] + " '" + username + "' ";
+		for (int i=1; i<split.length;i++) {
+			cn += split[i] + " ";
+		}
+		return cn;
 	}
 
 }

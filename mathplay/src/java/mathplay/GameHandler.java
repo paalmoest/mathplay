@@ -300,56 +300,6 @@ public class GameHandler {
 		answer="";
 	}
 
-	// ************** METHODS RELEVANT TO GENEREATING TOPPLIST   **************
-
-	boolean ascend = true;
-	ArrayList<UserScoresItem> usi;
-
-	// PROPERTY: usi
-	public ArrayList<UserScoresItem> getUsi() {return usi;}
-
-
-	public String sortByUsername() {
-		if (ascend) ascend = false;
-		else ascend = true;
-		usi = overview.userScoresItemTable(1,ascend);
-		return "toppList";
-	}
-
-	public String sortByAdd() {
-		if (ascend) ascend = false;
-		else ascend = true;
-		usi = overview.userScoresItemTable(2,ascend);
-		return "toppList";
-	}
-
-	public String sortBySub() {
-		if (ascend) ascend = false;
-		else ascend = true;
-		usi = overview.userScoresItemTable(3,ascend);
-		return "toppList";
-	}
-
-	public String sortByMul() {
-		if (ascend) ascend = false;
-		else ascend = true;
-		usi = overview.userScoresItemTable(4,ascend);
-		return "toppList";
-	}
-
-	public String sortByDiv() {
-		if (ascend) ascend = false;
-		else ascend = true;
-		usi = overview.userScoresItemTable(5,ascend);
-		return "toppList";
-	}
-
-	public String sortByCurSpent() {
-		if (ascend) ascend = false;
-		else ascend = true;
-		usi = overview.userScoresItemTable(6,ascend);
-		return "toppList";
-	}
 
 	// ************** INTERNAL METHODS **************
 
