@@ -1,5 +1,5 @@
 
-package mathplay;
+
 
 public class UserScoresItem {
 

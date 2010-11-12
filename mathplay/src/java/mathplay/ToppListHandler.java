@@ -1,4 +1,4 @@
-package mathplay;
+
 
 import java.util.ArrayList;
 import javax.faces.bean.ManagedBean;
@@ -14,7 +14,7 @@ public class ToppListHandler {
 	boolean ascend = false;
 	ArrayList<UserScoresItem> usi;
 	String lastSorted = "";
-	private boolean status = false; // Variabel som beskriver om dette er en statusutskrift for en bestemt lærer.
+	private boolean status = false; // Variabel som beskriver om dette er en statusutskrift for en bestemt lï¿½rer.
 
 	public ToppListHandler() {
 	}
@@ -24,7 +24,7 @@ public class ToppListHandler {
 	public ArrayList<UserScoresItem> getUsi() {return usi;}
 
 	public boolean getDummySortMethod_STATUS() {
-		if (!xhtml_page.equals("listYourUsers")) { // Sjekker om metoden er kjørt allerede
+		if (!xhtml_page.equals("listYourUsers")) { // Sjekker om metoden er kjï¿½rt allerede
 			System.out.println("DEBUGG_ToppListHandler_INNI_DUMMY_STATUS");
 			status = true;
 			ascend = toAscend("username");
@@ -35,7 +35,7 @@ public class ToppListHandler {
 	}
 
 	public boolean getDummySortMethod_TOPPLIST() {
-		if (!xhtml_page.equals("toppList")) { // Sjekker om metoden er kjørt allerede
+		if (!xhtml_page.equals("toppList")) { // Sjekker om metoden er kjï¿½rt allerede
 		System.out.println("DEBUGG_ToppListHandler_INNI_DUMMY_TOPPLIST");
 			status = false;
 			ascend = toAscend("username");

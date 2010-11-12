@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-package mathplay;
+
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -28,9 +28,11 @@ public class RegHandler implements Serializable{
     private int difficulty;
     private String type;
     private String tips;
+    private boolean show;
     private String[] types = {"Addition", "Subtraction", "Multiplication","Division"};
     private Overview overview = new Overview();
     private ArrayList<ChallengeBean> allChall = new ArrayList<ChallengeBean>();
+    private ArrayList<ChallengeBean> temp = new ArrayList<ChallengeBean>();
 
     public RegHandler() {
     }
@@ -103,6 +105,50 @@ public class RegHandler implements Serializable{
          return "regChallenge";
      }
 
+      public String showAllChall() {
+         temp = overview.getAllChallenges();
+         return "allChall";
+     }
+
+
+
+
+     public ArrayList<ChallengeBean> getAllChall(){
+            return temp;
    
+    }
+
+
+
+
+     public void update() {
+               show(true);
+     }
+     public void updateChall() {
+             show(false);
+
+               for(int i=0; i < temp.size();){
+               allChall.add(temp.get(i));
+
+
+            i++;
+        }
+        for (ChallengeBean chall : allChall) {
+
+            System.out.println(chall);
+           // chall.setText("TEST");
+            overview.updateChallenge(chall);
+         }
+
+        allChall.clear();
+       }
+
+     public void show(boolean show){
+         this.show = show;
+     }
+
+     public boolean isShow(){
+         return show;
+     }
 
 }

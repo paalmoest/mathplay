@@ -8,7 +8,7 @@
 *************************************************************************
 **/
 
-package mathplay;
+
 
 import java.sql.*;
 import java.sql.SQLException;
@@ -449,21 +449,26 @@ public class Overview {
     public void updateChallenge(ChallengeBean chall) {
       openConnection();
       PreparedStatement sqlupdateCha = null;
+      PreparedStatement sqlupdateCha1 = null;
 
       String text = chall.getText();
       double correct = chall.getCorrect();
       int difficulty = chall.getDifficulty();
       int chall_id = chall.getCID();
-
+      String tips = chall.getTips();
 
       try {
           connection.setAutoCommit(false);
           sqlupdateCha = connection.prepareStatement("UPDATE challenge set challenge_TEXT=?, ANSWER=?, DIFFICULTY=? WHERE challenge_id = ?");
+          sqlupdateCha1 = connection.prepareStatement("UPDATE challenge_tips set CHALLENGE_TIPS=? WHERE challenge_id = ?");
           sqlupdateCha.setString(1, text);
           sqlupdateCha.setDouble(2, correct);
           sqlupdateCha.setInt(3, difficulty);
           sqlupdateCha.setInt(4, chall_id);
+          sqlupdateCha1.setString(1, tips);
+          sqlupdateCha1.setInt(2, chall_id);
           sqlupdateCha.executeUpdate();
+          sqlupdateCha1.executeUpdate();
           connection.commit();
         } catch (SQLException e) {
 	 Cleanup.printMessage(e, "addChallenge()");
@@ -471,35 +476,37 @@ public class Overview {
    }
  }
 
-    public ArrayList<ChallengeBean> getAllChallenges() {
-        PreparedStatement statement1 = null;
-        ResultSet res1 = null;
-        openConnection();
-        try {
-        connection.setAutoCommit(false);
-        statement1 = connection.prepareStatement("SELECT challenge_teacher.USER_ID, challenge.CHALLENGE_ID, challenge.CHALLENGE_TEXT, challenge.ANSWER, challenge.DIFFICULTY, CHALLENGE_TYPE.CHALLENGE_TYPE FROM MATHPLAY.CHALLENGE LEFT JOIN challenge_teacher ON (challenge.CHALLENGE_ID = challenge_teacher.CHALLENGE_ID) LEFT JOIN challenge_type ON (challenge.CHALLENGE_ID = challenge_type.CHALLENGE_ID) WHERE challenge_teacher.USER_ID = ? ORDER BY challenge.CHALLENGE_ID");
-        statement1.setInt(1,getCurrentUser().getUserId());
-        res1 = statement1.executeQuery();
-        while (res1.next()) {
+     public ArrayList<ChallengeBean> getAllChallenges() {
+    PreparedStatement statement1 = null;
+    ResultSet res1 = null;
+    allChall.clear();
+
+    openConnection();
+	try {
+	connection.setAutoCommit(false);
+        statement1 = connection.prepareStatement("SELECT challenge_teacher.USER_ID, challenge.CHALLENGE_ID, challenge.CHALLENGE_TEXT, challenge.ANSWER, challenge.DIFFICULTY, CHALLENGE_TYPE.CHALLENGE_TYPE, CHALLENGE_TIPS.CHALLENGE_TIPS FROM MATHPLAY.CHALLENGE LEFT JOIN challenge_teacher ON (challenge.CHALLENGE_ID = challenge_teacher.CHALLENGE_ID) LEFT JOIN challenge_type ON (challenge.CHALLENGE_ID = challenge_type.CHALLENGE_ID)LEFT JOIN CHALLENGE_TIPS ON (challenge.CHALLENGE_ID = CHALLENGE_TIPS.CHALLENGE_ID) WHERE challenge_teacher.USER_ID = ? ORDER BY challenge_type.CHALLENGE_TYPE, challenge.DIFFICULTY");
+   	statement1.setInt(1,getCurrentUser().getUserId());
+	res1 = statement1.executeQuery();
+	while (res1.next()) {
                 int subTid = res1.getInt("USER_ID");
-                int subCid = res1.getInt("CHALLENGE_ID");
-                String subChall_text = res1.getString("CHALLENGE_TEXT");
-                double subAnswer = res1.getDouble("ANSWER");
-                int subWor = res1.getInt("DIFFICULTY");
+		int subCid = res1.getInt("CHALLENGE_ID");
+		String subChall_text = res1.getString("CHALLENGE_TEXT");
+		double subAnswer = res1.getDouble("ANSWER");
+		int subWor = res1.getInt("DIFFICULTY");
                 String subType = res1.getString("CHALLENGE_TYPE");
-
-                ChallengeBean chall = new ChallengeBean(subCid , subChall_text, subAnswer, subWor, subType, subTid);
-
+                String subTip = res1.getString("CHALLENGE_TIPS");
+                ChallengeBean chall = new ChallengeBean(subCid , subChall_text, subAnswer, subWor, subType, subTid, subTip);
                 allChall.add(chall);
-                }
-        } catch (SQLException e) {
-          System.out.println(e.toString());
-
-        } finally {
-
         }
+	} catch (SQLException e) {
+	  System.out.println(e.toString());
 
-      return allChall;
+	} finally {
+
+	}
+
+ return allChall;
+
   }
 
     public void updateUserprofile(UserBean user, String password){

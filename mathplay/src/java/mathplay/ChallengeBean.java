@@ -2,7 +2,7 @@
 * This class represent one challenge. What type of operation the challenge is in
 * is represented by the important "TYPE" string variable.
 */
-package mathplay;
+
 
 
 public class ChallengeBean {
@@ -38,13 +38,14 @@ public class ChallengeBean {
         }
 
 	/** Constructor */
-	public ChallengeBean(int CID, String text, double correct, int difficulty, String type, int teacherId) {
+	public ChallengeBean(int CID, String text, double correct, int difficulty, String type, int teacherId, String tips) {
 		this.CID = CID;
 		this.text = text;
 		this.correct = correct;
 		this.difficulty = difficulty;
 		this.type = type;
                 this.teacherId = teacherId;
+                this.tips = tips;
 	}
 
         public ChallengeBean() {};

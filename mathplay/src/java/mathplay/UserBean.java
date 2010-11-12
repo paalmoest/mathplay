@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-package mathplay;
+
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.ExternalContext;

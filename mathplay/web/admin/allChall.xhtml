@@ -1,12 +1,60 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="http://java.sun.com/jsf/html">
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
     <h:head>
-        <title>Facelet Title</title>
+        <title>Oppgaver</title>
     </h:head>
     <h:body>
-        Hello from Facelets
+        <h:form id ="form">
+            <h:panelGroup id="wrapper">
+
+                <h:commandButton value="Endre oppgaver" action="#{RegHandler.update}" rendered="#{not RegHandler.show}" >
+                    <f:ajax render="min" />
+                    <f:ajax render="wrapper" />
+                </h:commandButton>
+                <h:commandButton value="Lagre" action="#{RegHandler.updateChall}" rendered="#{RegHandler.show}" >
+                <!--    <f:ajax render="min" />
+                    <f:ajax render="wrapper" /> -->
+                </h:commandButton>
+
+
+                <h:dataTable  id="min" value="#{RegHandler.allChall}" var ="c" border="1">
+                    <h:column>
+                        <f:facet name="header">Oppgave nummer</f:facet>
+                        #{c.CID}
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">Oppgave tekst</f:facet>
+                        <h:inputText value="#{c.text}" size="20" rendered="#{RegHandler.show}" />
+                        <h:outputText value="#{c.text}" rendered="#{not RegHandler.show}" />
+
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">Oppgave tips</f:facet>
+                        <h:inputText value="#{c.tips}"  rendered="#{RegHandler.show}" />
+                        <h:outputText value="#{c.tips}" rendered="#{not RegHandler.show}" />
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">Svar</f:facet>
+                        <h:inputText value="#{c.correct}" size="20" rendered="#{RegHandler.show}" />
+                        <h:outputText value="#{c.correct}" rendered="#{not RegHandler.show}" />
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">Vanskelighetsgrad</f:facet>
+                        <h:inputText value="#{c.difficulty}" size="20" rendered="#{RegHandler.show}" />
+                        <h:outputText value="#{c.difficulty}" rendered="#{not RegHandler.show}" />
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">Oppgave type</f:facet>
+                        #{c.type}
+                    </h:column>
+                </h:dataTable>
+         </h:panelGroup>
+        </h:form>
     </h:body>
 </html>
 
