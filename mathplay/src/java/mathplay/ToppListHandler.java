@@ -9,7 +9,7 @@ import java.util.*;
 @SessionScoped
 public class ToppListHandler {
 
-	private String xhtml_page;
+	private String xhtml_page = "";
 	private Overview overview = new Overview();
 	boolean ascend = false;
 	ArrayList<UserScoresItem> usi;
@@ -23,6 +23,28 @@ public class ToppListHandler {
 	// PROPERTY: usi
 	public ArrayList<UserScoresItem> getUsi() {return usi;}
 
+	public boolean getDummySortMethod_STATUS() {
+		if (!xhtml_page.equals("listYourUsers")) { // Sjekker om metoden er kjørt allerede
+			System.out.println("DEBUGG_ToppListHandler_INNI_DUMMY_STATUS");
+			status = true;
+			ascend = toAscend("username");
+			usi = overview.userScoresItemTable(status,1,ascend);
+			xhtml_page = "listYourUsers";
+		}
+		return false;
+	}
+
+	public boolean getDummySortMethod_TOPPLIST() {
+		if (!xhtml_page.equals("toppList")) { // Sjekker om metoden er kjørt allerede
+		System.out.println("DEBUGG_ToppListHandler_INNI_DUMMY_TOPPLIST");
+			status = false;
+			ascend = toAscend("username");
+			usi = overview.userScoresItemTable(status,1,ascend);
+			xhtml_page = "toppList";
+		}
+		return false;
+	}
+
 
 	//**** ALLL SORTING METHODS ******
 	//********************************
@@ -31,14 +53,12 @@ public class ToppListHandler {
 		status = true;
 		ascend = toAscend("username");
 		usi = overview.userScoresItemTable(status,1,ascend);
-		xhtml_page = "listYourUsers";
 		return xhtml_page;
 	}
 
 	public String topplistSort() {
 		ascend = toAscend("username");
 		usi = overview.userScoresItemTable(status,1,ascend);
-		xhtml_page = "toppList";
 		return xhtml_page;
 	}
 

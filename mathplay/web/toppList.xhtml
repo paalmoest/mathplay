@@ -16,6 +16,9 @@ and open the template in the editor.
             <h1>Toppliste</h1>
 
             <h:form>
+
+            <h:outputText value= "Triggerfelt" rendered="#{toppListHandler.dummySortMethod_TOPPLIST}" />
+
 			<h:dataTable value="#{toppListHandler.usi}" var="item">
 
 				<h:column>
