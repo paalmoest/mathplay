@@ -6,22 +6,9 @@
         <title>Superadmin - Mathplay</title>
     </h:head>
     <h:body>
-    <h1>Her kan du legge til lÃ¦rere</h1>
-        <h:form>
-            <h:panelGrid columns="2">
-                <h:outputText value="Brukernavn:"/>
-                <h:inputText value="#{UserHandler.userName}" required="true"/>
-                <h:outputText value="Passord:"/>
-                <h:inputSecret value="#{UserHandler.password}" required="true"/>
-                <h:outputText value="Navn:"/>
-                <h:inputText value="#{UserHandler.name}" required="true"/>
-            </h:panelGrid>
-            <p><h:commandButton value="Registrer" action="#{UserHandler.addAdmin}" /></p>
-            <h:messages />
-
-        </h:form>
     	<h:form id="index">
                 <h1>Superadmin is ze chief</h1>
+                 <li><a href="/mathplay/faces/superadmin/addTeacher.xhtml">Legg til Lærer</a></li>
 		<br/>
 		<h:commandButton value="Logout" action="#{userBean.logout}"/>
 	</h:form>
