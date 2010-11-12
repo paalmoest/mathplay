@@ -39,7 +39,7 @@ public class UserHandler {
     public String getRole() {return role;}
     public void setRole(String role) {this.role = role; tempUser.setRole(role);}
 
-	public Strubg getPassword(){return password;}
+	public String getPassword(){return password;}
     public void setPassword(String password) {this.password = password;}
 
     public List<SelectItem> getNames() {return overview.getNames();}
