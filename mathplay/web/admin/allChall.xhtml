@@ -35,7 +35,7 @@
 
                     <h:column>
                         <f:facet name="header">Oppgave tips</f:facet>
-                        <h:inputText value="#{c.tips}"  rendered="#{RegHandler.show}" />
+                        <h:inputText value="#{c.tips}" size="30" rendered="#{RegHandler.show}" />
                         <h:outputText value="#{c.tips}" rendered="#{not RegHandler.show}" />
                     </h:column>
                     <h:column>
@@ -45,8 +45,7 @@
                     </h:column>
                     <h:column>
                         <f:facet name="header">Vanskelighetsgrad</f:facet>
-                        <h:inputText value="#{c.difficulty}" size="20" rendered="#{RegHandler.show}" />
-                        <h:outputText value="#{c.difficulty}" rendered="#{not RegHandler.show}" />
+                        #{c.difficulty}
                     </h:column>
                     <h:column>
                         <f:facet name="header">Oppgave type</f:facet>
