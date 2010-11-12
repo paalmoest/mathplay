@@ -60,62 +60,59 @@ public class Overview {
     }
     /** Adds a user to the database */
     public void addUser(UserBean user, String password) {
-        openConnection();
-        PreparedStatement sql = null;
-        PreparedStatement sql2 = null;
-        PreparedStatement sql3 = null;
-        PreparedStatement sql4 = null;
-        ResultSet result = null;
-        Statement statement = null;
-        int userId = 0;
-        System.out.println("PLS 1");
-        try {
-            System.out.println(connection.getAutoCommit());
-            connection.setAutoCommit(true);
-            sql = connection.prepareStatement("INSERT INTO users(username, password, name) VALUES (?, ?, ?)");
-            sql.setString(1,user.getUserName());
-            sql.setString(2,password);
-            //sql.setString(3,user.getRole());
-            sql.setString(3,user.getName());
-            System.out.println("PLS 2");
+		openConnection();
+		PreparedStatement sql = null;
+		PreparedStatement sql2 = null;
+		PreparedStatement sql3 = null;
+		PreparedStatement sql4 = null;
+		ResultSet result = null;
+		Statement statement = null;
+		int userId = 0;
+		System.out.println("PLS 1");
+		try {
+			System.out.println(connection.getAutoCommit());
+			connection.setAutoCommit(true);
+			sql = connection.prepareStatement("INSERT INTO users(username, password, name) VALUES (?, ?, ?)");
+			sql.setString(1,user.getUserName());
+			sql.setString(2,password);
+			//sql.setString(3,user.getRole());
+			sql.setString(3,user.getName());
+			System.out.println("PLS 2");
 
-            //Sets user role(Need to upgrade to become admin)
-            sql2 = connection.prepareStatement("INSERT INTO user_roles(username, rolename) VALUES(?, ?)");
-            sql2.setString(1,user.getUserName());
-            System.out.println(user.getRole());
-            sql2.setString(2,user.getRole());
-
-
-            sql3 = connection.prepareStatement("INSERT INTO student_teacher(user_id, username) VALUES(?,?)");
-            sql3.setInt(1,getCurrentUser().getUserId());
-            sql3.setString(2, user.getUserName());
-
-            sql.executeUpdate();
-            sql2.executeUpdate();
-            sql3.executeUpdate();
-            connection.commit();
-            statement = connection.createStatement();
-            result = statement.executeQuery("SELECT user_id FROM users WHERE username ='" + user.getUserName() + "'");
-            while(result.next()) {
-                userId = result.getInt("user_id");
-                connection.commit(); //I doubt this one is really needed(autoCommit)
-            }
-            if (user.getRole().equals("user")) {
-                sql4 = connection.prepareStatement("INSERT INTO playerinfo(user_id, addition_score, subtraction_score, multiplication_score, division_score, currency_spent) VALUES(?,?,?,?,?,?)");
-                sql4.setInt(1, userId);
-                sql4.setInt(2, 0);
-                sql4.setInt(3, 0);
-                sql4.setInt(4, 0);
-                sql4.setInt(5, 0);
-                sql4.setInt(6, 0);
-            }
-            sql4.executeUpdate();
-            connection.commit();
-        }catch(SQLException e) {
-            Cleanup.printMessage(e, "addUser()");
-        }finally {
-           readUsers();
-        }
+			//Sets user role(Need to upgrade to become admin)
+			sql2 = connection.prepareStatement("INSERT INTO user_roles(username, rolename) VALUES(?, ?)");
+			sql2.setString(1,user.getUserName());
+			System.out.println(user.getRole());
+			sql2.setString(2,user.getRole());
+			sql.executeUpdate();
+			sql2.executeUpdate();
+			connection.commit();
+			statement = connection.createStatement();
+			result = statement.executeQuery("SELECT user_id FROM users WHERE username ='" + user.getUserName() + "'");
+			while(result.next()) {
+				userId = result.getInt("user_id");
+				connection.commit(); //I doubt this one is really needed(autoCommit)
+			}
+			if (user.getRole().equals("user")) {
+				sql3 = connection.prepareStatement("INSERT INTO student_teacher(user_id, username) VALUES(?,?)");
+				sql3.setInt(1,getCurrentUser().getUserId());
+				sql3.setString(2, user.getUserName());
+				sql4 = connection.prepareStatement("INSERT INTO playerinfo(user_id, addition_score, subtraction_score, multiplication_score, division_score, currency_spent) VALUES(?,?,?,?,?,?)");
+				sql4.setInt(1, userId);
+				sql4.setInt(2, 0);
+				sql4.setInt(3, 0);
+				sql4.setInt(4, 0);
+				sql4.setInt(5, 0);
+				sql4.setInt(6, 0);
+				sql3.executeUpdate();
+				sql4.executeUpdate();
+			}
+			connection.commit();
+		}catch(SQLException e) {
+			Cleanup.printMessage(e, "addUser()");
+		}finally {
+		   readUsers();
+		}
     }
 
     /** Delete user from database **/

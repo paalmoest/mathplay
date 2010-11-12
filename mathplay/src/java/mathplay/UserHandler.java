@@ -9,6 +9,8 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import java.util.*;
 import javax.faces.model.SelectItem;
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
 /**
  *
  * @author Bertie
@@ -49,13 +51,24 @@ public class UserHandler {
 
     /** Add a pupil, used by admins/tutors */
     public void addUser() {
-        tempUser.setRole("user");
-        overview.addUser(tempUser, "lolmann");
+        if (overview.checkUser(tempUser.getUserName())) {
+            FacesMessage fm = new FacesMessage("Brukernavnet finnes allerede ditt N?PSKRELL!!!!!!!11");
+            FacesContext.getCurrentInstance().addMessage("Brukernavnet finnes allerede ditt N?PSKRELL!!!!!!!11", fm);
+        } else {
+            tempUser.setRole("user");
+            overview.addUser(tempUser, "lolmann");
+        }
+
     }
     /** Add an admin/tutor, used by super admin */
     public void addAdmin() {
-        tempUser.setRole("admin");
-        overview.addUser(tempUser, "lolmann");
+        if (overview.checkUser(tempUser.getUserName())) {
+            FacesMessage fm = new FacesMessage("Brukernavnet finnes allerede ditt N?PSKRELL!!!!!!!11");
+            FacesContext.getCurrentInstance().addMessage("Brukernavnet finnes allerede ditt N?PSKRELL!!!!!!!11", fm);
+        } else {
+            tempUser.setRole("admin");
+            overview.addUser(tempUser, password);
+        }
     }
 
     /** Deletes a user from the database **/
