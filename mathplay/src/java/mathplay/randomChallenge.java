@@ -33,8 +33,8 @@ public class randomChallenge {
         double random1 = rand1;
         double random2 = rand2;
 
-       
-        if(challType.equals("Addition")){       
+
+        if(challType.equals("Addition")){
             chall.setType(challType);
             String challText = "Hva er "+random1+" + "+random2+" ?";
             chall.setText(challText);
@@ -80,9 +80,9 @@ public class randomChallenge {
             chall.setText(challText);
             double challCorrect = random1 * random2;
             chall.setCorrect(challCorrect);
-            if(random1 <=10 && random2 <= 10)chall.setDifficulty(1);
-            else if(random1 <=50 && random2 <= 50 )chall.setDifficulty(2);
-            else if(random1 <= 100 && random2 <= 100)chall.setDifficulty(3);
+            if(random1 <=5 && random2 <= 5)chall.setDifficulty(1);
+			else if(random1 <=10 && random2 <= 10 )chall.setDifficulty(2);
+            else if(random1 <= 15 && random2 <= 15)chall.setDifficulty(3);
             tip1=random1-1;
             if(tip1 == 0)tip1 +=1;
             tip2=random2+1;
@@ -105,7 +105,7 @@ public class randomChallenge {
             chall.setCorrect(challCorrect);
             if(random1 <=10 && random2 <= 10)chall.setDifficulty(1);
             else if(random1 <= 50 && random2 <= 50)chall.setDifficulty(2);
-            else if(random1 <= 100 && random2 <= 100)chall.setDifficulty(3);            
+            else if(random1 <= 100 && random2 <= 100)chall.setDifficulty(3);
             tip1=random1*2;
             tip2=random2*2;
             tipSum = tip1/tip2;
@@ -116,7 +116,7 @@ public class randomChallenge {
         else{
             System.out.println("fail");
         }
-        
+
         return chall;
 
     }
