@@ -21,6 +21,7 @@ and open the template in the editor.
                     <h:outputText value="Navn:"/>
                     <h:inputText value="#{UserHandler.name}" required="true"/>                                       
                 </h:panelGrid>
+                <h:messages />
                 <p><h:commandButton value="Registrer" action="#{UserHandler.addUser}" /></p>
                
             </h:form>

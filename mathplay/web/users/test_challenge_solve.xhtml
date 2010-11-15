@@ -13,7 +13,7 @@
 	    <h:outputText id="oppgaveText" value="#{gameHandler.currentChallenge.text}" />
 	    <h:inputText id="answer" value="#{gameHandler.answer}" />
 		<h:commandButton value="submit" action="#{gameHandler.submitAnswer}"/>
-
+		<h:messages />
 
 		<h:commandButton value="Logout" action="#{userBean.logout}" />
 

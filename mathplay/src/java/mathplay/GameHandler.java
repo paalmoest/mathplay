@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.Random;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
 
 @ManagedBean(name="gameHandler")
 @SessionScoped
@@ -197,13 +199,23 @@ public class GameHandler {
 	* Method used by the view to submit his answer
 	*/
 	public String submitAnswer() {
-		String type = currentChallenge.getType();
-		if (type.equals("Addition")) submitAddition();
-		else if (type.equals("Subtraction")) submitSubtraction();
-		else if (type.equals("Multiplication")) submitMultiplication();
-		else if (type.equals("Division")) submitDivision();
-		else return "challenge_error";
-		return "test_challenge";
+		if (answer.equals("")) {
+			FacesMessage fm = new FacesMessage("Skriv inn svaret ditt før du trykker, din IDIOT!!");
+			FacesContext.getCurrentInstance().addMessage("Skriv inn svaret ditt før du trykker, din IDIOT!!", fm);
+			return "noob";
+		} else if (!isParsableToDouble(answer)) {
+			FacesMessage fm = new FacesMessage("Det der er ikke et tall, din innavla nordlending");
+			FacesContext.getCurrentInstance().addMessage("Det der er ikke et tall, din innavla nordlending", fm);
+			return "noob";
+		} else {
+			String type = currentChallenge.getType();
+			if (type.equals("Addition")) submitAddition();
+			else if (type.equals("Subtraction")) submitSubtraction();
+			else if (type.equals("Multiplication")) submitMultiplication();
+			else if (type.equals("Division")) submitDivision();
+			else return "challenge_error";
+			return "test_challenge";
+		}
 	}
 
 	/*
@@ -312,9 +324,19 @@ public class GameHandler {
 		else return 0;
 	}
 
-	private void viewTips(){
+	public void viewTips(){
 		tip = overview.readTips(currentChallenge.getCID());
 		valutaSpent += tipPrize;
 		updateScore();
     }
+
+    private boolean isParsableToDouble(String i) {
+		try {
+			Double.parseDouble(i);
+			return true;
+		}
+		catch(NumberFormatException nfe) {
+			return false;
+		}
+	}
 }
