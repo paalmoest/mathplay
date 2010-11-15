@@ -595,9 +595,9 @@ public class Overview {
 			ResultSet result = statement.executeQuery();
 			return result; // Will always be returned
 		} catch (SQLException e) {
-			Cleanup.printMessage(e, "getUsiStatement1()");
+			Cleanup.printMessage(e, "getUsiResult(1)");
 		} finally {
-			Cleanup.closeConnection(connection);
+			// DO NOT CLOSE CONNECTION
 		}
 		return null; // Will never be returned
 	}
@@ -629,9 +629,9 @@ public class Overview {
 			}
 			return result; // Will always be returned
 		} catch (SQLException e) {
-			Cleanup.printMessage(e, "getUsiStatement2()");
+			Cleanup.printMessage(e, "getUsiResult(2)");
 		} finally {
-			Cleanup.closeConnection(connection);
+			// DO NOT CLOSE CONNECTION
 		}
 		return null; // Will never be returned
 	}
@@ -666,7 +666,7 @@ public class Overview {
 		}catch(SQLException e) {
 			Cleanup.printMessage(e, "getYourTeacherID()");
 		} finally {
-			Cleanup.closeConnection(connection);
+			// DO NOT CLOSE CONNECTION
 		}
 		return 0;
 	}
