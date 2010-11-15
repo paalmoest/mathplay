@@ -19,7 +19,7 @@ public class GameHandler {
 	private static int levelTwoThreshold = 10;
 	private static int levelThreeThreshold = 30;
 	private static int progressLevelThreshold = 1;
-	private static int scoreGainFactor = 2;
+	private static int scoreGainFactor = 1;
 	private static int tipPrize = 1;
 
 	// OBJECT VARIABLES
@@ -147,7 +147,8 @@ public class GameHandler {
 		score[2] = multiplicationScore;
 		score[3] = divisionScore;
 		score[4] = valutaSpent;
-        overview.changeScore(score);
+		if (getValuta()<0) resetUser();
+		else overview.changeScore(score);
 	}
 
 
@@ -270,8 +271,8 @@ public class GameHandler {
 		else {
 			subtractionScore -= dif; // Formula for removing score
 			lastCorrect = false;
-                        updateScore();
-                        overview.changeScore(score);
+			updateScore();
+			overview.changeScore(score);
 		}
 		resetValues();
 	}
@@ -292,7 +293,7 @@ public class GameHandler {
 		else {
 			multiplicationScore -= dif; // Formula for removing score
 			lastCorrect = false;
-                        updateScore();
+            updateScore();
 		}
 		resetValues();
 	}
@@ -314,30 +315,10 @@ public class GameHandler {
 		else {
 			divisionScore -= dif; // Formula for removing score
 			lastCorrect = false;
-                        updateScore();
-                        overview.changeScore(score);
+			updateScore();
+			overview.changeScore(score);
 		}
 		resetValues();
-	}
-
-	// ************** INTERNAL METHODS **************
-
-	/*
-	* Reset all challenge values, starting on a cleen sheet for the next one.
-	*/
-	private void resetValues() {
-		answer="";
-	}
-
-	/*
-	* Internal method to calculate the level
-	* used by the property get<operation>Level methods.
-	*/
-	private int getLevelForScore(int score) {
-		if (score>=levelThreeThreshold) return 3;
-		else if (score>=levelTwoThreshold) return 2;
-		else if (score>0) return 1;
-		else return 0;
 	}
 
 	 public void viewTips(){
@@ -371,4 +352,41 @@ public class GameHandler {
 			return false;
 		}
 	}
+
+	// ************** INTERNAL METHODS **************
+
+	/*
+	* Reset all challenge values, starting on a cleen sheet for the next one.
+	*/
+	private void resetValues() {
+		answer="";
+	}
+
+	/*
+	* Internal method to calculate the level
+	* used by the property get<operation>Level methods.
+	*/
+	private int getLevelForScore(int score) {
+		if (score>=levelThreeThreshold) return 3;
+		else if (score>=levelTwoThreshold) return 2;
+		else if (score>0) return 1;
+		else return 0;
+	}
+
+    private void resetUser() {
+		additionScore = 0;
+		subtractionScore = 0;
+		multiplicationScore = 0;
+		divisionScore = 0;
+		valutaSpent = 0;
+		score[0] = 0;
+		score[1] = 0;
+		score[2] = 0;
+		score[3] = 0;
+		score[4] = 0;
+        overview.changeScore(score);
+        overview.resetUser();
+        new UserBean().loadPage("fail.xhtml");
+	}
+
 }

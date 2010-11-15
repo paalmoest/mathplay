@@ -18,7 +18,7 @@ public class ToppListHandler {
 	boolean ascend = false;
 	ArrayList<UserScoresItem> usi;
 	String lastSorted = "";
-	private int status = 0; // Variabel som beskriver hvilken filtrering som skal gjøres på tabellutskriftene .
+	private int status = 0; // Variables that defines how the list should be filtered, 0=ALL, 1=FOR TEACHER, 2=FOR PLAYERS CLASS
 
 	public ToppListHandler() {
 	}
@@ -28,7 +28,7 @@ public class ToppListHandler {
 	public ArrayList<UserScoresItem> getUsi() {return usi;}
 
 	public boolean getDummySortMethod_TOPPLIST() {
-		if (!xhtml_page.equals("toppList")) { // Sjekker om metoden er kj?rt allerede
+		if (!xhtml_page.equals("toppList")) { // Checks if the method has been run by the view allready;
 			status = 0;
 			ascend = toAscend("username");
 			usi = overview.userScoresItemTable(status,1,ascend);
@@ -38,7 +38,7 @@ public class ToppListHandler {
 	}
 
 	public boolean getDummySortMethod_STATUS() {
-		if (!xhtml_page.equals("listYourUsers")) { // Sjekker om metoden er kj?rt allerede
+		if (!xhtml_page.equals("listYourUsers")) { // Checks if the method has been run by the view allready;
 			status = 1;
 			ascend = toAscend("username");
 			usi = overview.userScoresItemTable(status,1,ascend);
@@ -48,7 +48,7 @@ public class ToppListHandler {
 	}
 
 	public boolean getDummySortMethod_CLASSLIST() {
-		if (!xhtml_page.equals("classList")) { // Sjekker om metoden er kj?rt allerede
+		if (!xhtml_page.equals("classList")) { // Checks if the method has been run by the view allready;
 			status = 2;
 			ascend = toAscend("username");
 			usi = overview.userScoresItemTable(status,1,ascend);
@@ -59,13 +59,6 @@ public class ToppListHandler {
 
 	//**** ALLL SORTING METHODS ******
 	//********************************
-
-	/*public String statusSort() {
-		status = true;
-		ascend = toAscend("username");
-		usi = overview.userScoresItemTable(status,1,ascend);
-		return xhtml_page;
-	}*/
 
 	public String topplistSort() {
 		ascend = toAscend("username");

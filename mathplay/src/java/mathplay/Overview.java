@@ -560,8 +560,9 @@ public class Overview {
                     usi.add(new UserScoresItem(username,item_name, addScore,subScore,mulScore,divScore,curUsed));
                 }
             } catch (SQLException e) {
-              Cleanup.printMessage(e, "userScoresItemTable()");
+				Cleanup.printMessage(e, "userScoresItemTable()");
             } finally {
+				Cleanup.closeConnection(connection);
         	}
         return usi;
     }
@@ -594,8 +595,9 @@ public class Overview {
 			ResultSet result = statement.executeQuery();
 			return result; // Will always be returned
 		} catch (SQLException e) {
-		  Cleanup.printMessage(e, "getUsiStatement1()");
+			Cleanup.printMessage(e, "getUsiStatement1()");
 		} finally {
+			Cleanup.closeConnection(connection);
 		}
 		return null; // Will never be returned
 	}
@@ -627,10 +629,27 @@ public class Overview {
 			}
 			return result; // Will always be returned
 		} catch (SQLException e) {
-		  Cleanup.printMessage(e, "getUsiStatement2()");
+			Cleanup.printMessage(e, "getUsiStatement2()");
 		} finally {
+			Cleanup.closeConnection(connection);
 		}
 		return null; // Will never be returned
+	}
+
+	/** Deletes all the users completed challenges records */
+	public void resetUser() {
+		int user_id = getCurrentUser().getUserId();
+		openConnection();
+		Statement statement = null;
+		ResultSet result = null;
+		try {
+			statement = connection.createStatement();
+			statement.executeUpdate("DELETE FROM challenge_student WHERE user_id="+user_id);
+		}catch(SQLException e) {
+			Cleanup.printMessage(e, "resetUser()");
+		} finally {
+			Cleanup.closeConnection(connection);
+		}
 	}
 
 	/** Returns your teachers user_id **/
@@ -646,6 +665,8 @@ public class Overview {
 			return result.getInt("user_id");
 		}catch(SQLException e) {
 			Cleanup.printMessage(e, "getYourTeacherID()");
+		} finally {
+			Cleanup.closeConnection(connection);
 		}
 		return 0;
 	}
