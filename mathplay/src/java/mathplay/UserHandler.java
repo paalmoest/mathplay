@@ -48,24 +48,31 @@ public class UserHandler {
 
     /** Add a pupil, used by admins/tutors */
     public void addUser() {
-        if (overview.checkUser(tempUser.getUserName())) {
-            FacesMessage fm = new FacesMessage("Brukernavnet finnes allerede ditt N?PSKRELL!!!!!!!11");
-            FacesContext.getCurrentInstance().addMessage("Brukernavnet finnes allerede ditt N?PSKRELL!!!!!!!11", fm);
-        } else {
-            tempUser.setRole("user");
-            overview.addUser(tempUser, "lolmann");
-        }
+		if (overview.checkUser(tempUser.getUserName())) {
+			FacesMessage fm = new FacesMessage("Brukernavnet finnes allerede");
+			FacesContext.getCurrentInstance().addMessage("Brukernavnet finnes allerede", fm);
+		} else {
+			tempUser.setRole("user");
+			overview.addUser(tempUser, "lolmann");
+			name = "";
+			userName = "";
+		}
 
-    }
-    /** Add an admin/tutor, used by super admin */
-    public void addAdmin() {
-        if (overview.checkUser(tempUser.getUserName())) {
-            FacesMessage fm = new FacesMessage("Brukernavnet finnes allerede ditt N?PSKRELL!!!!!!!11");
-            FacesContext.getCurrentInstance().addMessage("Brukernavnet finnes allerede ditt N?PSKRELL!!!!!!!11", fm);
-        } else {
-            tempUser.setRole("admin");
-            overview.addUser(tempUser, password);
-        }
+	}
+	/** Add an admin/tutor, used by super admin */
+	public void addAdmin() {
+		if (overview.checkUser(tempUser.getUserName())) {
+			FacesMessage fm = new FacesMessage("Brukernavnet finnes allerede");
+			FacesContext.getCurrentInstance().addMessage("Brukernavnet finnes allerede", fm);
+		} else if (password.equals("")){
+			FacesMessage fm = new FacesMessage("Skriv inn et passord");
+			FacesContext.getCurrentInstance().addMessage("Skriv inn et passord", fm);
+		} else {
+			tempUser.setRole("admin");
+			overview.addUser(tempUser, password);
+			name = "";
+			userName = "";
+		}
     }
 
     /** Deletes a user from the database **/
@@ -85,7 +92,12 @@ public class UserHandler {
         deleteMe = 0;
     }
      public void updateUser(){
-	        overview.updateUserprofile(tempUser, password);
+		  if (password.equals("") || tempUser.getName().equals("")){
+			 FacesMessage fm = new FacesMessage("Fyll inn begge felt");
+			 FacesContext.getCurrentInstance().addMessage("Fyll inn begge felt", fm);
+		  } else {
+			  overview.updateUserprofile(tempUser, password);
+		  }
     }
 
 }

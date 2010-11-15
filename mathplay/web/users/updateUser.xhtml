@@ -17,12 +17,13 @@ and open the template in the editor.
             <h:form>
                 <h:panelGrid columns="2">
 
-					<h:outputText value="Passord:"/>
-					<h:inputText value="#{UserHandler.password}" required="true"/>
-					<h:outputText value="Navn:"/>
-					<h:inputText value="#{UserHandler.name}" required="true"/>
+			<h:outputText value="Passord:"/>
+			<h:inputText value="#{UserHandler.password}"/>
+			<h:outputText value="Navn:"/>
+			<h:inputText value="#{UserHandler.name}"/>
 
                 </h:panelGrid>
+                <h:messages />
                 <p><h:commandButton value="Registrer" action="#{UserHandler.updateUser}" /></p>
             </h:form>
         </body>
