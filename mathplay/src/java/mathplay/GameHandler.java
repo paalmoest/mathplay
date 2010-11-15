@@ -326,18 +326,18 @@ public class GameHandler {
 	 public void viewTips(){
 		int currency = getValuta();
 		int currency_spent = getValutaSpent();
-			if(currentChallenge.getDifficulty() == 1 && currency > 0){
+			if(currentChallenge.getDifficulty() == 1 && currency > 0 && tipHelp == true){
 				currency_spent += 1;
 				tip = overview.readTips(currentChallenge.getCID());
 				tipHelp = false;
 			}
-			else if(currentChallenge.getDifficulty() == 2 && currency > 1)
+			else if(currentChallenge.getDifficulty() == 2 && currency > 1 && tipHelp == true)
 			{
 				currency_spent += 2;
 				tip = overview.readTips(currentChallenge.getCID());
 				tipHelp = false;
 			}
-			else if(currentChallenge.getDifficulty() == 3 && currency > 1)
+			else if(currentChallenge.getDifficulty() == 3 && currency > 2 && tipHelp == true)
 			{
 				currency_spent += 3;
 				tip = overview.readTips(currentChallenge.getCID());
