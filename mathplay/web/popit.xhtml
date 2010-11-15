@@ -1,0 +1,26 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html">
+
+    <h:head>
+		<script src="js/prototype.js" type="text/javascript"></script>
+		<script src="js/scriptaculous.js" type="text/javascript"></script>
+        <title>Dette  er en testside</title>
+    </h:head>
+    <h:body onload="Effect.Grow('grow_demo'); return false;">
+        <div>
+    	<h:form id="popit_achivementHandler_metodenForOmDetErNyAchivement" rendered="true">
+            <h1>Loltesting</h1>
+
+			<div id="grow_demo" style="display:none; width:600px; height:80px; background:#ccc;">
+				<h:graphicImage value="achivementHandler.metodenForNyttImg"/>
+			</div>
+			<ul>
+			  <li><a href="#" onclick="Effect.Grow('grow_demo'); return false;">Click me for a demo!</a></li>
+			  <li><a href="#" onclick="$('grow_demo').hide(); return false;">Reset</a></li>
+			</ul>
+		</h:form>
+        </div>
+    </h:body>
+</html>
