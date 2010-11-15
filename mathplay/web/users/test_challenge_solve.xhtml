@@ -13,14 +13,16 @@
 	    <h:outputText id="oppgaveText" value="#{gameHandler.currentChallenge.text}" />
 	    <h:inputText id="answer" value="#{gameHandler.answer}" />
 		<h:commandButton value="submit" action="#{gameHandler.submitAnswer}"/>
-		<h:messages />
+
 
 		<h:commandButton value="Logout" action="#{userBean.logout}" />
 
         </h:form>
              <h:form>
+                 <p>Du har: <h:outputText value="#{gameHandler.valuta}" /> kittypoops</p>
+                 <p>Tips til denne oppgaven koster: <h:outputText value="#{gameHandler.tipPrice}" /> kittypoops</p>
                 <h:outputText value="#{gameHandler.tip}"/>
-                <p><h:commandButton value="TIP!" action="#{gameHandler.viewTips}" /> </p>
+                <p><h:commandButton value="Hjelp!" action="#{gameHandler.viewTips}" /> </p>
             </h:form>
     </h:body>
 </html>

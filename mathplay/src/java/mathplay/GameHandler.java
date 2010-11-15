@@ -29,6 +29,7 @@ public class GameHandler {
 	private int divisionScore = 0;
 	private int valutaSpent = 0;
 	private String tip;
+	private int tipPrice;
 
 	// VIEW Variables
 	private ChallengeBean currentChallenge;
@@ -69,6 +70,21 @@ public class GameHandler {
 	public int getMultiplicationScore() {return multiplicationScore;}
 	public int getDivisionScore() {return divisionScore;}
 	public boolean getLastCorrect() {return lastCorrect;}
+
+	 // PROPERTY: tipPrice
+	public int getTipPrice(){
+		tipPrice = currentChallenge.getDifficulty();
+		return tipPrice;
+    }
+
+    //	PROPERTY valutaSpent
+    public int getValutaSpent(){
+		return valutaSpent;
+    }
+
+     public void setValutaSpent(int valutaSpent){
+		this.valutaSpent = valutaSpent;
+    }
 
 	// PROPERTY: AdditionLevel
 	public int getAdditionLevel() {
@@ -324,11 +340,27 @@ public class GameHandler {
 		else return 0;
 	}
 
-	public void viewTips(){
-		tip = overview.readTips(currentChallenge.getCID());
-		valutaSpent += tipPrize;
-		updateScore();
-    }
+	 public void viewTips(){
+		int currency = getValuta();
+		int currency_spent = getValutaSpent();
+			if(currentChallenge.getDifficulty() == 1 && currency > 0){
+				currency_spent += 1;
+				tip = overview.readTips(currentChallenge.getCID());
+			}
+			else if(currentChallenge.getDifficulty() == 2 && currency > 1)
+			{
+				currency_spent += 2;
+				tip = overview.readTips(currentChallenge.getCID());
+			}
+			else if(currentChallenge.getDifficulty() == 3 && currency > 1)
+			{
+				currency_spent += 3;
+				tip = overview.readTips(currentChallenge.getCID());
+			}
+			else{ tip = "Du har ikke nok kittypoops"; }
+		System.out.println(currency);
+		setValutaSpent(currency_spent);
+	}
 
     private boolean isParsableToDouble(String i) {
 		try {
