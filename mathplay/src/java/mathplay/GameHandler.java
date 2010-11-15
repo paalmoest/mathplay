@@ -234,7 +234,7 @@ public class GameHandler {
 			else if (type.equals("Multiplication")) submitMultiplication();
 			else if (type.equals("Division")) submitDivision();
 			else return "challenge_error";
-			return "test_challenge";
+			return "index";
 		}
 	}
 
