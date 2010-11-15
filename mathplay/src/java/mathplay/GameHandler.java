@@ -31,6 +31,7 @@ public class GameHandler {
 	private int valutaSpent = 0;
 	private String tip;
 	private int tipPrice;
+	private boolean tipHelp = true;
 
 	// VIEW Variables
 	private ChallengeBean currentChallenge;
@@ -328,16 +329,22 @@ public class GameHandler {
 			if(currentChallenge.getDifficulty() == 1 && currency > 0){
 				currency_spent += 1;
 				tip = overview.readTips(currentChallenge.getCID());
+				tipHelp = false;
 			}
 			else if(currentChallenge.getDifficulty() == 2 && currency > 1)
 			{
 				currency_spent += 2;
 				tip = overview.readTips(currentChallenge.getCID());
+				tipHelp = false;
 			}
 			else if(currentChallenge.getDifficulty() == 3 && currency > 1)
 			{
 				currency_spent += 3;
 				tip = overview.readTips(currentChallenge.getCID());
+				tipHelp = false;
+			}
+			else if(tipHelp == false){
+				tip = "Det har allerede fått hjelp til denne oppgaven";
 			}
 			else{ tip = "Du har ikke nok kittypoops"; }
 		System.out.println(currency);
@@ -361,6 +368,7 @@ public class GameHandler {
 	*/
 	private void resetValues() {
 		answer="";
+		tipHelp=true;
 	}
 
 	/*
