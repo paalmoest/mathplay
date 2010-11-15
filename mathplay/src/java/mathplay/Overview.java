@@ -255,7 +255,7 @@ public class Overview {
         ResultSet result = null;
         try {
             connection.setAutoCommit(false);
-            sql = connection.prepareStatement("SELECT * FROM challenge RIGHT JOIN challenge_teacher ON (CHALLENGE_TEACHER.CHALLENGE_ID = challenge.CHALLENGE_ID) RIGHT JOIN student_teacher ON (student_teacher.USER_ID = challenge_teacher.USER_ID OR challenge_teacher.USER_ID=1) RIGHT JOIN challenge_type ON (challenge_type.CHALLENGE_ID = challenge.CHALLENGE_ID) WHERE student_teacher.USERNAME = ? AND NOT EXISTS (SELECT * FROM challenge_student WHERE challenge_student.USER_ID = (SELECT USER_ID FROM users WHERE USERNAME = ?) AND challenge.CHALLENGE_ID = challenge_student.CHALLENGE_ID) AND challenge.DIFFICULTY = ? AND challenge_type.CHALLENGE_TYPE = ? ORDER BY random()");
+            sql = connection.prepareStatement("SELECT * FROM challenge RIGHT JOIN challenge_teacher ON (CHALLENGE_TEACHER.CHALLENGE_ID = challenge.CHALLENGE_ID) RIGHT JOIN student_teacher ON (student_teacher.USER_ID = challenge_teacher.USER_ID) RIGHT JOIN challenge_type ON (challenge_type.CHALLENGE_ID = challenge.CHALLENGE_ID) WHERE student_teacher.USERNAME = ? AND NOT EXISTS (SELECT * FROM challenge_student WHERE challenge_student.USER_ID = (SELECT USER_ID FROM users WHERE USERNAME = ?) AND challenge.CHALLENGE_ID = challenge_student.CHALLENGE_ID) AND challenge.DIFFICULTY = ? AND challenge_type.CHALLENGE_TYPE = ? ORDER BY random()");
             sql.setString(1, userName);
             sql.setString(2, userName);
             sql.setInt(3, cDifficulty);

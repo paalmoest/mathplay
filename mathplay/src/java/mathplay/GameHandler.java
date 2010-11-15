@@ -220,8 +220,8 @@ public class GameHandler {
 	*/
 	public String submitAnswer() {
 		if (answer.equals("")) {
-			FacesMessage fm = new FacesMessage("Skriv inn svaret ditt fï¿½r du trykker, din IDIOT!!");
-			FacesContext.getCurrentInstance().addMessage("Skriv inn svaret ditt fï¿½r du trykker, din IDIOT!!", fm);
+			FacesMessage fm = new FacesMessage("Skriv inn svaret ditt før du trykker, din IDIOT!!");
+			FacesContext.getCurrentInstance().addMessage("Skriv inn svaret ditt før du trykker, din IDIOT!!", fm);
 			return "noob";
 		} else if (!isParsableToDouble(answer)) {
 			FacesMessage fm = new FacesMessage("Det der er ikke et tall, din innavla nordlending");
@@ -234,7 +234,7 @@ public class GameHandler {
 			else if (type.equals("Multiplication")) submitMultiplication();
 			else if (type.equals("Division")) submitDivision();
 			else return "challenge_error";
-			return "index";
+			return "test_challenge";
 		}
 	}
 
@@ -341,7 +341,7 @@ public class GameHandler {
 				tipHelp = false;
 			}
 			else if(tipHelp == false){
-				tip = "Du har allerede fï¿½tt hjelp til denne oppgaven";
+				tip = "Du har allerede fått hjelp til denne oppgaven";
 			}
 			else{ tip = "Du har ikke nok kittypoops"; }
 		setValutaSpent(currency_spent);
