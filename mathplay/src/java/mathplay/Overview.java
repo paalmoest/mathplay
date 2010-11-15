@@ -8,7 +8,7 @@
 *************************************************************************
 **/
 
-
+package mathplay;
 
 import java.sql.*;
 import java.sql.SQLException;
@@ -19,10 +19,7 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.*;
 
-/**
- *
- * @author Bertie
- */
+
 public class Overview {
     private ArrayList<UserBean> allUsers = new ArrayList<UserBean>();
     private ArrayList<UserBean> teacherUsers = new ArrayList<UserBean>();

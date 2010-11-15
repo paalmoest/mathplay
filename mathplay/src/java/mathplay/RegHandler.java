@@ -3,18 +3,13 @@
  * and open the template in the editor.
  */
 
-
+package mathplay;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Random;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
-
-/**
- *
- * @author Bertie
- */
 
 @ManagedBean(name = "RegHandler")
 @SessionScoped
@@ -52,7 +47,7 @@ public class RegHandler implements Serializable{
     public int getDifficulty() {return difficulty;}
     public void setDifficulty(int difficulty) {tempChall.setDifficulty(difficulty);}
 
-   
+
 
     // PROPERTY: type
 
@@ -115,7 +110,7 @@ public class RegHandler implements Serializable{
 
      public ArrayList<ChallengeBean> getAllChall(){
             return temp;
-   
+
     }
 
 

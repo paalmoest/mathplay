@@ -1,4 +1,8 @@
+/*
+* This class represent the information in one highscore row.
+*/
 
+package mathplay;
 
 
 public class UserScoresItem {

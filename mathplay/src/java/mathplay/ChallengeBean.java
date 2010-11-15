@@ -3,7 +3,7 @@
 * is represented by the important "TYPE" string variable.
 */
 
-
+package mathplay;
 
 public class ChallengeBean {
 

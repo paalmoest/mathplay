@@ -1,4 +1,8 @@
+/*
+* The view communicate with this class when it wants to progress its mathplay game.
+*/
 
+package mathplay;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -9,14 +13,18 @@ import javax.faces.bean.SessionScoped;
 @SessionScoped
 public class GameHandler {
 
+	// GAME SETTINGS
+	private static int levelTwoThreshold = 10;
+	private static int levelThreeThreshold = 30;
+	private static int progressLevelThreshold = 1;
+	private static int scoreGainFactor = 2;
+	private static int tipPrize = 1;
+
 	// OBJECT VARIABLES
 	private int additionScore = 0;
 	private int subtractionScore = 0;
 	private int multiplicationScore = 0;
 	private int divisionScore = 0;
-	private static int levelTwoThreshold = 10;
-	private static int levelThreeThreshold = 30;
-	private static int progressLevelThreshold = 1;
 	private int valutaSpent = 0;
 	private String tip;
 
@@ -24,9 +32,8 @@ public class GameHandler {
 	private ChallengeBean currentChallenge;
 	private String answer = "";
 	public boolean lastCorrect = false;
-        private int[] score = new int[5];
-
-        private Overview overview = new Overview();
+    private int[] score = new int[5];
+	private Overview overview = new Overview();
 
 
 	/*
@@ -52,25 +59,13 @@ public class GameHandler {
 	public String getAnswer() {return answer;}
 	public void setAnswer(String answer) {this.answer=answer;}
 
-	// PROPERTY: tip
+	// PROPERTIES
     public String getTip(){return tip;}
-
-	// PROPERTY: currentChallenge
 	public ChallengeBean getCurrentChallenge() {return currentChallenge;}
-
-	// PROPERTY: additionScore
 	public int getAdditionScore() { return additionScore; }
-
-	// PROPERTY: subtractionScore
 	public int getSubtractionScore() {return subtractionScore;}
-
-	// PROPERTY: multiplicationScore
 	public int getMultiplicationScore() {return multiplicationScore;}
-
-	// PROPERTY: divisionScore
 	public int getDivisionScore() {return divisionScore;}
-
-	// PROPERTY: lastCorrect
 	public boolean getLastCorrect() {return lastCorrect;}
 
 	// PROPERTY: AdditionLevel
@@ -96,10 +91,10 @@ public class GameHandler {
 	// PROPERTY: Valuta
 	public int getValuta() {
 		int newValuta = 0;
-		newValuta += additionScore*2;
-		newValuta += subtractionScore*3;
-		newValuta += multiplicationScore*4;
-		newValuta += divisionScore*5;
+		newValuta += additionScore*scoreGainFactor*2;
+		newValuta += subtractionScore*scoreGainFactor*3;
+		newValuta += multiplicationScore*scoreGainFactor*4;
+		newValuta += divisionScore*scoreGainFactor*5;
 		newValuta -= valutaSpent;
 		return newValuta;
 	}
@@ -297,15 +292,14 @@ public class GameHandler {
 		resetValues();
 	}
 
+	// ************** INTERNAL METHODS **************
+
 	/*
 	* Reset all challenge values, starting on a cleen sheet for the next one.
 	*/
 	private void resetValues() {
 		answer="";
 	}
-
-
-	// ************** INTERNAL METHODS **************
 
 	/*
 	* Internal method to calculate the level

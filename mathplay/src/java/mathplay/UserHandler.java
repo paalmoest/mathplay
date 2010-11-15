@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-
+package mathplay;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
@@ -11,10 +11,7 @@ import java.util.*;
 import javax.faces.model.SelectItem;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
-/**
- *
- * @author Bertie
- */
+
 
 @ManagedBean(name = "UserHandler")
 @SessionScoped

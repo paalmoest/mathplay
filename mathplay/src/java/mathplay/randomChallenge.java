@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-
+package mathplay;
 
 import java.util.ArrayList;
 import java.util.Random;
