@@ -72,6 +72,7 @@ public class GameHandler {
 	public int getMultiplicationScore() {return multiplicationScore;}
 	public int getDivisionScore() {return divisionScore;}
 	public boolean getLastCorrect() {return lastCorrect;}
+	public boolean getTipHelp() {return tipHelp;}
 
 	 // PROPERTY: tipPrice
 	public int getTipPrice(){
@@ -165,7 +166,7 @@ public class GameHandler {
 	public String progressAddition() {
 		int difficulty = getAdditionLevel();
 		if (difficulty==0) difficulty = 1;
-		tip = "";
+		resetValues();
 		currentChallenge = overview.readChallenge("Addition", difficulty, overview.getCurrentUser().getUserName());
 		if(currentChallenge.getCID()==-1)return "no_challenge";
 		return "test_challenge_solve";
@@ -179,7 +180,7 @@ public class GameHandler {
 	public String progressSubtraction() {
 		int difficulty = getSubtractionLevel();
 		if (difficulty==0) difficulty = 1;
-		tip = "";
+		resetValues();
 		currentChallenge = overview.readChallenge("Subtraction", difficulty, overview.getCurrentUser().getUserName());
 		if(currentChallenge.getCID()==-1)return "no_challenge";
 		return "test_challenge_solve";
@@ -193,7 +194,7 @@ public class GameHandler {
 	public String progressMultiplication() {
 		int difficulty = getMultiplicationLevel();
 		if (difficulty==0) difficulty = 1;
-		tip = "";
+		resetValues();
 		currentChallenge = overview.readChallenge("Multiplication", difficulty, overview.getCurrentUser().getUserName());
 		if(currentChallenge.getCID()==-1)return "no_challenge";
 		return "test_challenge_solve";
@@ -207,7 +208,7 @@ public class GameHandler {
 	public String progressDivision() {
 		int difficulty = getDivisionLevel();
 		if (difficulty==0) difficulty = 1;
-		tip = "";
+		resetValues();
 		currentChallenge = overview.readChallenge("Division", difficulty, overview.getCurrentUser().getUserName());
 		if(currentChallenge.getCID()==-1)return "no_challenge";
 		return "test_challenge_solve";
@@ -254,7 +255,6 @@ public class GameHandler {
 			additionScore -= dif; // Formula for removing score
 			lastCorrect = false;
 		}
-		resetValues();
 	}
 
 	/*
@@ -276,7 +276,6 @@ public class GameHandler {
 			updateScore();
 			overview.changeScore(score);
 		}
-		resetValues();
 	}
 
 	/*
@@ -297,7 +296,6 @@ public class GameHandler {
 			lastCorrect = false;
             updateScore();
 		}
-		resetValues();
 	}
 
 	/*
@@ -320,10 +318,9 @@ public class GameHandler {
 			updateScore();
 			overview.changeScore(score);
 		}
-		resetValues();
 	}
 
-	 public void viewTips(){
+	public void viewTips(){
 		int currency = getValuta();
 		int currency_spent = getValutaSpent();
 			if(currentChallenge.getDifficulty() == 1 && currency > 0 && tipHelp == true){
@@ -344,10 +341,9 @@ public class GameHandler {
 				tipHelp = false;
 			}
 			else if(tipHelp == false){
-				tip = "Det har allerede fått hjelp til denne oppgaven";
+				tip = "Du har allerede fått hjelp til denne oppgaven";
 			}
 			else{ tip = "Du har ikke nok kittypoops"; }
-		System.out.println(currency);
 		setValutaSpent(currency_spent);
 	}
 
@@ -367,6 +363,7 @@ public class GameHandler {
 	* Reset all challenge values, starting on a cleen sheet for the next one.
 	*/
 	private void resetValues() {
+		tip = "";
 		answer="";
 		tipHelp=true;
 	}

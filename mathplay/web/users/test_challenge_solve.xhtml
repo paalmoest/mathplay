@@ -22,7 +22,7 @@
                  <p>Du har: <h:outputText value="#{gameHandler.valuta}" /> kittypoops</p>
                  <p>Tips til denne oppgaven koster: <h:outputText value="#{gameHandler.tipPrice}" /> kittypoops</p>
                 <h:outputText value="#{gameHandler.tip}"/>
-                <p><h:commandButton value="Hjelp!" action="#{gameHandler.viewTips}" /> </p>
+                <p><h:commandButton value="Hjelp!" action="#{gameHandler.viewTips}" rendered="#{gameHandler.tipHelp}" /> </p>
             </h:form>
     </h:body>
 </html>
