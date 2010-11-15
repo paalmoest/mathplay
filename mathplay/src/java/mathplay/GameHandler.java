@@ -21,6 +21,7 @@ public class GameHandler {
 	private static int progressLevelThreshold = 1;
 	private static int scoreGainFactor = 1;
 	private static int tipPrize = 1;
+	private static int startCurrency = 10;
 
 	// OBJECT VARIABLES
 	private int additionScore = 0;
@@ -108,7 +109,7 @@ public class GameHandler {
 
 	// PROPERTY: Valuta
 	public int getValuta() {
-		int newValuta = 0;
+		int newValuta = startCurrency;
 		newValuta += additionScore*scoreGainFactor*2;
 		newValuta += subtractionScore*scoreGainFactor*3;
 		newValuta += multiplicationScore*scoreGainFactor*4;
