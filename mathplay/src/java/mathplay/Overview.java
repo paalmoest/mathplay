@@ -524,24 +524,27 @@ public class Overview {
         }finally{
 
         }
-
     }
 
 	/** sortBy bestemmer hvilken sortering som skal gjøres, med følgende settings:
 	*	1=USERNAME, 2=ADDITION_SCORE, 3=SUBTRACTION_SCORE, 4=MULTIPLICATION_SCORE
 	*   5=DIVISION_SCORE, 6=CURRENCY_SPENT
 	*  asc bestemmer om den skal ASCEND eller DESCEND. True=ASCEND, FALSE=DESCEND.
-	*  teacherID bestemmer hvilken lærers spilllere som skal listes, 0=alle.
+	*  filter bestemmer hvilket filter som skal legges på, 0=Alle, 1=Lærer sine elever, 2=Elev sin klasse
 	*/
-	public ArrayList<UserScoresItem> userScoresItemTable(boolean status, int sortBy, boolean asc) {
+	public ArrayList<UserScoresItem> userScoresItemTable(int status, int sortBy, boolean asc) {
             ArrayList<UserScoresItem> usi = new ArrayList<UserScoresItem>();
             PreparedStatement statement = null;
             ResultSet result = null;
             openConnection();
             try {
                 connection.setAutoCommit(false);
-                if (status) {
+                if (status==1) {
 					int teacherID = getCurrentUser().getUserId();
+					result = getUsiResult(teacherID,sortBy,asc);
+				}
+				else if (status==2) {
+					int teacherID = getYourTeacherID();
 					result = getUsiResult(teacherID,sortBy,asc);
 				}
 				else result = getUsiResult(sortBy,asc);
@@ -597,7 +600,7 @@ public class Overview {
 	}
 
 	/**
-	* Vill returner alle spillere
+	* Vil returner alle spillere
 	*/
     private ResultSet getUsiResult(int sortBy, boolean asc) {
 		try {
@@ -629,6 +632,23 @@ public class Overview {
 		return null; // Will never be returned
 	}
 
+	/** Returns your teachers user_id **/
+	public int getYourTeacherID() {
+		String username = new UserBean().getCurrentUser();
+		openConnection();
+		Statement statement = null;
+		ResultSet result = null;
+		try {
+			statement = connection.createStatement();
+			result = statement.executeQuery("select user_id from MATHPLAY.STUDENT_TEACHER where username='"+username+"'");
+			result.next();
+			return result.getInt("user_id");
+		}catch(SQLException e) {
+			Cleanup.printMessage(e, "getYourTeacherID()");
+		}
+		return 0;
+	}
+
     /** Opens a connection to the database */
     public void openConnection() {
        try {
@@ -643,7 +663,7 @@ public class Overview {
        }
     }
 
-    public boolean loggedInn() {
+    private boolean loggedInn() {
 		ExternalContext context
 		= FacesContext.getCurrentInstance().getExternalContext();
 		Object requestObject =  context.getRequest();

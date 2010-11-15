@@ -8,9 +8,12 @@
     <h:body>
     	<h:form id="index">
         <h1> KlasseRommet</h1>
-        <a href="/mathplay/faces/users/test_challenge.xhtml">Gjør en oppgave !</a>
-        <a href="/mathplay/faces/users/updateUser.xhtml">Endre spillerprofil !</a>
-        <a href="/mathplay/faces/toppList.xhtml">Toppliste</a>
+        <ul>
+        <li><a href="/mathplay/faces/users/test_challenge.xhtml">Gjor en oppgave !</a></li>
+        <li><a href="/mathplay/faces/users/updateUser.xhtml">Endre spillerprofil !</a></li>
+        <li><a href="/mathplay/faces/toppList.xhtml">Highscore, All</a></li>
+        <li><a href="/mathplay/faces/users/classList.xhtml">Highscore, Klassen</a></li>
+		</ul>
 		<br/>
 		<h:commandButton value="Logout" action="#{userBean.logout}"/>
 	</h:form>

@@ -18,7 +18,7 @@ public class ToppListHandler {
 	boolean ascend = false;
 	ArrayList<UserScoresItem> usi;
 	String lastSorted = "";
-	private boolean status = false; // Variabel som beskriver om dette er en statusutskrift for en bestemt l?rer.
+	private int status = 0; // Variabel som beskriver hvilken filtrering som skal gjøres på tabellutskriftene .
 
 	public ToppListHandler() {
 	}
@@ -27,21 +27,9 @@ public class ToppListHandler {
 	// PROPERTY: usi
 	public ArrayList<UserScoresItem> getUsi() {return usi;}
 
-	public boolean getDummySortMethod_STATUS() {
-		if (!xhtml_page.equals("listYourUsers")) { // Sjekker om metoden er kj?rt allerede
-			System.out.println("DEBUGG_ToppListHandler_INNI_DUMMY_STATUS");
-			status = true;
-			ascend = toAscend("username");
-			usi = overview.userScoresItemTable(status,1,ascend);
-			xhtml_page = "listYourUsers";
-		}
-		return false;
-	}
-
 	public boolean getDummySortMethod_TOPPLIST() {
 		if (!xhtml_page.equals("toppList")) { // Sjekker om metoden er kj?rt allerede
-		System.out.println("DEBUGG_ToppListHandler_INNI_DUMMY_TOPPLIST");
-			status = false;
+			status = 0;
 			ascend = toAscend("username");
 			usi = overview.userScoresItemTable(status,1,ascend);
 			xhtml_page = "toppList";
@@ -49,16 +37,35 @@ public class ToppListHandler {
 		return false;
 	}
 
+	public boolean getDummySortMethod_STATUS() {
+		if (!xhtml_page.equals("listYourUsers")) { // Sjekker om metoden er kj?rt allerede
+			status = 1;
+			ascend = toAscend("username");
+			usi = overview.userScoresItemTable(status,1,ascend);
+			xhtml_page = "listYourUsers";
+		}
+		return false;
+	}
+
+	public boolean getDummySortMethod_CLASSLIST() {
+		if (!xhtml_page.equals("classList")) { // Sjekker om metoden er kj?rt allerede
+			status = 2;
+			ascend = toAscend("username");
+			usi = overview.userScoresItemTable(status,1,ascend);
+			xhtml_page = "classList";
+		}
+		return false;
+	}
 
 	//**** ALLL SORTING METHODS ******
 	//********************************
 
-	public String statusSort() {
+	/*public String statusSort() {
 		status = true;
 		ascend = toAscend("username");
 		usi = overview.userScoresItemTable(status,1,ascend);
 		return xhtml_page;
-	}
+	}*/
 
 	public String topplistSort() {
 		ascend = toAscend("username");

@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <f:view>
+        <head>
+            <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+            <title>Se toppliste</title>
+        </head>
+        <body>
+            <h1>Toppliste klassen</h1>
+
+            <h:form>
+
+            <h:outputText value= "Triggerfelt" rendered="#{toppListHandler.dummySortMethod_CLASSLIST}" />
+
+			<h:dataTable value="#{toppListHandler.usi}" var="item">
+
+				<h:column>
+					<f:facet name="header" >
+						<h:commandLink action="#{toppListHandler.sortByUsername}">
+							<h:outputText value="Spiller"/>
+						</h:commandLink>
+					</f:facet>
+					<h:outputText value="#{item.username}" />
+				</h:column>
+
+				<h:column>
+					<f:facet name="header" >
+						<h:commandLink action="#{toppListHandler.sortByName}">
+							<h:outputText value="Navn"/>
+						</h:commandLink>
+					</f:facet>
+					<h:outputText value="#{item.name}" />
+				</h:column>
+
+				<h:column>
+					<f:facet name="header" >
+						<h:commandLink action="#{toppListHandler.sortByName}">
+							<h:outputText value="Epicname"/>
+						</h:commandLink>
+					</f:facet>
+					<h:outputText value="#{item.combinedName}" />
+				</h:column>
+
+				<h:column>
+					<f:facet name="header" >
+						<h:commandLink action="#{toppListHandler.sortByAddScore}">
+							<h:outputText value="Addisjonspoeng"/>
+						</h:commandLink>
+					</f:facet>
+					<h:outputText value="#{item.addScore}" />
+				</h:column>
+
+				<h:column>
+					<f:facet name="header" >
+						<h:commandLink action="#{toppListHandler.sortBySubScore}">
+							<h:outputText value="Subtraksjonspoeng"/>
+						</h:commandLink>
+					</f:facet>
+					<h:outputText value="#{item.subScore}" />
+				</h:column>
+
+				<h:column>
+					<f:facet name="header" >
+						<h:commandLink action="#{toppListHandler.sortByMulScore}">
+							<h:outputText value="Multiplikasjonspoeng"/>
+						</h:commandLink>
+					</f:facet>
+					<h:outputText value="#{item.mulScore}" />
+				</h:column>
+
+				<h:column>
+					<f:facet name="header" >
+						<h:commandLink action="#{toppListHandler.sortByDivScore}">
+							<h:outputText value="Divisjonspoeng"/>
+						</h:commandLink>
+					</f:facet>
+					<h:outputText value="#{item.divScore}" />
+				</h:column>
+
+				<h:column>
+					<f:facet name="header" >
+						<h:commandLink action="#{toppListHandler.sortByCurrency}">
+							<h:outputText value="Valut"/>
+						</h:commandLink>
+					</f:facet>
+					<h:outputText value="#{item.currency}" />
+				</h:column>
+
+				<h:column>
+					<f:facet name="header" >
+						<h:commandLink action="#{toppListHandler.sortByCurUsed}">
+							<h:outputText value="Valut brukt"/>
+						</h:commandLink>
+					</f:facet>
+					<h:outputText value="#{item.curUsed}" />
+				</h:column>
+
+				<h:column>
+					<f:facet name="header" >
+						<h:commandLink action="#{toppListHandler.sortByAddLevel}">
+							<h:outputText value="Addisjonsnivaa"/>
+						</h:commandLink>
+					</f:facet>
+					<h:outputText value="#{item.addLevel}" />
+				</h:column>
+
+				<h:column>
+					<f:facet name="header" >
+						<h:commandLink action="#{toppListHandler.sortBySubLevel}">
+							<h:outputText value="Subtraksjonsnivaa"/>
+						</h:commandLink>
+					</f:facet>
+					<h:outputText value="#{item.subLevel}" />
+				</h:column>
+
+				<h:column>
+					<f:facet name="header" >
+						<h:commandLink action="#{toppListHandler.sortByMulLevel}">
+							<h:outputText value="Multiplikasjonsnivaa"/>
+						</h:commandLink>
+					</f:facet>
+					<h:outputText value="#{item.mulLevel}" />
+				</h:column>
+
+				<h:column>
+					<f:facet name="header" >
+						<h:commandLink action="#{toppListHandler.sortByDivLevel}">
+							<h:outputText value="Divisjonsnivaa"/>
+						</h:commandLink>
+					</f:facet>
+					<h:outputText value="#{item.divLevel}" />
+				</h:column>
+
+				<h:column>
+					<f:facet name="header" >
+						<h:commandLink action="#{toppListHandler.sortByTotalScore}">
+							<h:outputText value="Poeng"/>
+						</h:commandLink>
+					</f:facet>
+					<h:outputText value="#{item.totalScore}" />
+				</h:column>
+
+				<h:column>
+					<f:facet name="header" >
+						<h:commandLink action="#{toppListHandler.sortByAverageLevel}">
+							<h:outputText value="Gjennomsnittsnivaa"/>
+						</h:commandLink>
+					</f:facet>
+					<h:outputText value="#{item.avgLevel}" />
+				</h:column>
+
+			</h:dataTable>
+
+            </h:form>
+        </body>
+    </f:view>
+</html>

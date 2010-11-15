@@ -129,7 +129,7 @@ public class GameHandler {
 		score[2] = multiplicationScore;
 		score[3] = divisionScore;
 		score[4] = valutaSpent;
-                overview.changeScore(score);
+        overview.changeScore(score);
 	}
 
 

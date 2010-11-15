@@ -110,10 +110,11 @@ ALTER TABLE playerinfo ADD CONSTRAINT playerinfo_fk1 FOREIGN KEY(user_id) REFERE
 --INSERTS--
 --Legger til brukere--
 INSERT INTO USERS (USERNAME, PASSWORD, NAME) VALUES ('stian', 'hei', 'Stian Sorebo');
-INSERT INTO USERS (USERNAME, PASSWORD, NAME) VALUES ('andriod', 'noob', 'Andrej Skog');
 INSERT INTO USERS (USERNAME, PASSWORD, NAME) VALUES ('rivertz', 'hei', 'Hans Jakob Rivertz');
+INSERT INTO USERS (USERNAME, PASSWORD, NAME) VALUES ('andriod', 'noob', 'Andrej Skog');
 INSERT INTO USERS (USERNAME, PASSWORD, NAME) VALUES ('tomcat', 'tomcat','TOMCATZ CATZ');
 INSERT INTO USERS (USERNAME, PASSWORD, NAME) VALUES ('supah', '1337','Mr.Cant Touch This');
+INSERT INTO USERS (USERNAME, PASSWORD, NAME) VALUES ('paal', 'paal', 'Pål Møst');
 --Lager roller--
 INSERT INTO ROLES (ROLENAME) VALUES ('admin');
 INSERT INTO ROLES (ROLENAME) VALUES ('user');
@@ -125,6 +126,7 @@ INSERT INTO USER_ROLES (USERNAME, ROLENAME)VALUES ('rivertz', 'admin');
 INSERT INTO USER_ROLES (USERNAME, ROLENAME)VALUES ('andriod', 'user');
 INSERT INTO USER_ROLES (USERNAME, ROLENAME)VALUES ('tomcat', 'manager');
 INSERT INTO USER_ROLES (USERNAME, ROLENAME)VALUES ('supah', 'superadmin');
+INSERT INTO USER_ROLES (USERNAME, ROLENAME)VALUES ('paal', 'user');
 --Lager oppgavetyper--
 INSERT INTO challenge_NAME (challenge_TYPE)VALUES ('Multiplication');
 INSERT INTO challenge_NAME (challenge_TYPE)VALUES ('Addition');
@@ -202,10 +204,10 @@ INSERT INTO challenge_TYPE (challenge_TYPE)VALUES ('Multiplication');
 INSERT INTO challenge_TEACHER (USER_ID)VALUES (1);
 INSERT INTO challenge_TIPS(challenge_tips)VALUES('Hjelp: Hvis man ganger et positivt tall med 2, blir tallet dobbelt så stort');
 
-
---Binder oppgave til student og setter gjort--
-INSERT INTO challenge_STUDENT (challenge_id, user_id) VALUES (1, 1);
---Binder L?rer til student--
+--Binder student til lerer--
 INSERT INTO STUDENT_TEACHER (USER_ID, USERNAME)VALUES (1, 'andriod');
+INSERT INTO STUDENT_TEACHER (USER_ID, USERNAME)VALUES (2, 'paal');
+
 --Setter player score--
-INSERT INTO playerinfo (USER_ID, ADDITION_SCORE, SUBTRACTION_SCORE, MULTIPLICATION_SCORE, DIVISION_SCORE, CURRENCY_SPENT) VALUES (2, 0, 0, 0, 0, 0);
+INSERT INTO playerinfo (USER_ID, ADDITION_SCORE, SUBTRACTION_SCORE, MULTIPLICATION_SCORE, DIVISION_SCORE, CURRENCY_SPENT) VALUES (3, 0, 0, 0, 0, 0);
+INSERT INTO playerinfo (USER_ID, ADDITION_SCORE, SUBTRACTION_SCORE, MULTIPLICATION_SCORE, DIVISION_SCORE, CURRENCY_SPENT) VALUES (6, 1, 1, 1, 1, 2);
