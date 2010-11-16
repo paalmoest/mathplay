@@ -32,11 +32,13 @@ public class GameHandler {
 	private String tip;
 	private int tipPrice;
 	private boolean tipHelp = true;
+        private String currentGenre = "";
+
 
 	// VIEW Variables
 	private ChallengeBean currentChallenge;
 	private String answer = "";
-	public boolean lastCorrect = false;
+	public boolean lastCorrect = true;
     private int[] score = new int[5];
 	private Overview overview = new Overview();
 
@@ -167,7 +169,12 @@ public class GameHandler {
 		int difficulty = getAdditionLevel();
 		if (difficulty==0) difficulty = 1;
 		resetValues();
-		currentChallenge = overview.readChallenge("Addition", difficulty, overview.getCurrentUser().getUserName());
+		if(!lastCorrect) {
+                    FacesMessage fm = new FacesMessage("Feil svar! Prøv igjen.");
+                    FacesContext.getCurrentInstance().addMessage("challenge_solve:submitAnswer", fm);
+                    return "test_challenge_solve";
+                }
+                currentChallenge = overview.readChallenge("Addition", difficulty, overview.getCurrentUser().getUserName());
 		if(currentChallenge.getCID()==-1)return "no_challenge";
 		return "test_challenge_solve";
 	}
@@ -181,6 +188,11 @@ public class GameHandler {
 		int difficulty = getSubtractionLevel();
 		if (difficulty==0) difficulty = 1;
 		resetValues();
+                if(!lastCorrect) {
+                    FacesMessage fm = new FacesMessage("Feil svar! Prøv igjen.");
+                    FacesContext.getCurrentInstance().addMessage("challenge_solve:submitAnswer", fm);
+                    return "test_challenge_solve";
+                }
 		currentChallenge = overview.readChallenge("Subtraction", difficulty, overview.getCurrentUser().getUserName());
 		if(currentChallenge.getCID()==-1)return "no_challenge";
 		return "test_challenge_solve";
@@ -195,6 +207,11 @@ public class GameHandler {
 		int difficulty = getMultiplicationLevel();
 		if (difficulty==0) difficulty = 1;
 		resetValues();
+                if(!lastCorrect) {
+                    FacesMessage fm = new FacesMessage("Feil svar! Prøv igjen.");
+                    FacesContext.getCurrentInstance().addMessage("challenge_solve:submitAnswer", fm);
+                    return "test_challenge_solve";
+                }
 		currentChallenge = overview.readChallenge("Multiplication", difficulty, overview.getCurrentUser().getUserName());
 		if(currentChallenge.getCID()==-1)return "no_challenge";
 		return "test_challenge_solve";
@@ -209,6 +226,11 @@ public class GameHandler {
 		int difficulty = getDivisionLevel();
 		if (difficulty==0) difficulty = 1;
 		resetValues();
+                if(!lastCorrect) {
+                    FacesMessage fm = new FacesMessage("Feil svar! Prøv igjen.");
+                    FacesContext.getCurrentInstance().addMessage("challenge_solve:submitAnswer", fm);
+                    return "test_challenge_solve";
+                }
 		currentChallenge = overview.readChallenge("Division", difficulty, overview.getCurrentUser().getUserName());
 		if(currentChallenge.getCID()==-1)return "no_challenge";
 		return "test_challenge_solve";
@@ -220,21 +242,33 @@ public class GameHandler {
 	*/
 	public String submitAnswer() {
 		if (answer.equals("")) {
-			FacesMessage fm = new FacesMessage("Skriv inn svaret ditt f�r du trykker, din IDIOT!!");
-			FacesContext.getCurrentInstance().addMessage("Skriv inn svaret ditt f�r du trykker, din IDIOT!!", fm);
-			return "noob";
+			FacesMessage fm = new FacesMessage("Skriv inn svaret ditt før du trykker!");
+			FacesContext.getCurrentInstance().addMessage("challenge_solve:submitAnswer", fm);
+			return "test_challenge_solve";
 		} else if (!isParsableToDouble(answer)) {
-			FacesMessage fm = new FacesMessage("Det der er ikke et tall, din innavla nordlending");
-			FacesContext.getCurrentInstance().addMessage("Det der er ikke et tall, din innavla nordlending", fm);
-			return "noob";
+			FacesMessage fm = new FacesMessage("Det der er ikke et tall.");
+			FacesContext.getCurrentInstance().addMessage("challenge_solve:submitAnswer", fm);
+			return "test_challenge_solve";
 		} else {
 			String type = currentChallenge.getType();
-			if (type.equals("Addition")) submitAddition();
-			else if (type.equals("Subtraction")) submitSubtraction();
-			else if (type.equals("Multiplication")) submitMultiplication();
-			else if (type.equals("Division")) submitDivision();
+			if (type.equals("Addition")) {
+                            submitAddition();
+                            currentGenre = progressAddition();
+                        }
+			else if (type.equals("Subtraction")) {
+                            submitSubtraction();
+                            currentGenre = progressSubtraction();
+                        }
+			else if (type.equals("Multiplication")) {
+                            submitMultiplication();
+                            currentGenre = progressMultiplication();
+                        }
+			else if (type.equals("Division")) {
+                            submitDivision();
+                            currentGenre = progressDivision();
+                        }
 			else return "challenge_error";
-			return "index";
+			return currentGenre;
 		}
 	}
 
@@ -341,7 +375,7 @@ public class GameHandler {
 				tipHelp = false;
 			}
 			else if(tipHelp == false){
-				tip = "Du har allerede f�tt hjelp til denne oppgaven";
+				tip = "Du har allerede fått hjelp til denne oppgaven";
 			}
 			else{ tip = "Du har ikke nok kittypoops"; }
 		setValutaSpent(currency_spent);
