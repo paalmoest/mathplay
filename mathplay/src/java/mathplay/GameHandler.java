@@ -32,13 +32,14 @@ public class GameHandler {
 	private String tip;
 	private int tipPrice;
 	private boolean tipHelp = true;
+    private int[] score = new int[5];
+	private Overview overview = new Overview();
+	private AchHandler achHandler = new AchHandler();
 
 	// VIEW Variables
 	private ChallengeBean currentChallenge;
 	private String answer = "";
 	public boolean lastCorrect = false;
-    private int[] score = new int[5];
-	private Overview overview = new Overview();
 
 
 	/*
@@ -47,7 +48,7 @@ public class GameHandler {
 	* All the challenges for each of the different mathematical operations.
 	*/
 	public GameHandler() {
-		System.out.println("------START-------");
+		System.out.println("------START GameHandler -------");
 		System.out.println("Userid: "+overview.getCurrentUser().getUserId());
 		score = overview.readScore();
 		additionScore = score[0];
@@ -73,6 +74,7 @@ public class GameHandler {
 	public int getDivisionScore() {return divisionScore;}
 	public boolean getLastCorrect() {return lastCorrect;}
 	public boolean getTipHelp() {return tipHelp;}
+	public AchHandler getAchHandler() { return achHandler;}
 
 	 // PROPERTY: tipPrice
 	public int getTipPrice(){
@@ -234,7 +236,7 @@ public class GameHandler {
 			else if (type.equals("Multiplication")) submitMultiplication();
 			else if (type.equals("Division")) submitDivision();
 			else return "challenge_error";
-			return "index";
+			return "test_challenge";
 		}
 	}
 
@@ -243,18 +245,22 @@ public class GameHandler {
 	* submits a ADDITION answer
 	*/
 	private void submitAddition() {
-		double double_answer = Double.parseDouble(answer);
+        double double_answer = Double.parseDouble(answer);
 		int dif = currentChallenge.getDifficulty();
 		if (currentChallenge.isCorrect(double_answer)) {
 			additionScore += (dif*dif); // Formula for adding score
 			lastCorrect = true;
 			overview.challengeCompleted(currentChallenge.getCID());
 			updateScore();
+			achHandler.updateAdd();
 		}
 		else {
 			additionScore -= dif; // Formula for removing score
 			lastCorrect = false;
+			updateScore();
+			achHandler.setStreak(0);
 		}
+		resetValues();
 	}
 
 	/*
@@ -269,13 +275,15 @@ public class GameHandler {
 			lastCorrect = true;
 			overview.challengeCompleted(currentChallenge.getCID());
 			updateScore();
-		}
+            achHandler.updateSub();
+                }
 		else {
 			subtractionScore -= dif; // Formula for removing score
 			lastCorrect = false;
 			updateScore();
-			overview.changeScore(score);
+			achHandler.setStreak(0);
 		}
+		resetValues();
 	}
 
 	/*
@@ -290,12 +298,15 @@ public class GameHandler {
 			lastCorrect = true;
 			overview.challengeCompleted(currentChallenge.getCID());
 			updateScore();
-		}
+			achHandler.updateMul();
+                }
 		else {
 			multiplicationScore -= dif; // Formula for removing score
 			lastCorrect = false;
-            updateScore();
+			updateScore();
+			achHandler.setStreak(0);
 		}
+		resetValues();
 	}
 
 	/*
@@ -310,15 +321,18 @@ public class GameHandler {
 			lastCorrect = true;
 			overview.challengeCompleted(currentChallenge.getCID());
 			updateScore();
-			overview.changeScore(score);
+			achHandler.updateDiv();
+
 		}
 		else {
 			divisionScore -= dif; // Formula for removing score
 			lastCorrect = false;
 			updateScore();
-			overview.changeScore(score);
+			achHandler.setStreak(0);
 		}
+		resetValues();
 	}
+
 
 	public void viewTips(){
 		int currency = getValuta();
@@ -347,15 +361,6 @@ public class GameHandler {
 		setValutaSpent(currency_spent);
 	}
 
-    private boolean isParsableToDouble(String i) {
-		try {
-			Double.parseDouble(i);
-			return true;
-		}
-		catch(NumberFormatException nfe) {
-			return false;
-		}
-	}
 
 	// ************** INTERNAL METHODS **************
 
@@ -393,6 +398,16 @@ public class GameHandler {
         overview.changeScore(score);
         overview.resetUser();
         new UserBean().loadPage("fail.xhtml");
+	}
+
+    private boolean isParsableToDouble(String i) {
+		try {
+			Double.parseDouble(i);
+			return true;
+		}
+		catch(NumberFormatException nfe) {
+			return false;
+		}
 	}
 
 }

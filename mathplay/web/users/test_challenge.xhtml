@@ -4,10 +4,13 @@
       xmlns:h="http://java.sun.com/jsf/html">
 
     <h:head>
+		<script src="../js/prototype.js" type="text/javascript"></script>
+		<script src="../js/scriptaculous.js" type="text/javascript"></script>
+		<script src="../js/timer.js" type="text/javascript"></script>
         <title>Test Challenge</title>
     </h:head>
 
-    <h:body>
+    <h:body onload="Effect.Grow('grow_demoONE');Effect.Grow('grow_demoTWO', { duration: 2.0 }); return false;">
         <h:form id="chose_challenge">
 		<br />
 		<p> Din valuta er: <h:outputText id="valuta" value="#{gameHandler.valuta}" /></p>
@@ -34,5 +37,18 @@
 		<br/>
 
         </h:form>
+
+    	<h:form id="popitONE" rendered="#{gameHandler.achHandler.achComplete}">
+			<div id="grow_demoONE" style="display:none; width:600px; height:135px; background:#ccc;">
+				<h:graphicImage value="imgs/#{gameHandler.achHandler.newAchString}.png"/>
+			</div>
+		</h:form>
+
+    	<h:form id="popitTWO" rendered="#{gameHandler.achHandler.achComplete}">
+			<div id="grow_demoTWO" style="display:none; width:600px; height:135px; background:#ccc;">
+				<h:graphicImage value="imgs/#{gameHandler.achHandler.newAchString}.png"/>
+			</div>
+		</h:form>
+
     </h:body>
 </html>

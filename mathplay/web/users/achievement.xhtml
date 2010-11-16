@@ -14,13 +14,14 @@ and open the template in the editor.
     </head>
     <body>
         <h:form>
-            
-                 <h:dataTable  id="min" value="#{AchHandler.allAch}" var ="ach">
+            <h:outputText value="#{AchHandler.points}" />
+
+            <h:dataTable  id="min" value="#{AchHandler.yourAch}" var ="ach">
 
 
                      <h:column>
                         <f:facet name="header">BILDER!</f:facet>
-                        <h:graphicImage value="imgs/#{ach.achImg}.jpg" />
+                        <h:graphicImage value="imgs/#{ach.achImg}.png" />
                     </h:column>
 
                     

@@ -24,6 +24,9 @@ public class Overview {
     private ArrayList<UserBean> allUsers = new ArrayList<UserBean>();
     private ArrayList<UserBean> teacherUsers = new ArrayList<UserBean>();
     private ArrayList<ChallengeBean> allChall = new ArrayList<ChallengeBean>();
+    private ArrayList<AchievementBean> allAch = new ArrayList<AchievementBean>();
+    private ArrayList<AchievementBean> yourAch = new ArrayList<AchievementBean>();
+    private ArrayList<String> allChallProgress = new ArrayList<String>();
     private ChallengeBean tempChallenge;
     private List<SelectItem> names = new ArrayList<SelectItem>();
     //Database stuff
@@ -55,6 +58,12 @@ public class Overview {
         }
         return null;
     }
+
+
+    // ****** USERHANDLING METHODS ********
+    // ************************************
+
+
     /** Adds a user to the database */
     public void addUser(UserBean user, String password) {
 		openConnection();
@@ -207,9 +216,6 @@ public class Overview {
                 String tempRole = result.getString("rolename");
                 allUsers.add(new UserBean(tempUserId, tempName,tempUserName, tempRole));
             }
-            for(int i = 0;i<allUsers.size();i++) {
-                System.out.println("readUsers(): " + allUsers.get(i).getUserName());
-            }
         }catch(SQLException e) {
             Cleanup.printMessage(e, "readUsers()");
         }
@@ -247,6 +253,108 @@ public class Overview {
             Cleanup.closeConnection(connection);
         }
     }
+
+
+   public int[] readScore() {
+       //select * from playerinfo where user_id = ?
+       int[] score = new int[5];
+       openConnection();
+        Statement statement = null;
+        ResultSet result = null;
+        try {
+            statement = connection.createStatement();
+            result = statement.executeQuery("SELECT * FROM playerinfo WHERE user_id = "+getCurrentUser().getUserId());
+            while(result.next()) {
+                score[0] = result.getInt("addition_score");
+                score[1] = result.getInt("subtraction_score");
+                score[2] = result.getInt("multiplication_score");
+                score[3] = result.getInt("division_score");
+                score[4] = result.getInt("currency_spent");
+            }
+        }catch(SQLException e) {
+            Cleanup.printMessage(e, "readScore()");
+        }
+        return score;
+    }
+
+   public int[] readUserScore(String username) {
+       //select * from playerinfo where user_id = ?
+       int[] score = new int[5];
+       openConnection();
+        allUsers.clear();
+        Statement statement = null;
+        ResultSet result = null;
+        try {
+            statement = connection.createStatement();
+            result = statement.executeQuery("SELECT * FROM playerinfo WHERE username = " + username);
+            while(result.next()) {
+                score[0] = result.getInt("addition_score");
+                score[1] = result.getInt("subtraction_score");
+                score[2] = result.getInt("multiplication_score");
+                score[3] = result.getInt("division_score");
+                score[4] = result.getInt("currency_spent");
+            }
+        }catch(SQLException e) {
+            Cleanup.printMessage(e, "readUserScore()");
+        }
+        return score;
+   }
+
+   public void changeScore(int[] score) {
+        PreparedStatement sqlChangeScore = null;
+        openConnection();
+        boolean ok = false;
+        try {
+            connection.setAutoCommit(false);
+            sqlChangeScore = connection.prepareStatement("UPDATE playerinfo SET addition_score=?,subtraction_score=?,multiplication_score=?, division_score=?, currency_spent=? WHERE user_id = ?");
+            sqlChangeScore.setInt(1, score[0]);
+            sqlChangeScore.setInt(2, score[1]);
+            sqlChangeScore.setInt(3, score[2]);
+            sqlChangeScore.setInt(4, score[3]);
+            sqlChangeScore.setInt(5, score[4]);
+            sqlChangeScore.setInt(6, getCurrentUser().getUserId());
+            sqlChangeScore.executeUpdate();
+            connection.commit();
+            ok = true;
+        }catch(SQLException e) {
+            Cleanup.rollBack(connection);
+            String sqlStatus = e.getSQLState().trim();
+            String statusClass = sqlStatus.substring(0, 2);
+            if(statusClass.equals("23")) {
+                ok = false;
+            }else Cleanup.printMessage(e, "changeScore()");
+        }finally {
+            Cleanup.closeConnection(connection);
+            //TODO: add a call to readUsers
+        }
+
+   }
+
+    public void updateUserprofile(UserBean user, String password){
+        openConnection();
+        PreparedStatement sql = null;
+
+        try{
+            System.out.println(connection.getAutoCommit());
+            connection.setAutoCommit(true);
+            sql = connection.prepareStatement("UPDATE users set password=?, name=? WHERE  user_id = "+getCurrentUser().getUserId());
+
+            sql.setString(1, password);
+            sql.setString(2,user.getName());
+            System.out.println("updateProfile");
+
+            sql.executeUpdate();
+            connection.commit();
+
+        }catch(SQLException e){
+            Cleanup.printMessage(e, "updateProfile");
+        }finally{
+
+        }
+    }
+
+    // ****** CHALLENGEHANDLING METHODS ***
+    // ************************************
 
     public ChallengeBean readChallenge(String cType, int cDifficulty, String userName) {
         openConnection();
@@ -328,80 +436,6 @@ public class Overview {
 
     }
 
-   public int[] readScore() {
-       //select * from playerinfo where user_id = ?
-       int[] score = new int[5];
-       openConnection();
-        Statement statement = null;
-        ResultSet result = null;
-        try {
-            statement = connection.createStatement();
-            result = statement.executeQuery("SELECT * FROM playerinfo WHERE user_id = "+getCurrentUser().getUserId());
-            while(result.next()) {
-                score[0] = result.getInt("addition_score");
-                score[1] = result.getInt("subtraction_score");
-                score[2] = result.getInt("multiplication_score");
-                score[3] = result.getInt("division_score");
-                score[4] = result.getInt("currency_spent");
-            }
-        }catch(SQLException e) {
-            Cleanup.printMessage(e, "readScore()");
-        }
-        return score;
-    }
-
-   public int[] readUserScore(String username) {
-       //select * from playerinfo where user_id = ?
-       int[] score = new int[5];
-       openConnection();
-        allUsers.clear();
-        Statement statement = null;
-        ResultSet result = null;
-        try {
-            statement = connection.createStatement();
-            result = statement.executeQuery("SELECT * FROM playerinfo WHERE username = " + username);
-            while(result.next()) {
-                score[0] = result.getInt("addition_score");
-                score[1] = result.getInt("subtraction_score");
-                score[2] = result.getInt("multiplication_score");
-                score[3] = result.getInt("division_score");
-                score[4] = result.getInt("currency_spent");
-            }
-        }catch(SQLException e) {
-            Cleanup.printMessage(e, "readUserScore()");
-        }
-        return score;
-   }
-
-   public void changeScore(int[] score) {
-        PreparedStatement sqlChangeScore = null;
-        openConnection();
-        boolean ok = false;
-        try {
-            connection.setAutoCommit(false);
-            sqlChangeScore = connection.prepareStatement("UPDATE playerinfo SET addition_score=?,subtraction_score=?,multiplication_score=?, division_score=?, currency_spent=? WHERE user_id = ?");
-            sqlChangeScore.setInt(1, score[0]);
-            sqlChangeScore.setInt(2, score[1]);
-            sqlChangeScore.setInt(3, score[2]);
-            sqlChangeScore.setInt(4, score[3]);
-            sqlChangeScore.setInt(5, score[4]);
-            sqlChangeScore.setInt(6, getCurrentUser().getUserId());
-            sqlChangeScore.executeUpdate();
-            connection.commit();
-            ok = true;
-        }catch(SQLException e) {
-            Cleanup.rollBack(connection);
-            String sqlStatus = e.getSQLState().trim();
-            String statusClass = sqlStatus.substring(0, 2);
-            if(statusClass.equals("23")) {
-                ok = false;
-            }else Cleanup.printMessage(e, "changeScore()");
-        }finally {
-            Cleanup.closeConnection(connection);
-            //TODO: add a call to readUsers
-        }
-
-   }
 
   public void addChallenge(ChallengeBean chall) {
           openConnection();
@@ -504,28 +538,184 @@ public class Overview {
 
   }
 
-    public void updateUserprofile(UserBean user, String password){
+
+    // ****** ACHIEVEMENT METHODS *********
+    // ************************************
+
+	public ArrayList<AchievementBean> getAllAchievements() {
+		PreparedStatement statement1 = null;
+		ResultSet res1 = null;
+		yourAch.clear();
+
+		openConnection();
+		try {
+			connection.setAutoCommit(false);
+			statement1 = connection.prepareStatement("select user_achievements.user_id,user_achievements.ACHIEVEMENT_ID, user_achievements.achievement_status, achievements.achievement_name, achievements.achievement_text, achievements.achievement_img, achievements.achievement_value from achievements RIGHT JOIN user_achievements ON(achievements.ACHIEVEMENT_ID=user_achievements.ACHIEVEMENT_ID) WHERE user_achievements.USER_ID=? AND user_achievements.ACHIEVEMENT_COMMPLETED=1 ORDER BY user_achievements.ACHIEVEMENT_ID");
+			statement1.setInt(1,getCurrentUser().getUserId());
+			res1 = statement1.executeQuery();
+			while (res1.next()) {
+			int subAchId = res1.getInt("ACHIEVEMENT_ID");
+			int subStatus = res1.getInt("ACHIEVEMENT_STATUS");
+			String subName = res1.getString("ACHIEVEMENT_NAME");
+			String subText = res1.getString("ACHIEVEMENT_TEXT");
+			String subImg = res1.getString("ACHIEVEMENT_IMG");
+			int subValue = res1.getInt("ACHIEVEMENT_VALUE");
+
+			AchievementBean ach = new AchievementBean(subAchId, subValue,subName, subText, subImg, subStatus);
+			yourAch.add(ach);
+		}
+		} catch (SQLException e) {
+			Cleanup.printMessage(e, "getAllAchievements()");
+
+		} finally {
+		}
+		return yourAch;
+	}
+
+
+	public ArrayList<String> getChallProgress() {
+		PreparedStatement statement1 = null;
+		ResultSet res1 = null;
+		allChallProgress.clear();
+
+		openConnection();
+		try {
+			connection.setAutoCommit(false);
+			statement1 = connection.prepareStatement("SELECT CHALLENGE_TYPE.CHALLENGE_TYPE FROM CHALLENGE_TYPE RIGHT JOIN CHALLENGE_STUDENT ON(CHALLENGE_TYPE.CHALLENGE_ID=CHALLENGE_STUDENT.CHALLENGE_ID) WHERE CHALLENGE_STUDENT.USER_ID=?");
+			statement1.setInt(1,getCurrentUser().getUserId());
+			res1 = statement1.executeQuery();
+			while (res1.next()) {
+			String subName = res1.getString("CHALLENGE_TYPE");
+			allChallProgress.add(subName);
+		}
+		} catch (SQLException e) {
+			Cleanup.printMessage(e, "getChallProgress()");
+		} finally {
+		}
+		return allChallProgress;
+	}
+
+    public void setAchievement(int achievement_id, int achievement_status, int com) {
         openConnection();
         PreparedStatement sql = null;
+        PreparedStatement sqlGet = null;
+        ResultSet res1 = null;
+        int subID=0;
 
-        try{
-            System.out.println(connection.getAutoCommit());
-            connection.setAutoCommit(true);
-            sql = connection.prepareStatement("UPDATE users set password=?, name=? WHERE  user_id = "+getCurrentUser().getUserId());
-
-            sql.setString(1, password);
-            sql.setString(2,user.getName());
-            System.out.println("updateProfile");
-
-            sql.executeUpdate();
-            connection.commit();
-
-        }catch(SQLException e){
-            Cleanup.printMessage(e, "updateProfile");
-        }finally{
-
+        try {
+            connection.setAutoCommit(false);
+            sqlGet = connection.prepareStatement("SELECT COUNT(ACHIEVEMENT_ID) List FROM USER_ACHIEVEMENTS WHERE ACHIEVEMENT_ID=? AND user_id=?");
+            sqlGet.setInt(1,achievement_id);
+            sqlGet.setInt(2, getCurrentUser().getUserId());
+            res1 = sqlGet.executeQuery();
+            while (res1.next()) {
+                subID = res1.getInt("List");
+            }
+            if (subID==0){
+                // Insert må oppdateres
+                sql = connection.prepareStatement("INSERT INTO USER_ACHIEVEMENTS(USER_ID, ACHIEVEMENT_ID, ACHIEVEMENT_STATUS, ACHIEVEMENT_COMMPLETED) VALUES (?, ?, ?, ?)");
+                sql.setInt(1, getCurrentUser().getUserId());
+                sql.setInt(2, achievement_id);
+                sql.setInt(3, achievement_status);
+                sql.setInt(4, com);
+                sql.executeUpdate();
+                connection.commit();
+            }
+            else {
+                if (canUpdateAchievement(achievement_id)) {
+                    sql = connection.prepareStatement("UPDATE USER_ACHIEVEMENTS SET achievement_status=?, achievement_commpleted=? WHERE achievement_id=? AND user_id=?");
+                    sql.setInt(1, achievement_status);
+                    sql.setInt(2, com);
+                    sql.setInt(3, achievement_id);
+                    sql.setInt(4, getCurrentUser().getUserId());
+                    sql.executeUpdate();
+                    connection.commit();
+                }
+            }
+        }catch(SQLException e) {
+            Cleanup.printMessage(e, "setAchievement()");
+        }finally {
+            Cleanup.closeConnection(connection);
         }
     }
+
+      public void updateAchievement(int achievement_id, int achievement_status, int com) {
+          if (canUpdateAchievement(achievement_id)){
+          openConnection();
+          PreparedStatement sql = null;
+          try {
+              connection.setAutoCommit(false);
+              // Insert må oppdateres
+              sql = connection.prepareStatement("UPDATE USER_ACHIEVEMENTS SET achievement_status=?, achievement_commpleted=? WHERE achievement_id = ? and user_id = ?");
+              sql.setInt(1, achievement_status);
+              sql.setInt(2, com);
+              sql.setInt(3, achievement_id);
+              sql.setInt(4,getCurrentUser().getUserId());
+              sql.executeUpdate();
+              connection.commit();
+
+          }catch(SQLException e) {
+              Cleanup.printMessage(e, "updateAchievement()");
+          }finally {
+
+            }
+        }
+    }
+
+	public ArrayList<AchievementBean> listAllAchievements() {
+		PreparedStatement statement1 = null;
+		ResultSet res1 = null;
+		allAch.clear();
+
+		openConnection();
+		try {
+			connection.setAutoCommit(false);
+			statement1 = connection.prepareStatement("select * from MATHPLAY.ACHIEVEMENTS");
+			res1 = statement1.executeQuery();
+			while (res1.next()) {
+			int subAchId = res1.getInt("ACHIEVEMENT_ID");
+			String subName = res1.getString("ACHIEVEMENT_NAME");
+			String subText = res1.getString("ACHIEVEMENT_TEXT");
+			String subImg = res1.getString("ACHIEVEMENT_IMG");
+			int subValue = res1.getInt("ACHIEVEMENT_VALUE");
+
+			AchievementBean ach = new AchievementBean(subAchId, subValue,subName, subText, subImg);
+			allAch.add(ach);
+		}
+		} catch (SQLException e) {
+			Cleanup.printMessage(e, "listAllAchievements()");
+
+		} finally {
+
+		}
+		return allAch;
+	}
+
+    public boolean canUpdateAchievement(int achievement_id){
+        openConnection();
+        PreparedStatement statement1 = null;
+        ResultSet res1 = null;
+        boolean doIt = true;
+        try {
+        connection.setAutoCommit(false);
+        statement1 = connection.prepareStatement("select count(achievement_commpleted) list from user_achievements where user_id=? and achievement_id=? and achievement_commpleted=1");
+        statement1.setInt(1, getCurrentUser().getUserId());
+        statement1.setInt(2, achievement_id);
+        res1 = statement1.executeQuery();
+        res1.next();
+        int subCom = res1.getInt("list");
+        if (subCom == 1) doIt = false;
+        } catch (SQLException e) {
+            Cleanup.printMessage(e, "canUpdate()");
+        } finally {
+        }
+        return doIt;
+    }
+
+
+
+    // ****** HIGHSCORE METHODS ***********
+    // ************************************
 
 	/** sortBy bestemmer hvilken sortering som skal gjøres, med følgende settings:
 	*	1=USERNAME, 2=ADDITION_SCORE, 3=SUBTRACTION_SCORE, 4=MULTIPLICATION_SCORE
@@ -671,6 +861,10 @@ public class Overview {
 		return 0;
 	}
 
+
+    // ****** OTHER METHODS ***************
+    // ************************************
+
     /** Opens a connection to the database */
     public void openConnection() {
        try {
@@ -691,7 +885,6 @@ public class Overview {
 		Object requestObject =  context.getRequest();
 		HttpServletRequest request = (HttpServletRequest) requestObject;
 		String loggedInnName = request.getRemoteUser();
-		System.out.println("DEBUGG_OVERVIEW_NAME :"+loggedInnName);
 		if (loggedInnName==null) return false;
 		else return true;
 	}

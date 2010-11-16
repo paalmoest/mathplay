@@ -107,6 +107,7 @@ CREATE TABLE user_achievements(
 	user_id INTEGER,
 	achievement_id INT,
 	achievement_status int,
+	achievement_commpleted SMALLINT,
 	CONSTRAINT user_achievements_pk PRIMARY KEY(user_id, achievement_id)
 );
 
@@ -133,11 +134,11 @@ ALTER TABLE playerinfo ADD CONSTRAINT playerinfo_fk1 FOREIGN KEY(user_id) REFERE
 
 --INSERTS--
 --Legger til brukere--
+INSERT INTO USERS (USERNAME, PASSWORD, NAME) VALUES ('supah', '1337','Mr.Cant Touch This');
+INSERT INTO USERS (USERNAME, PASSWORD, NAME) VALUES ('tomcat', 'tomcat','TOMCATZ CATZ');
 INSERT INTO USERS (USERNAME, PASSWORD, NAME) VALUES ('stian', 'hei', 'Stian Sorebo');
 INSERT INTO USERS (USERNAME, PASSWORD, NAME) VALUES ('rivertz', 'hei', 'Hans Jakob Rivertz');
 INSERT INTO USERS (USERNAME, PASSWORD, NAME) VALUES ('andriod', 'noob', 'Andrej Skog');
-INSERT INTO USERS (USERNAME, PASSWORD, NAME) VALUES ('tomcat', 'tomcat','TOMCATZ CATZ');
-INSERT INTO USERS (USERNAME, PASSWORD, NAME) VALUES ('supah', '1337','Mr.Cant Touch This');
 INSERT INTO USERS (USERNAME, PASSWORD, NAME) VALUES ('paal', 'paal', 'Pål Møst');
 --Lager roller--
 INSERT INTO ROLES (ROLENAME) VALUES ('admin');
@@ -145,17 +146,26 @@ INSERT INTO ROLES (ROLENAME) VALUES ('user');
 INSERT INTO ROLES (ROLENAME) VALUES ('manager');
 INSERT INTO ROLES (ROLENAME) VALUES ('superadmin');
 --Binder brukere til roller--
+INSERT INTO USER_ROLES (USERNAME, ROLENAME)VALUES ('supah', 'superadmin');
+INSERT INTO USER_ROLES (USERNAME, ROLENAME)VALUES ('tomcat', 'manager');
 INSERT INTO USER_ROLES (USERNAME, ROLENAME)VALUES ('stian', 'admin');
 INSERT INTO USER_ROLES (USERNAME, ROLENAME)VALUES ('rivertz', 'admin');
 INSERT INTO USER_ROLES (USERNAME, ROLENAME)VALUES ('andriod', 'user');
-INSERT INTO USER_ROLES (USERNAME, ROLENAME)VALUES ('tomcat', 'manager');
-INSERT INTO USER_ROLES (USERNAME, ROLENAME)VALUES ('supah', 'superadmin');
 INSERT INTO USER_ROLES (USERNAME, ROLENAME)VALUES ('paal', 'user');
 --Lager oppgavetyper--
 INSERT INTO challenge_NAME (challenge_TYPE)VALUES ('Multiplication');
 INSERT INTO challenge_NAME (challenge_TYPE)VALUES ('Addition');
 INSERT INTO challenge_NAME (challenge_TYPE)VALUES ('Subtraction');
 INSERT INTO challenge_NAME (challenge_TYPE)VALUES ('Division');
+
+--Binder student til lerer--
+INSERT INTO STUDENT_TEACHER (USER_ID, USERNAME)VALUES (3, 'andriod');
+INSERT INTO STUDENT_TEACHER (USER_ID, USERNAME)VALUES (4, 'paal');
+
+--Setter player score--
+INSERT INTO playerinfo (USER_ID, ADDITION_SCORE, SUBTRACTION_SCORE, MULTIPLICATION_SCORE, DIVISION_SCORE, CURRENCY_SPENT) VALUES (5, 0, 0, 0, 0, 0);
+INSERT INTO playerinfo (USER_ID, ADDITION_SCORE, SUBTRACTION_SCORE, MULTIPLICATION_SCORE, DIVISION_SCORE, CURRENCY_SPENT) VALUES (6, 1, 1, 1, 1, 2);
+
 --Lager oppgaver--
 --Binder oppgave til oppgavetype--
 --Binder oppgave til l?rer--
@@ -229,6 +239,7 @@ INSERT INTO challenge_TEACHER (USER_ID)VALUES (1);
 INSERT INTO challenge_TIPS(challenge_tips)VALUES('Hjelp: Hvis man ganger et positivt tall med 2, blir tallet dobbelt så stort');
 
 --subtraksjon, grad 1--
+
 INSERT INTO challenge (challenge_TEXT, ANSWER, DIFFICULTY)VALUES ('Hva er 3-4?', -1.0, 1);
 INSERT INTO challenge_TYPE (challenge_TYPE)VALUES ('Subtraction');
 INSERT INTO challenge_TEACHER (USER_ID)VALUES (1);
@@ -575,6 +586,7 @@ INSERT INTO challenge_TEACHER (USER_ID)VALUES (1);
 INSERT INTO challenge_TIPS(challenge_tips)VALUES('Hjelp: Svaret er det samme som 1+1');
 
 --Addisjon, grad 1--
+
 INSERT INTO challenge (challenge_TEXT, ANSWER, DIFFICULTY)VALUES ('Hva er 2+7?', 9.0, 1);
 INSERT INTO challenge_TYPE (challenge_TYPE)VALUES ('Addition');
 INSERT INTO challenge_TEACHER (USER_ID)VALUES (1);
@@ -615,7 +627,9 @@ INSERT INTO challenge (challenge_TEXT, ANSWER, DIFFICULTY)VALUES ('Hva er 10+9?'
 INSERT INTO challenge_TYPE (challenge_TYPE)VALUES ('Addition');
 INSERT INTO challenge_TEACHER (USER_ID)VALUES (1);
 INSERT INTO challenge_TIPS(challenge_tips)VALUES('Eksempel: Svaret er det samme som 8 + 11');
+
 --Addisjon, grad 2 --
+
 INSERT INTO challenge (challenge_TEXT, ANSWER, DIFFICULTY)VALUES ('Hva er 25+25?', 50.0, 2);
 INSERT INTO challenge_TYPE (challenge_TYPE)VALUES ('Addition');
 INSERT INTO challenge_TEACHER (USER_ID)VALUES (1);
@@ -660,7 +674,9 @@ INSERT INTO challenge (challenge_TEXT, ANSWER, DIFFICULTY)VALUES ('Hva er 45+15?
 INSERT INTO challenge_TYPE (challenge_TYPE)VALUES ('Addition');
 INSERT INTO challenge_TEACHER (USER_ID)VALUES (1);
 INSERT INTO challenge_TIPS(challenge_tips)VALUES('Eksempel: Svaret er det samme som 30 + 30');
+
 --Addisjon, grad 3--
+
 INSERT INTO challenge (challenge_TEXT, ANSWER, DIFFICULTY)VALUES ('Hva er 55+15?', 70.0, 3);
 INSERT INTO challenge_TYPE (challenge_TYPE)VALUES ('Addition');
 INSERT INTO challenge_TEACHER (USER_ID)VALUES (1);
@@ -711,6 +727,7 @@ INSERT INTO challenge_TEACHER (USER_ID)VALUES (1);
 INSERT INTO challenge_TIPS(challenge_tips)VALUES('Eksempel: Svaret er det samme som 36 + 40 + 50 + 10');
 
 --Multiplikasjon, grad 1--
+
 INSERT INTO challenge (challenge_TEXT, ANSWER, DIFFICULTY)VALUES ('Hva er 2*1?', 2.0, 1);
 INSERT INTO challenge_TYPE (challenge_TYPE)VALUES ('Multiplication');
 INSERT INTO challenge_TEACHER (USER_ID)VALUES (1);
@@ -755,7 +772,9 @@ INSERT INTO challenge (challenge_TEXT, ANSWER, DIFFICULTY)VALUES ('Hva er 5*5?',
 INSERT INTO challenge_TYPE (challenge_TYPE)VALUES ('Multiplication');
 INSERT INTO challenge_TEACHER (USER_ID)VALUES (1);
 INSERT INTO challenge_TIPS(challenge_tips)VALUES('Eksempel: Antall øl i en kasse - 1');
+
 --Multiplikasjon grad 2--
+
 INSERT INTO challenge (challenge_TEXT, ANSWER, DIFFICULTY)VALUES ('Hva er 6*10?', 60.0, 2);
 INSERT INTO challenge_TYPE (challenge_TYPE)VALUES ('Multiplication');
 INSERT INTO challenge_TEACHER (USER_ID)VALUES (1);
@@ -800,6 +819,7 @@ INSERT INTO challenge (challenge_TEXT, ANSWER, DIFFICULTY)VALUES ('Hva er 1*9?',
 INSERT INTO challenge_TYPE (challenge_TYPE)VALUES ('Multiplication');
 INSERT INTO challenge_TEACHER (USER_ID)VALUES (1);
 INSERT INTO challenge_TIPS(challenge_tips)VALUES('Hjelp: Svaret er mindre enn 10 og større enn 7');
+
 --Multiplikasjon, grad 3 --
 
 INSERT INTO challenge (challenge_TEXT, ANSWER, DIFFICULTY)VALUES ('Hva er 11*9?', 99.0, 3);
@@ -847,16 +867,6 @@ INSERT INTO challenge_TYPE (challenge_TYPE)VALUES ('Multiplication');
 INSERT INTO challenge_TEACHER (USER_ID)VALUES (1);
 INSERT INTO challenge_TIPS(challenge_tips)VALUES('Hjelp: Svaret er det samme som 40+30');
 
-
-
---Binder student til lerer--
-INSERT INTO STUDENT_TEACHER (USER_ID, USERNAME)VALUES (1, 'andriod');
-INSERT INTO STUDENT_TEACHER (USER_ID, USERNAME)VALUES (2, 'paal');
-
---Setter player score--
-INSERT INTO playerinfo (USER_ID, ADDITION_SCORE, SUBTRACTION_SCORE, MULTIPLICATION_SCORE, DIVISION_SCORE, CURRENCY_SPENT) VALUES (3, 0, 0, 0, 0, 0);
-INSERT INTO playerinfo (USER_ID, ADDITION_SCORE, SUBTRACTION_SCORE, MULTIPLICATION_SCORE, DIVISION_SCORE, CURRENCY_SPENT) VALUES (6, 1, 1, 1, 1, 2);
-
 --Legger inn achievements--
 INSERT INTO achievements(achievement_name, achievement_text, achievement_img, achievement_value) VALUES ('Addisjon 10 oppgaver', 'Du har løst 10 addisjonsoppgaver', 'add10', 10);
 INSERT INTO achievements(achievement_name, achievement_text, achievement_img, achievement_value) VALUES ('Addisjon 25 oppgaver', 'Du har løst 25 addisjonsoppgaver', 'add25', 25);
@@ -883,20 +893,4 @@ INSERT INTO achievements(achievement_name, achievement_text, achievement_img, ac
 INSERT INTO achievements(achievement_name, achievement_text, achievement_img, achievement_value) VALUES ('50 på rad', 'Du har løst 50 oppgaver på rad', 'rad50', 50);
 INSERT INTO achievements(achievement_name, achievement_text, achievement_img, achievement_value) VALUES ('100 på rad', 'Du har løst 100 oppgaver på rad', 'rad100', 100);
 
-
-
-
---Setter achievements til user_id--
-INSERT INTO user_achievements (user_id, achievement_status, achievement_id)VALUES (3, 25, 1);
-INSERT INTO user_achievements (user_id, achievement_status, achievement_id)VALUES (3, 25, 2);
-
-INSERT INTO user_achievements (user_id, achievement_status, achievement_id)VALUES (3, 10, 5);
-
-INSERT INTO user_achievements (user_id, achievement_status, achievement_id)VALUES (3, 24, 17);
-
-
-
-
-
-
-
+INSERT INTO achievements(achievement_name, achievement_text, achievement_img, achievement_value) VALUES ('Under opplæring', 'Du har løst 1 oppgave', '1opg', 5);

@@ -12,6 +12,7 @@ package mathplay;
 public class AchievementBean {
     private int achId, achValue, achStatus;
     private String achName, achText, achImg;
+    private boolean done = false;
 
     public AchievementBean(int achId, int achValue, String achName, String achText, String achImg, int achStatus){
         this.achId = achId;
@@ -20,6 +21,15 @@ public class AchievementBean {
         this.achText = achText;
         this.achImg = achImg;
         this.achStatus = achStatus;
+
+    }
+
+     public AchievementBean(int achId, int achValue, String achName, String achText, String achImg){
+        this.achId = achId;
+        this.achValue = achValue;
+        this.achName = achName;
+        this.achText = achText;
+        this.achImg = achImg;
 
     }
 
@@ -42,4 +52,8 @@ public class AchievementBean {
 
     public int getAchStatus() {return achStatus;}
     public void setAchStatus(int achStatus) {this.achStatus = achStatus;}
+
+    public void setDone(){done = true;}
+
+    public boolean getDone(){return done;}
 }
