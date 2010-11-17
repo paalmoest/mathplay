@@ -338,7 +338,10 @@ public class AchHandler implements Serializable {
 
    public String getNewAchString() {
 	   if (newAch.size()==0) System.out.println("newAch har ingen elementer, nullpointer INC");
-	   String tempRetur = newAch.get(0);
+	   String achiString = newAch.get(0);
+	   String tempRetur = "<img src=\"imgs/"+achiString+".png\" /> ";
+	   //System.out.println(tempRetur);
+	   //System.out.println("<img src=\"imgs/1opg.png\" /> ");
 	   newAch.remove(0);
 	   return tempRetur;
 	}
@@ -360,6 +363,10 @@ public class AchHandler implements Serializable {
 		System.out.println("DEBUGG_ACHIHANDLER_NEWACHISIZE: "+ newAch.size());
 		if (newAch.size() > 0) return true;
 		else return false;
+	}*/
+
+	/*public String getTest() {
+		return "<img src=\"imgs/1opg.png\" /> ";
 	}*/
 
 }

@@ -36,11 +36,12 @@
 		<h:outputText id="correct" value="#{gameHandler.lastCorrect}" /></p>
 		<br/>
 
+
         </h:form>
 
     	<h:form id="popitONE" rendered="#{gameHandler.achHandler.achComplete}">
 			<div id="grow_demoONE" style="display:none; width:600px; height:135px; background:#ccc;">
-				<h:graphicImage value="imgs/#{gameHandler.achHandler.newAchString}.png" style="border: thin solid black"/>
+				<h:outputFormat value="#{gameHandler.achHandler.newAchString}" escape="false" />
 			</div>
 		</h:form>
 
