@@ -40,15 +40,17 @@
 
     	<h:form id="popitONE" rendered="#{gameHandler.achHandler.achComplete}">
 			<div id="grow_demoONE" style="display:none; width:600px; height:135px; background:#ccc;">
-				<h:graphicImage value="imgs/#{gameHandler.achHandler.newAchString}.png"/>
+				<h:graphicImage value="imgs/#{gameHandler.achHandler.newAchString}.png" style="border: thin solid black"/>
 			</div>
 		</h:form>
 
     	<h:form id="popitTWO" rendered="#{gameHandler.achHandler.achComplete}">
 			<div id="grow_demoTWO" style="display:none; width:600px; height:135px; background:#ccc;">
-				<h:graphicImage value="imgs/#{gameHandler.achHandler.newAchString}.png"/>
+				<h:graphicImage value="imgs/#{gameHandler.achHandler.newAchString}.png" style="border: thin solid black"/>
 			</div>
 		</h:form>
+
+		<a href="#" onclick="$('grow_demoONE').hide();$('grow_demoTWO').hide(); return false;">Fjern achievement</a>
 
     </h:body>
 </html>

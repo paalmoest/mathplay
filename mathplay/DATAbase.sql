@@ -893,4 +893,4 @@ INSERT INTO achievements(achievement_name, achievement_text, achievement_img, ac
 INSERT INTO achievements(achievement_name, achievement_text, achievement_img, achievement_value) VALUES ('50 på rad', 'Du har løst 50 oppgaver på rad', 'rad50', 50);
 INSERT INTO achievements(achievement_name, achievement_text, achievement_img, achievement_value) VALUES ('100 på rad', 'Du har løst 100 oppgaver på rad', 'rad100', 100);
 
-INSERT INTO achievements(achievement_name, achievement_text, achievement_img, achievement_value) VALUES ('Under opplæring', 'Du har løst 1 oppgave', '1opg', 5);
+INSERT INTO achievements(achievement_name, achievement_text, achievement_img, achievement_value) VALUES ('Under opplæring', 'Du har løst 1 oppgave', '1opg', 10);

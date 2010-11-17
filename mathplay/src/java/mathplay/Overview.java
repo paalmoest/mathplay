@@ -835,6 +835,7 @@ public class Overview {
 		try {
 			statement = connection.createStatement();
 			statement.executeUpdate("DELETE FROM challenge_student WHERE user_id="+user_id);
+			statement.executeUpdate("DELETE FROM user_achievements WHERE user_id="+user_id+" AND achievement_commpleted=0");
 		}catch(SQLException e) {
 			Cleanup.printMessage(e, "resetUser()");
 		} finally {
