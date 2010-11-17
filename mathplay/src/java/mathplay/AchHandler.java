@@ -336,15 +336,48 @@ public class AchHandler implements Serializable {
    }
 
 
-   public String getNewAchString() {
-	   if (newAch.size()==0) System.out.println("newAch har ingen elementer, nullpointer INC");
-	   String achiString = newAch.get(0);
-	   String tempRetur = "<img src=\"imgs/"+achiString+".png\" /> ";
-	   //System.out.println(tempRetur);
-	   //System.out.println("<img src=\"imgs/1opg.png\" /> ");
-	   newAch.remove(0);
-	   return tempRetur;
+   public String getNewAchStringONE() {
+	   if (newAch.size()==0) {
+		   return "<p>noshit_skalikkekommeopp</p>";
+	   }
+	   else {
+		   String achiString = newAch.get(0);
+		   String tempRetur = "<div id=\"grow_demoONE\" style=\"display:none; width:600px; height:135px; background:#ccc;\"> <img src=\"imgs/"+achiString+".png\" /> </div>";
+		   System.out.println(tempRetur);
+		   return tempRetur;
+	   }
 	}
+
+   public String getNewAchStringTWO() {
+	   if (newAch.size()==0) {
+		   return "<p>noshit_skalikkekommeopp</p>";
+	   }
+	   else {
+		   String achiString = newAch.get(1);
+		   String tempRetur = "<div id=\"grow_demoTWO\" style=\"display:none; width:600px; height:135px; background:#ccc;\"> <img src=\"imgs/"+achiString+".png\" /> </div>";
+		   System.out.println(tempRetur);
+		   return tempRetur;
+	   }
+	}
+
+	public boolean getAchCompleteONE() {
+		System.out.println("DEBUGG_ACHIHANDLER_NEWACHISIZE: "+ newAch.size());
+		if (newAch.size() > 0) return true;
+		else return false;
+	}
+
+	public boolean getAchCompleteTWO() {
+		System.out.println("DEBUGG_ACHIHANDLER_NEWACHISIZE: "+ newAch.size());
+		if (newAch.size() > 1) return true;
+		else return false;
+	}
+
+	public boolean getDummyRemoveAchi() {
+		System.out.println("DEBUGG_ACHHANDLER_GETDUMMY_NEWSIZE: "+ newAch.size());
+		newAch.clear();
+		return false;
+	}
+
 
    /*public String getNewAchStringTWO() {
 	   if (newAch.size()<2) System.out.println("newAch har ikke 2 elementer, nullpointer INC");
@@ -353,17 +386,6 @@ public class AchHandler implements Serializable {
 	   return tempRetur;
 	}*/
 
-	public boolean getAchComplete() {
-		System.out.println("DEBUGG_ACHIHANDLER_NEWACHISIZE: "+ newAch.size());
-		if (newAch.size() > 0) return true;
-		else return false;
-	}
-
-	/*public boolean getAchCompleteTWO() {
-		System.out.println("DEBUGG_ACHIHANDLER_NEWACHISIZE: "+ newAch.size());
-		if (newAch.size() > 0) return true;
-		else return false;
-	}*/
 
 	/*public String getTest() {
 		return "<img src=\"imgs/1opg.png\" /> ";

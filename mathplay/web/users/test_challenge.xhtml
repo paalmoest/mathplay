@@ -39,17 +39,17 @@
 
         </h:form>
 
-    	<h:form id="popitONE" rendered="#{gameHandler.achHandler.achComplete}">
+        <h:outputFormat value="#{gameHandler.achHandler.newAchStringONE}" escape="false" rendered="#{gameHandler.achHandler.achCompleteONE}" />
+        <h:outputFormat value="#{gameHandler.achHandler.newAchStringTWO}" escape="false" rendered="#{gameHandler.achHandler.achCompleteTWO}" />
+		<h:outputText value="LOLDUMMY" rendered="#{gameHandler.achHandler.dummyRemoveAchi}" />
+
+    	<h:form id="popitONE" rendered="false">
 			<div id="grow_demoONE" style="display:none; width:600px; height:135px; background:#ccc;">
 				<h:outputFormat value="#{gameHandler.achHandler.newAchString}" escape="false" />
 			</div>
 		</h:form>
 
-    	<h:form id="popitTWO" rendered="#{gameHandler.achHandler.achComplete}">
-			<div id="grow_demoTWO" style="display:none; width:600px; height:135px; background:#ccc;">
-				<h:graphicImage value="imgs/#{gameHandler.achHandler.newAchString}.png" style="border: thin solid black"/>
-			</div>
-		</h:form>
+
 
 		<a href="#" onclick="$('grow_demoONE').hide();$('grow_demoTWO').hide(); return false;">Fjern achievement</a>
 
